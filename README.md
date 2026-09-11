@@ -9,14 +9,13 @@ Dibangun dengan **Next.js 14 (App Router) + Tailwind CSS**. Konten **dwibahasa**
 ## ✨ Fitur
 
 - **Kurikulum berstruktur** — Pengantar AI → Machine Learning → Deep Learning → Reinforcement Learning → LLM.
-- **5 demo interaktif** yang jalan di browser (tanpa server):
-  - **k-NN (Supervised)** — klik kanvas untuk menambah titik berlabel, atur nilai `k`, dan lihat *wilayah keputusan* dihitung langsung.
-  - **k-means (Unsupervised)** — lihat centroid bergerak *langkah demi langkah* sampai konvergen.
-  - **Regresi Linear & Logistik** — geser garis regresi dan lihat error (MSE) mengecil, atau atur kurva sigmoid untuk klasifikasi.
-  - **Jaringan Saraf (Neural Network)** — latih jaringan saraf kecil (ala TensorFlow Playground) dan amati batas keputusannya belajar pada dataset lingkaran/XOR/linear.
-  - **Reinforcement Learning (Grid-World)** — agen belajar via Q-learning mencari reward 🏁 dan menghindari jebakan 🕳️; kebijakan optimal ditampilkan sebagai panah.
+- **20+ demo interaktif** yang jalan di browser (tanpa server), **dikelompokkan per topik**:
+  - **Machine Learning (5):** k-NN, k-means, Regresi Linear & Logistik, Decision Tree, Naive Bayes.
+  - **Deep Learning + Computer Vision (5):** Neural Network, Filter Konvolusi (CNN), Deteksi Tepi (Sobel), Pengenal Digit, Fungsi Aktivasi.
+  - **Reinforcement Learning (5):** Grid-World (Q-learning), Multi-Armed Bandit, Labirin (Value Iteration), CartPole, Eksplorasi vs Eksploitasi.
+  - **LLM & NLP (5):** Analisis Sentimen (Naive Bayes), TF-IDF, Tokenisasi, Word Embeddings, Attention (BERT/Transformer).
 - **Kuis singkat** di akhir tiap topik — pilihan ganda dengan skor & penjelasan instan.
-- **Studi kasus per bidang** — Bisnis, Pertanian, Kesehatan, Pendidikan (tiap contoh diberi label tekniknya).
+- **Studi kasus naratif gaya business case (Harvard/Stanford)** — 4 bidang (Bisnis, Pertanian, Kesehatan, Pendidikan): profil organisasi, tokoh, tantangan, keputusan, solusi AI, hasil, pelajaran, dan **pertanyaan diskusi kelas**.
 - **Slot video YouTube** di tiap topik — tinggal tempel ID video.
 - **Dwibahasa (ID/EN)** dengan tombol di header (tersimpan di browser).
 - **Responsif** — nyaman dibuka di HP maupun proyektor kelas.
@@ -78,14 +77,22 @@ components/
   PageHero, TopicCard, Callout, YouTubeEmbed
   TopicView, DemoView, CaseStudyView
   Quiz.jsx                  # kuis pilihan ganda per topik
-  demos/KnnDemo.jsx         # demo supervised (k-NN)
-  demos/KMeansDemo.jsx      # demo unsupervised (k-means)
-  demos/RegressionDemo.jsx  # demo regresi linear & logistik
-  demos/NeuralNetDemo.jsx   # demo jaringan saraf (training di browser)
-  demos/GridWorldDemo.jsx   # demo RL grid-world (Q-learning)
+  demoComponents.js         # peta slug -> komponen demo (20 demo)
+  demos/                    # 20 komponen demo interaktif, mis:
+    KnnDemo, KMeansDemo, RegressionDemo, DecisionTreeDemo, NaiveBayesDemo   (ML)
+    NeuralNetDemo, CnnFiltersDemo, EdgeDetectionDemo, PixelClassifierDemo, ActivationDemo   (DL/CV)
+    GridWorldDemo, BanditDemo, MazeValueDemo, CartPoleDemo, ExploreExploitDemo   (RL)
+    SentimentDemo, TfidfDemo, TokenizationDemo, EmbeddingsDemo, AttentionDemo   (LLM/NLP)
 lib/
-  content.js, topicContent.js, caseStudies.js, quizzes.js
+  content.js       # site, topics, fields
+  demos.js         # daftar 20 demo (dikelompokkan per topik) + detail "cara kerja"
+  topicContent.js  # isi tiap halaman topik
+  caseStudies.js   # studi kasus naratif (business case)
+  quizzes.js       # soal kuis per topik
 ```
+
+Untuk **menambah demo baru**: tambahkan metadata di `lib/demos.js` (dengan `topic`),
+buat komponennya di `components/demos/`, lalu daftarkan di `components/demoComponents.js`.
 
 ---
 

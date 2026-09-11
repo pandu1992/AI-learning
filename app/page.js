@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useLang } from "@/components/LanguageProvider";
 import TopicCard from "@/components/TopicCard";
-import { site, topics, demos, fields } from "@/lib/content";
+import { site, topics, fields } from "@/lib/content";
+import { demoList, demosByTopic } from "@/lib/demos";
 
 export default function HomePage() {
   const { lang } = useLang();
@@ -81,18 +82,33 @@ export default function HomePage() {
       {/* Demos */}
       <section className="bg-white">
         <div className="mx-auto max-w-6xl px-4 py-16">
-          <h2 className="text-2xl font-bold text-slate-900">{labels.demosTitle}</h2>
-          <p className="mt-1 text-slate-600">{labels.demosSub}</p>
-          <div className="mt-8 grid gap-5 sm:grid-cols-2">
-            {demos.map((demo) => (
-              <TopicCard
-                key={demo.slug}
-                href={`/demos/${demo.slug}`}
-                icon="🧪"
-                title={demo[lang].title}
-                summary={demo[lang].summary}
-              />
-            ))}
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">{labels.demosTitle}</h2>
+              <p className="mt-1 text-slate-600">{labels.demosSub}</p>
+            </div>
+            <span className="rounded-full bg-brand-50 px-4 py-1.5 text-sm font-bold text-brand-700">
+              {demoList.length}+ {lang === "id" ? "demo" : "demos"}
+            </span>
+          </div>
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {topics
+              .filter((t) => demosByTopic[t.slug]?.length)
+              .map((topic) => (
+                <Link
+                  key={topic.slug}
+                  href={`/topics/${topic.slug}`}
+                  className="group rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-1 hover:border-brand-400 hover:shadow-md"
+                >
+                  <div className="text-3xl">{topic.icon}</div>
+                  <h3 className="mt-3 font-bold text-slate-900 group-hover:text-brand-700">
+                    {topic[lang].title}
+                  </h3>
+                  <p className="mt-1 text-sm font-semibold text-brand-600">
+                    {demosByTopic[topic.slug].length} {lang === "id" ? "demo interaktif" : "interactive demos"} →
+                  </p>
+                </Link>
+              ))}
           </div>
         </div>
       </section>
