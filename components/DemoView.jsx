@@ -6,6 +6,9 @@ import PageHero from "./PageHero";
 import Callout from "./Callout";
 import KnnDemo from "./demos/KnnDemo";
 import KMeansDemo from "./demos/KMeansDemo";
+import RegressionDemo from "./demos/RegressionDemo";
+import NeuralNetDemo from "./demos/NeuralNetDemo";
+import GridWorldDemo from "./demos/GridWorldDemo";
 
 const registry = {
   "supervised-knn": {
@@ -58,6 +61,84 @@ const registry = {
         "Repeat until centroids stop moving (convergence).",
       ],
       case: "Case study: segmenting customers by shopping behavior, or grouping news articles by similar topics.",
+    },
+  },
+  regression: {
+    icon: "📉",
+    Component: RegressionDemo,
+    id: {
+      title: "Regresi Linear & Logistik",
+      subtitle: "Menarik garis terbaik melewati data.",
+      how: [
+        "Regresi linear mencari garis y = m·x + b yang paling pas.",
+        "Kualitas garis diukur dengan error (MSE) — makin kecil makin baik.",
+        "Regresi logistik memakai fungsi sigmoid untuk memprediksi probabilitas kelas (0/1).",
+        "Ambang 0,5 pada probabilitas menentukan batas keputusan klasifikasi.",
+      ],
+      case: "Studi kasus: memprediksi harga rumah (linear) atau menentukan email spam/bukan (logistik).",
+    },
+    en: {
+      title: "Linear & Logistic Regression",
+      subtitle: "Fitting the best line through data.",
+      how: [
+        "Linear regression finds the best-fitting line y = m·x + b.",
+        "Line quality is measured by error (MSE) — smaller is better.",
+        "Logistic regression uses a sigmoid to predict class probability (0/1).",
+        "A 0.5 probability threshold sets the classification decision boundary.",
+      ],
+      case: "Case study: predicting house prices (linear) or deciding spam/not-spam email (logistic).",
+    },
+  },
+  "neural-network": {
+    icon: "🧠",
+    Component: NeuralNetDemo,
+    id: {
+      title: "Jaringan Saraf (Neural Network)",
+      subtitle: "Belajar batas keputusan yang rumit.",
+      how: [
+        "Jaringan menerima 2 input (koordinat x, y) dan menghasilkan probabilitas kelas.",
+        "Neuron tersembunyi memungkinkan model mempelajari pola non-linear (mis. XOR & lingkaran).",
+        "Saat dilatih, bobot disesuaikan lewat backpropagation untuk memperkecil loss.",
+        "Tambah neuron atau ubah learning rate untuk melihat pengaruhnya.",
+      ],
+      case: "Studi kasus: pengenalan tulisan tangan, deteksi objek, dan banyak tugas persepsi lainnya.",
+    },
+    en: {
+      title: "Neural Network",
+      subtitle: "Learning complex decision boundaries.",
+      how: [
+        "The network takes 2 inputs (x, y coordinates) and outputs a class probability.",
+        "Hidden neurons let the model learn non-linear patterns (e.g. XOR & circles).",
+        "During training, weights adjust via backpropagation to reduce loss.",
+        "Add neurons or change the learning rate to see the effect.",
+      ],
+      case: "Case study: handwriting recognition, object detection, and many other perception tasks.",
+    },
+  },
+  "rl-gridworld": {
+    icon: "🎮",
+    Component: GridWorldDemo,
+    id: {
+      title: "Reinforcement Learning — Grid-World",
+      subtitle: "Agen belajar dari reward lewat coba-coba.",
+      how: [
+        "Agen mengeksplorasi grid dan menerima reward (+1 di tujuan, −1 di jebakan).",
+        "Q-learning memperbarui nilai tiap pasangan (state, aksi) berdasarkan pengalaman.",
+        "Parameter ε mengatur eksplorasi vs eksploitasi (coba hal baru vs pakai yang terbaik).",
+        "Setelah banyak episode, panah menunjukkan kebijakan (policy) optimal yang dipelajari.",
+      ],
+      case: "Studi kasus: robot navigasi, permainan (AlphaGo), dan optimasi rute.",
+    },
+    en: {
+      title: "Reinforcement Learning — Grid-World",
+      subtitle: "An agent learns from rewards by trial and error.",
+      how: [
+        "The agent explores the grid and receives rewards (+1 at goal, −1 in traps).",
+        "Q-learning updates the value of each (state, action) pair from experience.",
+        "The ε parameter balances exploration vs exploitation (try new vs use best).",
+        "After many episodes, the arrows reveal the learned optimal policy.",
+      ],
+      case: "Case study: robot navigation, games (AlphaGo), and route optimization.",
     },
   },
 };

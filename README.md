@@ -9,9 +9,13 @@ Dibangun dengan **Next.js 14 (App Router) + Tailwind CSS**. Konten **dwibahasa**
 ## ✨ Fitur
 
 - **Kurikulum berstruktur** — Pengantar AI → Machine Learning → Deep Learning → Reinforcement Learning → LLM.
-- **2 demo interaktif** yang jalan di browser (tanpa server):
+- **5 demo interaktif** yang jalan di browser (tanpa server):
   - **k-NN (Supervised)** — klik kanvas untuk menambah titik berlabel, atur nilai `k`, dan lihat *wilayah keputusan* dihitung langsung.
   - **k-means (Unsupervised)** — lihat centroid bergerak *langkah demi langkah* sampai konvergen.
+  - **Regresi Linear & Logistik** — geser garis regresi dan lihat error (MSE) mengecil, atau atur kurva sigmoid untuk klasifikasi.
+  - **Jaringan Saraf (Neural Network)** — latih jaringan saraf kecil (ala TensorFlow Playground) dan amati batas keputusannya belajar pada dataset lingkaran/XOR/linear.
+  - **Reinforcement Learning (Grid-World)** — agen belajar via Q-learning mencari reward 🏁 dan menghindari jebakan 🕳️; kebijakan optimal ditampilkan sebagai panah.
+- **Kuis singkat** di akhir tiap topik — pilihan ganda dengan skor & penjelasan instan.
 - **Studi kasus per bidang** — Bisnis, Pertanian, Kesehatan, Pendidikan (tiap contoh diberi label tekniknya).
 - **Slot video YouTube** di tiap topik — tinggal tempel ID video.
 - **Dwibahasa (ID/EN)** dengan tombol di header (tersimpan di browser).
@@ -73,10 +77,14 @@ components/
   Header, Footer, LanguageProvider, LanguageToggle
   PageHero, TopicCard, Callout, YouTubeEmbed
   TopicView, DemoView, CaseStudyView
-  demos/KnnDemo.jsx         # demo supervised interaktif
-  demos/KMeansDemo.jsx      # demo unsupervised interaktif
+  Quiz.jsx                  # kuis pilihan ganda per topik
+  demos/KnnDemo.jsx         # demo supervised (k-NN)
+  demos/KMeansDemo.jsx      # demo unsupervised (k-means)
+  demos/RegressionDemo.jsx  # demo regresi linear & logistik
+  demos/NeuralNetDemo.jsx   # demo jaringan saraf (training di browser)
+  demos/GridWorldDemo.jsx   # demo RL grid-world (Q-learning)
 lib/
-  content.js, topicContent.js, caseStudies.js
+  content.js, topicContent.js, caseStudies.js, quizzes.js
 ```
 
 ---
