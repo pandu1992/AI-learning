@@ -5,10 +5,13 @@ import { useLang } from "./LanguageProvider";
 import PageHero from "./PageHero";
 import YouTubeEmbed from "./YouTubeEmbed";
 import Callout from "./Callout";
+import Quiz from "./Quiz";
+import { quizzes } from "@/lib/quizzes";
 
-export default function TopicView({ body }) {
+export default function TopicView({ body, slug }) {
   const { lang } = useLang();
   const data = body[lang];
+  const quiz = slug && quizzes[slug] ? quizzes[slug][lang] : null;
 
   const labels = {
     id: { video: "Video Pembelajaran", back: "← Kembali ke beranda" },
@@ -51,6 +54,12 @@ export default function TopicView({ body }) {
               : "Try the interactive demos for this topic →"}
           </Link>
         </Callout>
+
+        {quiz && quiz.length > 0 && (
+          <div className="mt-10">
+            <Quiz questions={quiz} />
+          </div>
+        )}
 
         <div className="mt-8">
           <Link href="/" className="text-sm font-semibold text-brand-600 hover:underline">

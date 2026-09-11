@@ -15,5 +15,5 @@ export function generateMetadata({ params }) {
 export default function TopicPage({ params }) {
   const body = topicBodies[params.slug];
   if (!body) notFound();
-  return <TopicView body={body} />;
+  return <TopicView body={body} slug={params.slug} />;
 }

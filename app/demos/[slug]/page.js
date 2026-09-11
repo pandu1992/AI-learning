@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 import DemoView from "@/components/DemoView";
 
-const valid = ["supervised-knn", "unsupervised-kmeans"];
+const valid = [
+  "supervised-knn",
+  "unsupervised-kmeans",
+  "regression",
+  "neural-network",
+  "rl-gridworld",
+];
 
 export function generateStaticParams() {
   return valid.map((slug) => ({ slug }));
