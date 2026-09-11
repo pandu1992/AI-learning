@@ -1,23 +1,18 @@
 import { notFound } from "next/navigation";
 import DemoView from "@/components/DemoView";
-
-const valid = [
-  "supervised-knn",
-  "unsupervised-kmeans",
-  "regression",
-  "neural-network",
-  "rl-gridworld",
-];
+import { allDemoSlugs, getDemo } from "@/lib/demos";
 
 export function generateStaticParams() {
-  return valid.map((slug) => ({ slug }));
+  return allDemoSlugs.map((slug) => ({ slug }));
 }
 
 export function generateMetadata({ params }) {
-  return { title: "Demo — AI Belajar" };
+  const demo = getDemo(params.slug);
+  if (!demo) return { title: "Demo — AI Belajar" };
+  return { title: `${demo.id.title} — AI Belajar` };
 }
 
 export default function DemoPage({ params }) {
-  if (!valid.includes(params.slug)) notFound();
+  if (!allDemoSlugs.includes(params.slug)) notFound();
   return <DemoView slug={params.slug} />;
 }

@@ -4,24 +4,26 @@ import Link from "next/link";
 import { useLang } from "./LanguageProvider";
 import PageHero from "./PageHero";
 import YouTubeEmbed from "./YouTubeEmbed";
-import Callout from "./Callout";
+import TopicCard from "./TopicCard";
 import Quiz from "./Quiz";
 import { quizzes } from "@/lib/quizzes";
+import { demosByTopic } from "@/lib/demos";
 
 export default function TopicView({ body, slug }) {
   const { lang } = useLang();
   const data = body[lang];
   const quiz = slug && quizzes[slug] ? quizzes[slug][lang] : null;
+  const topicDemos = (slug && demosByTopic[slug]) || [];
 
   const labels = {
-    id: { video: "Video Pembelajaran", back: "← Kembali ke beranda" },
-    en: { video: "Learning Video", back: "← Back to home" },
+    id: { video: "Video Pembelajaran", back: "← Kembali ke beranda", demos: "Demo Interaktif Topik Ini", demosSub: "Coba langsung tiap algoritma di browser." },
+    en: { video: "Learning Video", back: "← Back to home", demos: "Interactive Demos for This Topic", demosSub: "Try each algorithm right in your browser." },
   }[lang];
 
   return (
     <div>
       <PageHero icon={body.icon} title={data.title} subtitle={data.subtitle} />
-      <article className="mx-auto max-w-3xl px-4 py-12">
+      <article className="mx-auto max-w-4xl px-4 py-12">
         <div className="prose-content">
           {data.sections.map((section, i) => (
             <section key={i} className="mb-8">
@@ -47,13 +49,23 @@ export default function TopicView({ body, slug }) {
           <YouTubeEmbed id={body.videoId} title={data.title} />
         </div>
 
-        <Callout emoji="🧪" title={lang === "id" ? "Praktik" : "Practice"}>
-          <Link href="/demos" className="font-semibold text-brand-700 underline">
-            {lang === "id"
-              ? "Coba demo interaktif untuk topik ini →"
-              : "Try the interactive demos for this topic →"}
-          </Link>
-        </Callout>
+        {topicDemos.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-xl font-bold text-slate-900">🧪 {labels.demos}</h2>
+            <p className="mt-1 text-sm text-slate-600">{labels.demosSub}</p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              {topicDemos.map((demo) => (
+                <TopicCard
+                  key={demo.slug}
+                  href={`/demos/${demo.slug}`}
+                  icon={demo.icon}
+                  title={demo[lang].title}
+                  summary={demo[lang].summary}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {quiz && quiz.length > 0 && (
           <div className="mt-10">
