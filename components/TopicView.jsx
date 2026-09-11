@@ -5,6 +5,7 @@ import { useLang } from "./LanguageProvider";
 import PageHero from "./PageHero";
 import YouTubeEmbed from "./YouTubeEmbed";
 import TopicCard from "./TopicCard";
+import TopicDiagram from "./TopicDiagram";
 import Quiz from "./Quiz";
 import { quizzes } from "@/lib/quizzes";
 import { demosByTopic } from "@/lib/demos";
@@ -24,6 +25,8 @@ export default function TopicView({ body, slug }) {
     <div>
       <PageHero icon={body.icon} title={data.title} subtitle={data.subtitle} />
       <article className="mx-auto max-w-4xl px-4 py-12">
+        <TopicDiagram slug={slug} />
+
         <div className="prose-content">
           {data.sections.map((section, i) => (
             <section key={i} className="mb-8">
