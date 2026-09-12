@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLang } from "./LanguageProvider";
 import PageHero from "./PageHero";
 import Callout from "./Callout";
+import MathBehind from "./MathBehind";
 import { getDemo, demoDetails } from "@/lib/demos";
 import { demoComponents } from "./demoComponents";
 import { topics } from "@/lib/content";
@@ -52,6 +53,8 @@ export default function DemoView({ slug }) {
             </ol>
           </>
         )}
+
+        <MathBehind slug={slug} />
 
         {useCase && (
           <Callout emoji="🌍" title={lang === "id" ? "Contoh Penerapan" : "Application Example"}>
