@@ -8,8 +8,8 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }) {
   const body = topicBodies[params.slug];
-  if (!body) return { title: "AI Belajar" };
-  return { title: `${body.id.title} — AI Belajar` };
+  if (!body) return { title: "Cognia" };
+  return { title: `${body.id.title} — Cognia` };
 }
 
 export default function TopicPage({ params }) {

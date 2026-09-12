@@ -8,8 +8,8 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }) {
   const study = caseStudies[params.slug];
-  if (!study) return { title: "AI Belajar" };
-  return { title: `${study.id.title} — AI Belajar` };
+  if (!study) return { title: "Cognia" };
+  return { title: `${study.id.title} — Cognia` };
 }
 
 export default function CaseStudyPage({ params }) {
