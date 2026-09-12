@@ -7,8 +7,8 @@ import { useLang } from "./LanguageProvider";
 // bilingual caption. Exported as a map keyed by topic slug.
 
 const C = {
-  brand: "#2563eb",
-  brandLight: "#dbeafe",
+  brand: "#0093D0",
+  brandLight: "#cceefa",
   slate: "#334155",
   slateLight: "#e2e8f0",
   green: "#059669",
@@ -43,10 +43,10 @@ function AiOverviewDiagram({ lang }) {
     <svg viewBox="0 0 440 260" className="w-full" role="img">
       <rect x="10" y="10" width="420" height="240" rx="16" fill={C.brandLight} stroke={C.brand} strokeWidth="1.5" />
       <text x="30" y="34" fontSize="13" fontWeight="800" fill={C.brand}>{t.ai}</text>
-      <rect x="40" y="46" width="360" height="184" rx="14" fill="#eff6ff" stroke={C.brand} strokeWidth="1.5" opacity="0.9" />
-      <text x="60" y="68" fontSize="12" fontWeight="800" fill="#1d4ed8">{t.ml}</text>
-      <rect x="70" y="80" width="300" height="130" rx="12" fill="#c7dbfd" stroke={C.brand} strokeWidth="1.5" />
-      <text x="90" y="102" fontSize="12" fontWeight="800" fill="#1e3a8a">{t.dl}</text>
+      <rect x="40" y="46" width="360" height="184" rx="14" fill="#e6f6fc" stroke={C.brand} strokeWidth="1.5" opacity="0.9" />
+      <text x="60" y="68" fontSize="12" fontWeight="800" fill="#007cb0">{t.ml}</text>
+      <rect x="70" y="80" width="300" height="130" rx="12" fill="#99ddf4" stroke={C.brand} strokeWidth="1.5" />
+      <text x="90" y="102" fontSize="12" fontWeight="800" fill="#00354d">{t.dl}</text>
       <rect x="100" y="116" width="240" height="76" rx="10" fill={C.brand} />
       <text x="220" y="158" textAnchor="middle" fontSize="13" fontWeight="800" fill="#fff">{t.llm}</text>
     </svg>
@@ -159,8 +159,8 @@ function LlmDiagram({ lang }) {
         const x = gap + i * (w + gap);
         return (
           <g key={i}>
-            <rect x={x} y={20} width={w} height={30} rx={6} fill="#eff6ff" stroke={C.brand} />
-            <text x={x + w / 2} y={40} textAnchor="middle" fontSize="11" fontWeight="700" fill="#1d4ed8">{tok}</text>
+            <rect x={x} y={20} width={w} height={30} rx={6} fill="#e6f6fc" stroke={C.brand} />
+            <text x={x + w / 2} y={40} textAnchor="middle" fontSize="11" fontWeight="700" fill="#007cb0">{tok}</text>
             <line x1={x + w / 2} y1={50} x2={220} y2={86} stroke={C.slateLight} strokeWidth="1" />
           </g>
         );

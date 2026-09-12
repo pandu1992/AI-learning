@@ -154,7 +154,7 @@ export default function GridWorldDemo() {
     const ar = agentRef.current;
     ctx.beginPath();
     ctx.arc(ar.c * CELL + CELL / 2, ar.r * CELL + CELL / 2, 14, 0, Math.PI * 2);
-    ctx.fillStyle = "#2563eb";
+    ctx.fillStyle = "#0093D0";
     ctx.fill();
     ctx.lineWidth = 3;
     ctx.strokeStyle = "#fff";

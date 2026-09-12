@@ -91,7 +91,7 @@ export default function MazeValueDemo() {
         else if (!isWall(r, c)) {
           if (showPolicy && iter > 0) {
             const a = bestAction(r, c, V);
-            if (a >= 0) { ctx.fillStyle = "#1e3a8a"; ctx.font = "18px sans-serif"; ctx.fillText(ARROWS[a], x + CELL / 2, y + CELL / 2 - 6); }
+            if (a >= 0) { ctx.fillStyle = "#00354d"; ctx.font = "18px sans-serif"; ctx.fillText(ARROWS[a], x + CELL / 2, y + CELL / 2 - 6); }
           }
           ctx.fillStyle = "#475569"; ctx.font = "9px monospace";
           ctx.fillText(V[r][c].toFixed(2), x + CELL / 2, y + CELL - 9);

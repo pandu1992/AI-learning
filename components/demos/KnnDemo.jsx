@@ -8,7 +8,7 @@ const H = 360;
 const GRID = 8; // resolution of the decision-region grid (pixels per cell)
 
 const CLASSES = [
-  { name: { id: "Kelas A", en: "Class A" }, color: "#2563eb", bg: "rgba(37,99,235,0.12)" },
+  { name: { id: "Kelas A", en: "Class A" }, color: "#0093D0", bg: "rgba(0,147,208,0.12)" },
   { name: { id: "Kelas B", en: "Class B" }, color: "#dc2626", bg: "rgba(220,38,38,0.12)" },
   { name: { id: "Kelas C", en: "Class C" }, color: "#059669", bg: "rgba(5,150,105,0.12)" },
 ];
