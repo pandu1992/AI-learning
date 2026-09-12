@@ -8,8 +8,8 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }) {
   const demo = getDemo(params.slug);
-  if (!demo) return { title: "Demo — AI Belajar" };
-  return { title: `${demo.id.title} — AI Belajar` };
+  if (!demo) return { title: "Demo — Cognia" };
+  return { title: `${demo.id.title} — Cognia` };
 }
 
 export default function DemoPage({ params }) {

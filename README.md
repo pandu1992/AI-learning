@@ -1,4 +1,6 @@
-# 🤖 AI Belajar — Platform Pembelajaran AI Interaktif
+# Cognia — Platform Pembelajaran AI Interaktif
+
+**BINUS Online · Computer Science**
 
 Platform pembelajaran interaktif untuk mahasiswa mengenal Artificial Intelligence: mulai dari Machine Learning, Deep Learning, Reinforcement Learning, hingga Large Language Models — lengkap dengan **ilustrasi, demo interaktif, slot video YouTube, dan studi kasus** di berbagai bidang.
 

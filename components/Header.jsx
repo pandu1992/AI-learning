@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useLang } from "./LanguageProvider";
 import LanguageToggle from "./LanguageToggle";
-import { site } from "@/lib/content";
+import Logo from "./Logo";
 
 const nav = [
   { href: "/topics/ai-overview", id: "Pengantar", en: "Overview" },
@@ -23,9 +23,8 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2 font-bold text-brand-700">
-          <span className="text-2xl">🤖</span>
-          <span>{site[lang].name}</span>
+        <Link href="/" aria-label="Cognia — home">
+          <Logo size={34} attribution />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
