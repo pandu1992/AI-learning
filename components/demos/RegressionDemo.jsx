@@ -92,7 +92,7 @@ export default function RegressionDemo() {
       // fitted line across x=0..10
       const [x1, y1] = toPx(0, m * 0 + b);
       const [x2, y2] = toPx(10, m * 10 + b);
-      ctx.strokeStyle = "#2563eb";
+      ctx.strokeStyle = "#0093D0";
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(x1, y1);
@@ -146,7 +146,7 @@ export default function RegressionDemo() {
         const [px, py] = toPx(p.x, p.c === 1 ? 9.6 : 0.4);
         ctx.beginPath();
         ctx.arc(px, py, 5, 0, Math.PI * 2);
-        ctx.fillStyle = p.c === 1 ? "#dc2626" : "#2563eb";
+        ctx.fillStyle = p.c === 1 ? "#dc2626" : "#0093D0";
         ctx.fill();
         ctx.lineWidth = 1.5;
         ctx.strokeStyle = "#fff";

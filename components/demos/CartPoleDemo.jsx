@@ -38,7 +38,7 @@ export default function CartPoleDemo() {
     const cartX = W / 2 + s.x * 100;
     const cartW = 60, cartH = 24;
     // cart
-    ctx.fillStyle = "#2563eb";
+    ctx.fillStyle = "#0093D0";
     ctx.fillRect(cartX - cartW / 2, groundY - cartH, cartW, cartH);
     // pole
     const poleLen = 90;

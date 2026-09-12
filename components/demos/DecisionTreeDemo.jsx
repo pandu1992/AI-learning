@@ -117,7 +117,7 @@ export default function DecisionTreeDemo() {
     for (const p of points) {
       ctx.beginPath();
       ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = p.c === 1 ? "#dc2626" : "#2563eb";
+      ctx.fillStyle = p.c === 1 ? "#dc2626" : "#0093D0";
       ctx.fill();
       ctx.lineWidth = 1.5;
       ctx.strokeStyle = "#fff";

@@ -5,7 +5,7 @@ import { useLang } from "../LanguageProvider";
 
 const W = 480;
 const H = 360;
-const COLORS = ["#2563eb", "#dc2626", "#059669", "#d97706", "#7c3aed"];
+const COLORS = ["#0093D0", "#dc2626", "#059669", "#d97706", "#7c3aed"];
 
 function randomPoints(n) {
   const pts = [];

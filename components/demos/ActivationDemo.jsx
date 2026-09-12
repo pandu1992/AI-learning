@@ -8,7 +8,7 @@ const H = 300;
 const PAD = 30;
 
 const FUNCS = {
-  relu: { name: "ReLU", f: (x) => Math.max(0, x), color: "#2563eb", range: [-2, 2] },
+  relu: { name: "ReLU", f: (x) => Math.max(0, x), color: "#0093D0", range: [-2, 2] },
   sigmoid: { name: "Sigmoid", f: (x) => 1 / (1 + Math.exp(-x)), color: "#dc2626", range: [-0.2, 1.2] },
   tanh: { name: "Tanh", f: (x) => Math.tanh(x), color: "#059669", range: [-1.2, 1.2] },
   leaky: { name: "Leaky ReLU", f: (x) => (x >= 0 ? x : 0.1 * x), color: "#d97706", range: [-2, 2] },

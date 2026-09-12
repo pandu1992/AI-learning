@@ -23,7 +23,7 @@ const WORDS = [
   { w: { id: "bus", en: "bus" }, x: 0.80, y: 0.78, g: "vehicle" },
   { w: { id: "sepeda", en: "bicycle" }, x: 0.68, y: 0.80, g: "vehicle" },
 ];
-const GROUP_COLORS = { royal: "#7c3aed", animal: "#dc2626", fruit: "#059669", vehicle: "#2563eb" };
+const GROUP_COLORS = { royal: "#7c3aed", animal: "#dc2626", fruit: "#059669", vehicle: "#0093D0" };
 
 function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
 

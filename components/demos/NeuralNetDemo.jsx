@@ -153,10 +153,10 @@ export default function NeuralNetDemo() {
         const dx = ((gx + GRID / 2) / W) * 2 - 1;
         const dy = 1 - ((gy + GRID / 2) / H) * 2;
         const { p } = forward(net, dx, dy);
-        // blue (class1) to orange (class0)
-        const r = Math.round(37 + (234 - 37) * (1 - p));
-        const g = Math.round(99 + (88 - 99) * (1 - p));
-        const b = Math.round(235 + (12 - 235) * (1 - p));
+        // BINUS blue (class1) to BINUS orange (class0)
+        const r = Math.round(0 + (245 - 0) * (1 - p));
+        const g = Math.round(147 + (162 - 147) * (1 - p));
+        const b = Math.round(208 + (0 - 208) * (1 - p));
         ctx.fillStyle = `rgba(${r},${g},${b},0.35)`;
         ctx.fillRect(gx, gy, GRID, GRID);
       }
@@ -168,7 +168,7 @@ export default function NeuralNetDemo() {
       const py = ((1 - pt.y) / 2) * H;
       ctx.beginPath();
       ctx.arc(px, py, 4, 0, Math.PI * 2);
-      ctx.fillStyle = pt.label === 1 ? "#2563eb" : "#ea580c";
+      ctx.fillStyle = pt.label === 1 ? "#0093D0" : "#F5A200";
       ctx.fill();
       ctx.lineWidth = 1;
       ctx.strokeStyle = "#fff";
