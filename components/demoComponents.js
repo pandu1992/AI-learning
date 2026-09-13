@@ -11,6 +11,7 @@ import CnnFiltersDemo from "./demos/CnnFiltersDemo";
 import EdgeDetectionDemo from "./demos/EdgeDetectionDemo";
 import PixelClassifierDemo from "./demos/PixelClassifierDemo";
 import ActivationDemo from "./demos/ActivationDemo";
+import WebcamVisionDemo from "./demos/WebcamVisionDemo";
 import GridWorldDemo from "./demos/GridWorldDemo";
 import BanditDemo from "./demos/BanditDemo";
 import MazeValueDemo from "./demos/MazeValueDemo";
@@ -33,6 +34,7 @@ export const demoComponents = {
   "edge-detection": EdgeDetectionDemo,
   "pixel-classifier": PixelClassifierDemo,
   "activation-functions": ActivationDemo,
+  "webcam-vision": WebcamVisionDemo,
   "rl-gridworld": GridWorldDemo,
   "multi-armed-bandit": BanditDemo,
   "rl-maze": MazeValueDemo,
