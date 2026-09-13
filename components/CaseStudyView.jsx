@@ -3,38 +3,37 @@
 import Link from "next/link";
 import { useLang } from "./LanguageProvider";
 import PageHero from "./PageHero";
+import CaseViz from "./caseviz/CaseViz";
 
-export default function CaseStudyView({ study }) {
+// Renders a single case study (new shape: { slug, icon, id, en, visualization, analysisViz }).
+// `field` is the parent field slug for breadcrumbs.
+export default function CaseStudyView({ study, field }) {
   const { lang } = useLang();
   const data = study[lang];
   const c = data.company;
 
   const labels = {
     id: {
-      back: "← Semua studi kasus",
+      back: "← Kembali ke daftar",
       snapshot: "Profil Organisasi",
-      industry: "Industri",
-      location: "Lokasi",
-      size: "Ukuran",
+      industry: "Industri", location: "Lokasi", size: "Ukuran",
+      impact: "Visualisasi Dampak",
       techniques: "Teknik AI yang Digunakan",
-      results: "Hasil",
-      lessons: "Pelajaran Utama",
-      questions: "Pertanyaan Diskusi",
-      questionsSub: "Untuk didiskusikan di kelas.",
-      note: "Studi kasus naratif bergaya business case. Nama organisasi bersifat ilustratif untuk tujuan pembelajaran.",
+      analysis: "Analisis: Cara Kerja Algoritma",
+      results: "Hasil", lessons: "Pelajaran Utama",
+      questions: "Pertanyaan Diskusi", questionsSub: "Untuk didiskusikan di kelas.",
+      note: "Studi kasus naratif bergaya business case (konteks Indonesia). Nama organisasi bersifat ilustratif untuk tujuan pembelajaran.",
     },
     en: {
-      back: "← All case studies",
+      back: "← Back to list",
       snapshot: "Company Snapshot",
-      industry: "Industry",
-      location: "Location",
-      size: "Size",
+      industry: "Industry", location: "Location", size: "Size",
+      impact: "Impact Visualization",
       techniques: "AI Techniques Used",
-      results: "Results",
-      lessons: "Key Lessons",
-      questions: "Discussion Questions",
-      questionsSub: "For classroom discussion.",
-      note: "A narrative, business-case-style study. Organization names are illustrative for learning purposes.",
+      analysis: "Analysis: How the Algorithm Works",
+      results: "Results", lessons: "Key Lessons",
+      questions: "Discussion Questions", questionsSub: "For classroom discussion.",
+      note: "A narrative, business-case-style study (Indonesian context). Organization names are illustrative for learning purposes.",
     },
   }[lang];
 
@@ -63,17 +62,35 @@ export default function CaseStudyView({ study }) {
           </blockquote>
         )}
 
-        {/* Narrative sections */}
+        {/* Narrative sections. Story viz after section 2; analysis viz after last section. */}
         <div className="prose-content">
           {data.sections.map((s, i) => (
-            <section key={i} className="mb-8">
-              <h2 className="mb-3 text-xl font-bold text-slate-900">{s.heading}</h2>
-              {s.paragraphs.map((p, j) => (
-                <p key={j} className="text-slate-700">{p}</p>
-              ))}
-            </section>
+            <div key={i}>
+              <section className="mb-8">
+                <h2 className="mb-3 text-xl font-bold text-slate-900">{s.heading}</h2>
+                {s.paragraphs.map((p, j) => (
+                  <p key={j} className="text-slate-700">{p}</p>
+                ))}
+              </section>
+
+              {/* Impact visualization right after the 2nd section (challenge) */}
+              {i === 1 && study.visualization && (
+                <div className="not-prose mb-8">
+                  <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-brand-600">📊 {labels.impact}</h3>
+                  <CaseViz spec={study.visualization} />
+                </div>
+              )}
+            </div>
           ))}
         </div>
+
+        {/* Analysis: how the algorithm works */}
+        {study.analysisViz && (
+          <section className="my-8">
+            <h2 className="mb-3 text-xl font-bold text-slate-900">🔬 {labels.analysis}</h2>
+            <CaseViz spec={study.analysisViz} />
+          </section>
+        )}
 
         {/* Techniques */}
         <section className="my-8">
@@ -116,7 +133,7 @@ export default function CaseStudyView({ study }) {
         <p className="mt-6 text-xs italic text-slate-400">{labels.note}</p>
 
         <div className="mt-8">
-          <Link href="/case-studies" className="text-sm font-semibold text-brand-600 hover:underline">
+          <Link href={`/case-studies/${field}`} className="text-sm font-semibold text-brand-600 hover:underline">
             {labels.back}
           </Link>
         </div>

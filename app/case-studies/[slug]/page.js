@@ -1,19 +1,20 @@
 import { notFound } from "next/navigation";
-import CaseStudyView from "@/components/CaseStudyView";
-import { caseStudies } from "@/lib/caseStudies";
+import CaseStudyFieldView from "@/components/CaseStudyFieldView";
+import { fields, getFieldCases, getFieldMeta } from "@/lib/caseStudyIndex";
 
 export function generateStaticParams() {
-  return Object.keys(caseStudies).map((slug) => ({ slug }));
+  return fields.map((f) => ({ slug: f.slug }));
 }
 
 export function generateMetadata({ params }) {
-  const study = caseStudies[params.slug];
-  if (!study) return { title: "Cognia" };
-  return { title: `${study.id.title} — Cognia` };
+  const meta = getFieldMeta(params.slug);
+  if (!meta) return { title: "Cognia" };
+  return { title: `${meta.id.title} — Studi Kasus — Cognia` };
 }
 
-export default function CaseStudyPage({ params }) {
-  const study = caseStudies[params.slug];
-  if (!study) notFound();
-  return <CaseStudyView study={study} />;
+export default function CaseFieldPage({ params }) {
+  const meta = getFieldMeta(params.slug);
+  const cases = getFieldCases(params.slug);
+  if (!meta || cases.length === 0) notFound();
+  return <CaseStudyFieldView field={params.slug} meta={meta} cases={cases} />;
 }
