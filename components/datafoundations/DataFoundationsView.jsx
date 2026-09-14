@@ -6,6 +6,7 @@ import PageHero from "../PageHero";
 import DataPipelineFlow from "./DataPipelineFlow";
 import DataTypesExplorer from "./DataTypesExplorer";
 import DataSources from "./DataSources";
+import EdaExplorer from "./EdaExplorer";
 
 // Phase 1 of "Data Foundations": Data Pipeline + Data Types + Data Sources.
 // Later phases (EDA, over/underfitting, evaluation metrics) will extend this page.
@@ -23,8 +24,10 @@ export default function DataFoundationsView() {
       s2sub: "Mengenali tipe data menentukan cara memprosesnya dan model yang cocok.",
       s3: "3. Sumber & Bentuk Data",
       s3sub: "Dari mana data berasal, dan bagaimana bentuknya.",
+      s4: "4. Analisis Data Eksploratif (EDA)",
+      s4sub: "Memahami data lewat visualisasi sebelum membangun model: sebaran, korelasi, dan outlier.",
       more: "Lebih banyak segera hadir",
-      moreText: "Bagian berikutnya: Analisis Data Eksploratif (EDA), Overfitting vs Underfitting, dan Metrik Evaluasi — akan ditambahkan bertahap.",
+      moreText: "Bagian berikutnya: Overfitting vs Underfitting dan Metrik Evaluasi — akan ditambahkan bertahap.",
       back: "← Kembali ke Pengantar AI",
     },
     en: {
@@ -37,8 +40,10 @@ export default function DataFoundationsView() {
       s2sub: "Knowing the data type determines how to process it and which model fits.",
       s3: "3. Data Sources & Forms",
       s3sub: "Where data comes from, and what form it takes.",
+      s4: "4. Exploratory Data Analysis (EDA)",
+      s4sub: "Understand data via visualization before modeling: distribution, correlation, and outliers.",
       more: "More coming soon",
-      moreText: "Next sections: Exploratory Data Analysis (EDA), Overfitting vs Underfitting, and Evaluation Metrics — added gradually.",
+      moreText: "Next sections: Overfitting vs Underfitting and Evaluation Metrics — added gradually.",
       back: "← Back to AI Overview",
     },
   }[lang];
@@ -65,6 +70,12 @@ export default function DataFoundationsView() {
           <h2 className="text-xl font-bold text-slate-900">🗺️ {L.s3}</h2>
           <p className="mb-4 mt-1 text-sm text-slate-600">{L.s3sub}</p>
           <DataSources />
+        </section>
+
+        <section className="mt-12">
+          <h2 className="text-xl font-bold text-slate-900">🔍 {L.s4}</h2>
+          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s4sub}</p>
+          <EdaExplorer />
         </section>
 
         <div className="mt-12 rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-5">
