@@ -19,8 +19,8 @@ export default function TopicView({ body, slug }) {
   const packages = (slug && getPackages(slug)) || [];
 
   const labels = {
-    id: { video: "Video Pembelajaran", back: "← Kembali ke beranda", demos: "Demo Interaktif Topik Ini", demosSub: "Coba langsung tiap algoritma di browser.", guidedTitle: "Latihan Terpandu", guidedSub: "paket mini-pelajaran: teori + rumus → studi kasus → kuis.", guidedCta: "Buka Latihan Terpandu →" },
-    en: { video: "Learning Video", back: "← Back to home", demos: "Interactive Demos for This Topic", demosSub: "Try each algorithm right in your browser.", guidedTitle: "Guided Practice", guidedSub: "mini-lesson packages: theory + formulas → case study → quiz.", guidedCta: "Open Guided Practice →" },
+    id: { video: "Video Pembelajaran", back: "← Kembali ke beranda", demos: "Demo Interaktif Topik Ini", demosSub: "Coba langsung tiap algoritma di browser.", guidedTitle: "Latihan Terpandu", guidedSub: "paket mini-pelajaran: teori + rumus → studi kasus → kuis.", guidedCta: "Buka Latihan Terpandu →", dfTitle: "Fondasi Data", dfSub: "Pahami data dulu: pipeline, jenis data, sumber data, EDA, evaluasi.", dfCta: "Pelajari Fondasi Data →" },
+    en: { video: "Learning Video", back: "← Back to home", demos: "Interactive Demos for This Topic", demosSub: "Try each algorithm right in your browser.", guidedTitle: "Guided Practice", guidedSub: "mini-lesson packages: theory + formulas → case study → quiz.", guidedCta: "Open Guided Practice →", dfTitle: "Data Foundations", dfSub: "Understand data first: pipeline, data types, sources, EDA, evaluation.", dfCta: "Explore Data Foundations →" },
   }[lang];
 
   return (
@@ -53,6 +53,19 @@ export default function TopicView({ body, slug }) {
           <h2 className="mb-3 text-xl font-bold text-slate-900">🎥 {labels.video}</h2>
           <YouTubeEmbed id={body.videoId} title={data.title} />
         </div>
+
+        {slug === "ai-overview" && (
+          <div className="mt-12 rounded-2xl border border-brand-200 bg-brand-50 p-6">
+            <h2 className="text-xl font-bold text-brand-800">🗃️ {labels.dfTitle}</h2>
+            <p className="mt-1 text-sm text-brand-700/90">{labels.dfSub}</p>
+            <Link
+              href="/topics/ai-overview/data-foundations"
+              className="mt-4 inline-block rounded-lg bg-brand-600 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+            >
+              {labels.dfCta}
+            </Link>
+          </div>
+        )}
 
         {packages.length > 0 && (
           <div className="mt-12 rounded-2xl border border-brand-200 bg-brand-50 p-6">
