@@ -11,7 +11,9 @@ import { useLang } from "../LanguageProvider";
 
 function ThreatExplorer({ items, lang, defended, setDefended, L }) {
   const [sel, setSel] = useState(items[0].key);
-  const item = items.find((i) => i.key === sel);
+  // Fall back to the first item if `sel` doesn't match this tab's items
+  // (e.g. right after switching tabs), so we never read from `undefined`.
+  const item = items.find((i) => i.key === sel) || items[0];
 
   return (
     <div>
@@ -140,8 +142,8 @@ export default function SafetySecurityDemo() {
       <p className="mb-4 text-sm text-slate-600">{tab === "safety" ? L.safetyHint : L.securityHint}</p>
 
       {tab === "safety"
-        ? <ThreatExplorer items={SAFETY} lang={lang} defended={defended} setDefended={setDefended} L={L} />
-        : <ThreatExplorer items={SECURITY} lang={lang} defended={defended} setDefended={setDefended} L={L} />}
+        ? <ThreatExplorer key="safety" items={SAFETY} lang={lang} defended={defended} setDefended={setDefended} L={L} />
+        : <ThreatExplorer key="security" items={SECURITY} lang={lang} defended={defended} setDefended={setDefended} L={L} />}
 
       <p className="mt-4 rounded-md bg-slate-50 px-3 py-2 text-xs text-slate-500">💡 {L.note}</p>
     </div>
