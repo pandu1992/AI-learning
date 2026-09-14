@@ -7,6 +7,7 @@ import LanguageToggle from "./LanguageToggle";
 import Logo from "./Logo";
 
 const nav = [
+  { href: "/home", id: "Beranda", en: "Home" },
   { href: "/topics/ai-overview", id: "Pengantar", en: "Overview" },
   { href: "/topics/machine-learning", id: "Machine Learning", en: "Machine Learning" },
   { href: "/topics/deep-learning", id: "Deep Learning", en: "Deep Learning" },

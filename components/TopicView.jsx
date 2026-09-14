@@ -8,6 +8,7 @@ import TopicCard from "./TopicCard";
 import TopicDiagram from "./TopicDiagram";
 import Quiz from "./Quiz";
 import { quizzes } from "@/lib/quizzes";
+import { topics } from "@/lib/content";
 import { demosByTopic } from "@/lib/demos";
 import { getPackages } from "@/lib/guidedPackages";
 
@@ -18,9 +19,14 @@ export default function TopicView({ body, slug }) {
   const topicDemos = (slug && demosByTopic[slug]) || [];
   const packages = (slug && getPackages(slug)) || [];
 
+  // Sequential curriculum navigation (order = position in the topics array).
+  const idx = topics.findIndex((t) => t.slug === slug);
+  const prevTopic = idx > 0 ? topics[idx - 1] : null;
+  const nextTopic = idx >= 0 && idx < topics.length - 1 ? topics[idx + 1] : null;
+
   const labels = {
-    id: { video: "Video Pembelajaran", back: "← Kembali ke beranda", demos: "Demo Interaktif Topik Ini", demosSub: "Coba langsung tiap algoritma di browser.", guidedTitle: "Latihan Terpandu", guidedSub: "paket mini-pelajaran: teori + rumus → studi kasus → kuis.", guidedCta: "Buka Latihan Terpandu →", dfTitle: "Fondasi Data", dfSub: "Pahami data dulu: pipeline, jenis data, sumber data, EDA, evaluasi.", dfCta: "Pelajari Fondasi Data →", iaTitle: "Agen Cerdas & Lingkungan", iaSub: "Modul interaktif: siklus agen–lingkungan (sensor → program → aktuator), jenis agen, & sifat lingkungan.", iaCta: "Pelajari Agen Cerdas →", rlBaseTitle: "Fondasi: Agen Cerdas & Lingkungan", rlBaseSub: "RL dibangun di atas konsep agen–lingkungan. Kuasai dasarnya lewat modul interaktif ini dulu.", rlBaseCta: "Pelajari fondasi Agen Cerdas →", ethTitle: "Etika dalam Praktik", ethSub: "Modul interaktif: kapan boleh/tidak, bias & rasisme, keselamatan & keamanan, dan pengawasan manusia.", ethCta: "Buka Etika dalam Praktik →" },
-    en: { video: "Learning Video", back: "← Back to home", demos: "Interactive Demos for This Topic", demosSub: "Try each algorithm right in your browser.", guidedTitle: "Guided Practice", guidedSub: "mini-lesson packages: theory + formulas → case study → quiz.", guidedCta: "Open Guided Practice →", dfTitle: "Data Foundations", dfSub: "Understand data first: pipeline, data types, sources, EDA, evaluation.", dfCta: "Explore Data Foundations →", iaTitle: "Intelligent Agents & Environments", iaSub: "Interactive module: the agent–environment loop (sensors → program → actuators), agent types, & environment properties.", iaCta: "Explore Intelligent Agents →", rlBaseTitle: "Foundation: Intelligent Agents & Environments", rlBaseSub: "RL is built on the agent–environment concept. Master the basics with this interactive module first.", rlBaseCta: "Learn the Intelligent Agents foundation →", ethTitle: "Ethics in Practice", ethSub: "Interactive module: when it's OK/not, bias & racism, safety & security, and human oversight.", ethCta: "Open Ethics in Practice →" },
+    id: { navTitle: "Lanjutkan belajar", prev: "Sebelumnya", next: "Berikutnya", video: "Video Pembelajaran", back: "← Kembali ke beranda", demos: "Demo Interaktif Topik Ini", demosSub: "Coba langsung tiap algoritma di browser.", guidedTitle: "Latihan Terpandu", guidedSub: "paket mini-pelajaran: teori + rumus → studi kasus → kuis.", guidedCta: "Buka Latihan Terpandu →", dfTitle: "Fondasi Data", dfSub: "Pahami data dulu: pipeline, jenis data, sumber data, EDA, evaluasi.", dfCta: "Pelajari Fondasi Data →", iaTitle: "Agen Cerdas & Lingkungan", iaSub: "Modul interaktif: siklus agen–lingkungan (sensor → program → aktuator), jenis agen, & sifat lingkungan.", iaCta: "Pelajari Agen Cerdas →", rlBaseTitle: "Fondasi: Agen Cerdas & Lingkungan", rlBaseSub: "RL dibangun di atas konsep agen–lingkungan. Kuasai dasarnya lewat modul interaktif ini dulu.", rlBaseCta: "Pelajari fondasi Agen Cerdas →", ethTitle: "Etika dalam Praktik", ethSub: "Modul interaktif: kapan boleh/tidak, bias & rasisme, keselamatan & keamanan, dan pengawasan manusia.", ethCta: "Buka Etika dalam Praktik →" },
+    en: { navTitle: "Continue learning", prev: "Previous", next: "Next", video: "Learning Video", back: "← Back to home", demos: "Interactive Demos for This Topic", demosSub: "Try each algorithm right in your browser.", guidedTitle: "Guided Practice", guidedSub: "mini-lesson packages: theory + formulas → case study → quiz.", guidedCta: "Open Guided Practice →", dfTitle: "Data Foundations", dfSub: "Understand data first: pipeline, data types, sources, EDA, evaluation.", dfCta: "Explore Data Foundations →", iaTitle: "Intelligent Agents & Environments", iaSub: "Interactive module: the agent–environment loop (sensors → program → actuators), agent types, & environment properties.", iaCta: "Explore Intelligent Agents →", rlBaseTitle: "Foundation: Intelligent Agents & Environments", rlBaseSub: "RL is built on the agent–environment concept. Master the basics with this interactive module first.", rlBaseCta: "Learn the Intelligent Agents foundation →", ethTitle: "Ethics in Practice", ethSub: "Interactive module: when it's OK/not, bias & racism, safety & security, and human oversight.", ethCta: "Open Ethics in Practice →" },
   }[lang];
 
   return (
@@ -146,8 +152,42 @@ export default function TopicView({ body, slug }) {
           </div>
         )}
 
+        {/* Sequential curriculum navigation */}
+        {(prevTopic || nextTopic) && (
+          <nav className="mt-12 border-t border-slate-200 pt-6">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">🧭 {labels.navTitle}</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {prevTopic ? (
+                <Link
+                  href={`/topics/${prevTopic.slug}`}
+                  className="group flex items-center gap-3 rounded-xl border border-slate-200 p-4 transition hover:border-brand-400 hover:bg-brand-50"
+                >
+                  <span className="text-2xl">{prevTopic.icon}</span>
+                  <span>
+                    <span className="block text-xs text-slate-400">← {labels.prev}</span>
+                    <span className="block font-bold text-slate-800 group-hover:text-brand-700">{prevTopic[lang].title}</span>
+                  </span>
+                </Link>
+              ) : <span className="hidden sm:block" />}
+
+              {nextTopic && (
+                <Link
+                  href={`/topics/${nextTopic.slug}`}
+                  className="group flex items-center justify-end gap-3 rounded-xl border border-brand-200 bg-brand-50 p-4 text-right transition hover:border-brand-400 hover:bg-brand-100"
+                >
+                  <span>
+                    <span className="block text-xs text-brand-500">{labels.next} →</span>
+                    <span className="block font-bold text-brand-800">{nextTopic[lang].title}</span>
+                  </span>
+                  <span className="text-2xl">{nextTopic.icon}</span>
+                </Link>
+              )}
+            </div>
+          </nav>
+        )}
+
         <div className="mt-8">
-          <Link href="/" className="text-sm font-semibold text-brand-600 hover:underline">
+          <Link href="/home" className="text-sm font-semibold text-brand-600 hover:underline">
             {labels.back}
           </Link>
         </div>
