@@ -1,6 +1,7 @@
 // Maps each demo slug to its React component. Kept separate from lib/demos.js
 // (which is pure metadata) so the metadata can be imported by server components
 // without pulling in client-only demo code.
+import DimensionsDemo from "./demos/DimensionsDemo";
 import KnnDemo from "./demos/KnnDemo";
 import KMeansDemo from "./demos/KMeansDemo";
 import RegressionDemo from "./demos/RegressionDemo";
@@ -25,6 +26,7 @@ import EmbeddingsDemo from "./demos/EmbeddingsDemo";
 import AttentionDemo from "./demos/AttentionDemo";
 
 export const demoComponents = {
+  dimensions: DimensionsDemo,
   "supervised-knn": KnnDemo,
   "unsupervised-kmeans": KMeansDemo,
   regression: RegressionDemo,
