@@ -7,6 +7,7 @@ import DataPipelineFlow from "./DataPipelineFlow";
 import DataTypesExplorer from "./DataTypesExplorer";
 import DataSources from "./DataSources";
 import DataCleaningDemo from "./DataCleaningDemo";
+import ScalingEncodingDemo from "./ScalingEncodingDemo";
 import EdaExplorer from "./EdaExplorer";
 import OverfitUnderfitDemo from "./OverfitUnderfitDemo";
 import EvaluationMetrics from "./EvaluationMetrics";
@@ -29,6 +30,8 @@ export default function DataFoundationsView() {
       s3sub: "Dari mana data berasal, dan bagaimana bentuknya.",
       s4: "4. Pembersihan & Prapemrosesan Data",
       s4sub: "Data mentah selalu 'kotor'. Bereskan duplikat, nilai kosong, tipe salah, dan outlier dulu.",
+      s5: "5. Penskalaan & Encoding Fitur",
+      s5sub: "Samakan skala fitur numerik dan ubah kategori jadi angka agar siap dipakai model.",
       s7: "7. Analisis Data Eksploratif (EDA)",
       s7sub: "Memahami data lewat visualisasi sebelum membangun model: sebaran, korelasi, dan outlier.",
       s8: "8. Overfitting vs Underfitting",
@@ -51,6 +54,8 @@ export default function DataFoundationsView() {
       s3sub: "Where data comes from, and what form it takes.",
       s4: "4. Data Cleaning & Preprocessing",
       s4sub: "Raw data is always 'dirty'. Fix duplicates, missing values, wrong types, and outliers first.",
+      s5: "5. Feature Scaling & Encoding",
+      s5sub: "Put numeric features on a comparable scale and turn categories into numbers so a model can use them.",
       s7: "7. Exploratory Data Analysis (EDA)",
       s7sub: "Understand data via visualization before modeling: distribution, correlation, and outliers.",
       s8: "8. Overfitting vs Underfitting",
@@ -91,6 +96,12 @@ export default function DataFoundationsView() {
           <h2 className="text-xl font-bold text-slate-900">🧹 {L.s4}</h2>
           <p className="mb-4 mt-1 text-sm text-slate-600">{L.s4sub}</p>
           <DataCleaningDemo />
+        </section>
+
+        <section className="mt-12">
+          <h2 className="text-xl font-bold text-slate-900">📐 {L.s5}</h2>
+          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s5sub}</p>
+          <ScalingEncodingDemo />
         </section>
 
         <section className="mt-12">
