@@ -8,6 +8,7 @@ import DataTypesExplorer from "./DataTypesExplorer";
 import DataSources from "./DataSources";
 import DataCleaningDemo from "./DataCleaningDemo";
 import ScalingEncodingDemo from "./ScalingEncodingDemo";
+import SplitLeakageDemo from "./SplitLeakageDemo";
 import EdaExplorer from "./EdaExplorer";
 import OverfitUnderfitDemo from "./OverfitUnderfitDemo";
 import EvaluationMetrics from "./EvaluationMetrics";
@@ -32,6 +33,8 @@ export default function DataFoundationsView() {
       s4sub: "Data mentah selalu 'kotor'. Bereskan duplikat, nilai kosong, tipe salah, dan outlier dulu.",
       s5: "5. Penskalaan & Encoding Fitur",
       s5sub: "Samakan skala fitur numerik dan ubah kategori jadi angka agar siap dipakai model.",
+      s6: "6. Pembagian Data & Kebocoran Data",
+      s6sub: "Bagi data (train/val/test) untuk menilai model secara jujur, dan hindari kebocoran data.",
       s7: "7. Analisis Data Eksploratif (EDA)",
       s7sub: "Memahami data lewat visualisasi sebelum membangun model: sebaran, korelasi, dan outlier.",
       s8: "8. Overfitting vs Underfitting",
@@ -39,7 +42,7 @@ export default function DataFoundationsView() {
       s9: "9. Metrik Evaluasi",
       s9sub: "Mengukur performa model: klasifikasi & regresi (supervised) serta clustering (unsupervised).",
       more: "🎉 Fondasi Data lengkap",
-      moreText: "Kamu telah menelusuri pipeline data, jenis & sumber data, EDA, overfitting/underfitting, dan metrik evaluasi. Sekarang kamu siap masuk ke topik AI dengan pemahaman data yang kuat.",
+      moreText: "Kamu telah menelusuri seluruh perjalanan data: pipeline, jenis & sumber data, pembersihan, penskalaan & encoding, pembagian data & kebocoran, EDA, overfitting/underfitting, hingga metrik evaluasi. Sekarang kamu siap masuk ke topik AI dengan pemahaman data yang kuat.",
       back: "← Kembali ke Pengantar AI",
     },
     en: {
@@ -56,6 +59,8 @@ export default function DataFoundationsView() {
       s4sub: "Raw data is always 'dirty'. Fix duplicates, missing values, wrong types, and outliers first.",
       s5: "5. Feature Scaling & Encoding",
       s5sub: "Put numeric features on a comparable scale and turn categories into numbers so a model can use them.",
+      s6: "6. Train/Val/Test Split & Data Leakage",
+      s6sub: "Split data (train/val/test) to judge the model honestly, and avoid data leakage.",
       s7: "7. Exploratory Data Analysis (EDA)",
       s7sub: "Understand data via visualization before modeling: distribution, correlation, and outliers.",
       s8: "8. Overfitting vs Underfitting",
@@ -63,7 +68,7 @@ export default function DataFoundationsView() {
       s9: "9. Evaluation Metrics",
       s9sub: "Measuring model performance: classification & regression (supervised) and clustering (unsupervised).",
       more: "🎉 Data Foundations complete",
-      moreText: "You've explored the data pipeline, data types & sources, EDA, overfitting/underfitting, and evaluation metrics. Now you're ready to dive into AI topics with a strong grasp of data.",
+      moreText: "You've walked the whole data journey: pipeline, data types & sources, cleaning, scaling & encoding, splitting & leakage, EDA, overfitting/underfitting, and evaluation metrics. Now you're ready to dive into AI topics with a strong grasp of data.",
       back: "← Back to AI Overview",
     },
   }[lang];
@@ -102,6 +107,12 @@ export default function DataFoundationsView() {
           <h2 className="text-xl font-bold text-slate-900">📐 {L.s5}</h2>
           <p className="mb-4 mt-1 text-sm text-slate-600">{L.s5sub}</p>
           <ScalingEncodingDemo />
+        </section>
+
+        <section className="mt-12">
+          <h2 className="text-xl font-bold text-slate-900">✂️ {L.s6}</h2>
+          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s6sub}</p>
+          <SplitLeakageDemo />
         </section>
 
         <section className="mt-12">
