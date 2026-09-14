@@ -8,6 +8,7 @@ import DataTypesExplorer from "./DataTypesExplorer";
 import DataSources from "./DataSources";
 import EdaExplorer from "./EdaExplorer";
 import OverfitUnderfitDemo from "./OverfitUnderfitDemo";
+import EvaluationMetrics from "./EvaluationMetrics";
 
 // Phase 1 of "Data Foundations": Data Pipeline + Data Types + Data Sources.
 // Later phases (EDA, over/underfitting, evaluation metrics) will extend this page.
@@ -29,8 +30,10 @@ export default function DataFoundationsView() {
       s4sub: "Memahami data lewat visualisasi sebelum membangun model: sebaran, korelasi, dan outlier.",
       s5: "5. Overfitting vs Underfitting",
       s5sub: "Menyeimbangkan kompleksitas model: cukup menangkap pola, tanpa menghafal noise.",
-      more: "Lebih banyak segera hadir",
-      moreText: "Bagian berikutnya: Metrik Evaluasi (supervised & unsupervised) — akan ditambahkan bertahap.",
+      s6: "6. Metrik Evaluasi",
+      s6sub: "Mengukur performa model: klasifikasi & regresi (supervised) serta clustering (unsupervised).",
+      more: "🎉 Fondasi Data lengkap",
+      moreText: "Kamu telah menelusuri pipeline data, jenis & sumber data, EDA, overfitting/underfitting, dan metrik evaluasi. Sekarang kamu siap masuk ke topik AI dengan pemahaman data yang kuat.",
       back: "← Kembali ke Pengantar AI",
     },
     en: {
@@ -47,8 +50,10 @@ export default function DataFoundationsView() {
       s4sub: "Understand data via visualization before modeling: distribution, correlation, and outliers.",
       s5: "5. Overfitting vs Underfitting",
       s5sub: "Balancing model complexity: capture the pattern without memorizing noise.",
-      more: "More coming soon",
-      moreText: "Next section: Evaluation Metrics (supervised & unsupervised) — added gradually.",
+      s6: "6. Evaluation Metrics",
+      s6sub: "Measuring model performance: classification & regression (supervised) and clustering (unsupervised).",
+      more: "🎉 Data Foundations complete",
+      moreText: "You've explored the data pipeline, data types & sources, EDA, overfitting/underfitting, and evaluation metrics. Now you're ready to dive into AI topics with a strong grasp of data.",
       back: "← Back to AI Overview",
     },
   }[lang];
@@ -87,6 +92,12 @@ export default function DataFoundationsView() {
           <h2 className="text-xl font-bold text-slate-900">⚖️ {L.s5}</h2>
           <p className="mb-4 mt-1 text-sm text-slate-600">{L.s5sub}</p>
           <OverfitUnderfitDemo />
+        </section>
+
+        <section className="mt-12">
+          <h2 className="text-xl font-bold text-slate-900">📏 {L.s6}</h2>
+          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s6sub}</p>
+          <EvaluationMetrics />
         </section>
 
         <div className="mt-12 rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-5">
