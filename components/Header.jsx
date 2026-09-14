@@ -15,6 +15,7 @@ const nav = [
   { href: "/topics/ai-ethics", id: "Etika AI", en: "AI Ethics" },
   { href: "/demos", id: "Demo", en: "Demos" },
   { href: "/case-studies", id: "Studi Kasus", en: "Case Studies" },
+  { href: "/profile", id: "Profil", en: "Profile" },
 ];
 
 export default function Header() {

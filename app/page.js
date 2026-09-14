@@ -14,6 +14,7 @@ export default function HomePage() {
     id: {
       start: "Mulai Belajar",
       demosBtn: "Coba Demo Interaktif",
+      profileBtn: "Tentang Pengajar",
       curriculum: "Kurikulum",
       curriculumSub: "Alur belajar dari dasar hingga model modern.",
       demosTitle: "Demo Interaktif",
@@ -24,6 +25,7 @@ export default function HomePage() {
     en: {
       start: "Start Learning",
       demosBtn: "Try Interactive Demos",
+      profileBtn: "About the Instructor",
       curriculum: "Curriculum",
       curriculumSub: "A learning path from basics to modern models.",
       demosTitle: "Interactive Demos",
@@ -63,6 +65,12 @@ export default function HomePage() {
               className="rounded-full border border-white/60 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
             >
               {labels.demosBtn}
+            </Link>
+            <Link
+              href="/profile"
+              className="rounded-full border border-white/60 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+            >
+              {labels.profileBtn}
             </Link>
           </div>
         </div>
