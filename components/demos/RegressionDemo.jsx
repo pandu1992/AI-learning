@@ -36,14 +36,29 @@ function seedLogistic() {
   return pts;
 }
 
+// Multiple linear regression toy data: house price (in hundreds of millions Rp)
+// from two features: x1 = size (100 m² units), x2 = number of bedrooms.
+// True relation ~ price = 1.6*size + 0.9*rooms + 1 (+ noise).
+function seedMultiple() {
+  const pts = [];
+  for (let i = 0; i < 12; i++) {
+    const x1 = +(0.5 + Math.random() * 2.5).toFixed(2); // size
+    const x2 = Math.max(1, Math.round(1 + Math.random() * 4)); // rooms
+    const price = 1.6 * x1 + 0.9 * x2 + 1 + (Math.random() - 0.5) * 1.2;
+    pts.push({ x1, x2, y: +Math.max(0.5, price).toFixed(2) });
+  }
+  return pts;
+}
+
 const sigmoid = (z) => 1 / (1 + Math.exp(-z));
 
 export default function RegressionDemo() {
   const { lang } = useLang();
   const canvasRef = useRef(null);
-  const [mode, setMode] = useState("linear"); // linear | logistic
+  const [mode, setMode] = useState("linear"); // linear | logistic | multiple
   const [linData] = useState(seedLinear);
   const [logData] = useState(seedLogistic);
+  const [multiData] = useState(seedMultiple);
 
   // linear params: y = m*x + b
   const [m, setM] = useState(1);
@@ -51,6 +66,20 @@ export default function RegressionDemo() {
   // logistic params: p = sigmoid(w*(x - x0)) ; w steepness, x0 threshold
   const [w, setW] = useState(1);
   const [x0, setX0] = useState(5);
+  // multiple params: y = w1*x1 + w2*x2 + b2
+  const [w1, setW1] = useState(1);
+  const [w2, setW2] = useState(1);
+  const [b2, setB2] = useState(0);
+
+  // Mean squared error for multiple regression
+  const mseMulti = useCallback(() => {
+    if (multiData.length === 0) return 0;
+    const sum = multiData.reduce((s, p) => {
+      const pred = w1 * p.x1 + w2 * p.x2 + b2;
+      return s + (pred - p.y) ** 2;
+    }, 0);
+    return sum / multiData.length;
+  }, [multiData, w1, w2, b2]);
 
   // Mean squared error for linear
   const mse = useCallback(() => {
@@ -88,7 +117,54 @@ export default function RegressionDemo() {
     ctx.lineTo(PAD, PAD);
     ctx.stroke();
 
-    if (mode === "linear") {
+    if (mode === "multiple") {
+      // "Predicted vs Actual" plot: x-axis = actual price, y-axis = predicted.
+      // Points near the diagonal y=x mean accurate predictions.
+      const vals = multiData.flatMap((p) => [p.y, w1 * p.x1 + w2 * p.x2 + b2]);
+      const maxV = Math.max(6, ...vals) * 1.05;
+      const mp = (v) => v / maxV; // 0..1
+      // diagonal reference line (perfect prediction)
+      const [dx1, dy1] = toPx(0, 0);
+      const [dx2, dy2] = toPx(10, 10);
+      ctx.strokeStyle = "#94a3b8";
+      ctx.setLineDash([5, 4]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(dx1, dy1);
+      ctx.lineTo(dx2, dy2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // points
+      for (const p of multiData) {
+        const pred = w1 * p.x1 + w2 * p.x2 + b2;
+        const [px, py] = toPx(mp(p.y) * 10, mp(pred) * 10);
+        // error segment to the diagonal (vertical gap = prediction error)
+        const [, diagPy] = toPx(mp(p.y) * 10, mp(p.y) * 10);
+        ctx.strokeStyle = "rgba(220,38,38,0.4)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(px, diagPy);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
+        ctx.fillStyle = "#0093D0";
+        ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = "#fff";
+        ctx.stroke();
+      }
+      // axis labels
+      ctx.fillStyle = "#64748b";
+      ctx.font = "11px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(lang === "id" ? "Harga aktual →" : "Actual price →", W / 2, H - 12);
+      ctx.save();
+      ctx.translate(14, H / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(lang === "id" ? "Prediksi →" : "Predicted →", 0, 0);
+      ctx.restore();
+    } else if (mode === "linear") {
       // fitted line across x=0..10
       const [x1, y1] = toPx(0, m * 0 + b);
       const [x2, y2] = toPx(10, m * 10 + b);
@@ -153,7 +229,7 @@ export default function RegressionDemo() {
         ctx.stroke();
       }
     }
-  }, [mode, m, b, w, x0, linData, logData]);
+  }, [mode, m, b, w, x0, w1, w2, b2, linData, logData, multiData, lang]);
 
   const L = {
     id: {
@@ -168,6 +244,11 @@ export default function RegressionDemo() {
       reset: "Reset garis",
       linHint: "Geser slider untuk menyesuaikan garis. Garis merah = selisih (residual) antara prediksi dan data. Tujuan: perkecil MSE.",
       logHint: "Kurva ungu = probabilitas kelas 1 (sigmoid). Titik biru = kelas 0, merah = kelas 1. Geser ambang & kecuraman agar akurasi maksimal.",
+      multiple: "Regresi Linear Berganda",
+      multiHint: "Prediksi harga rumah dari DUA fitur: luas (x₁) & jumlah kamar (x₂). Geser bobot w₁, w₂, dan b agar titik mendekati garis diagonal (prediksi = aktual). Tujuan: perkecil MSE.",
+      w1: "Bobot luas (w₁)",
+      w2: "Bobot kamar (w₂)",
+      bias: "Bias (b)",
     },
     en: {
       linear: "Linear Regression",
@@ -181,6 +262,11 @@ export default function RegressionDemo() {
       reset: "Reset line",
       linHint: "Drag the sliders to fit the line. Red segments = residuals between prediction and data. Goal: minimize MSE.",
       logHint: "Purple curve = probability of class 1 (sigmoid). Blue points = class 0, red = class 1. Adjust threshold & steepness to maximize accuracy.",
+      multiple: "Multiple Linear Regression",
+      multiHint: "Predict house price from TWO features: size (x₁) & number of bedrooms (x₂). Adjust weights w₁, w₂, and b so points approach the diagonal (prediction = actual). Goal: minimize MSE.",
+      w1: "Size weight (w₁)",
+      w2: "Rooms weight (w₂)",
+      bias: "Bias (b)",
     },
   }[lang];
 
@@ -199,9 +285,17 @@ export default function RegressionDemo() {
         >
           {L.logistic}
         </button>
+        <button
+          onClick={() => setMode("multiple")}
+          className={`rounded-md px-4 py-1.5 transition ${mode === "multiple" ? "bg-brand-600 text-white" : "text-slate-600"}`}
+        >
+          {L.multiple}
+        </button>
       </div>
 
-      <p className="mb-4 text-sm text-slate-600">{mode === "linear" ? L.linHint : L.logHint}</p>
+      <p className="mb-4 text-sm text-slate-600">
+        {mode === "linear" ? L.linHint : mode === "logistic" ? L.logHint : L.multiHint}
+      </p>
 
       <div className="flex flex-col gap-4 lg:flex-row">
         <canvas
@@ -213,23 +307,36 @@ export default function RegressionDemo() {
         />
 
         <div className="flex-1 space-y-4">
-          {mode === "linear" ? (
+          {mode === "linear" && (
             <>
               <Slider label={`${L.slope}: ${m.toFixed(2)}`} min={-2} max={3} step={0.05} value={m} onChange={setM} />
               <Slider label={`${L.intercept}: ${b.toFixed(2)}`} min={-2} max={6} step={0.1} value={b} onChange={setB} />
               <Metric label={L.mse} value={mse().toFixed(3)} good={mse() < 1.2} />
             </>
-          ) : (
+          )}
+          {mode === "logistic" && (
             <>
               <Slider label={`${L.steep}: ${w.toFixed(2)}`} min={0.3} max={4} step={0.05} value={w} onChange={setW} />
               <Slider label={`${L.thresh}: ${x0.toFixed(2)}`} min={1} max={9} step={0.1} value={x0} onChange={setX0} />
               <Metric label={L.acc} value={`${Math.round(accuracy() * 100)}%`} good={accuracy() >= 0.8} />
             </>
           )}
+          {mode === "multiple" && (
+            <>
+              <p className="rounded-md bg-slate-50 px-3 py-2 text-center font-mono text-xs text-slate-600">
+                ŷ = {w1.toFixed(2)}·x₁ + {w2.toFixed(2)}·x₂ + {b2.toFixed(2)}
+              </p>
+              <Slider label={`${L.w1}: ${w1.toFixed(2)}`} min={-1} max={3} step={0.05} value={w1} onChange={setW1} />
+              <Slider label={`${L.w2}: ${w2.toFixed(2)}`} min={-1} max={3} step={0.05} value={w2} onChange={setW2} />
+              <Slider label={`${L.bias}: ${b2.toFixed(2)}`} min={-2} max={4} step={0.1} value={b2} onChange={setB2} />
+              <Metric label={L.mse} value={mseMulti().toFixed(3)} good={mseMulti() < 1.0} />
+            </>
+          )}
           <button
             onClick={() => {
               if (mode === "linear") { setM(1); setB(0.5); }
-              else { setW(1); setX0(5); }
+              else if (mode === "logistic") { setW(1); setX0(5); }
+              else { setW1(1); setW2(1); setB2(0); }
             }}
             className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
           >
