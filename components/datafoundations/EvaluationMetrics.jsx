@@ -64,10 +64,10 @@ function Classification({ lang }) {
         <Cell label={L.tn} value={tn} set={setTn} color="bg-green-50" />
       </div>
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        <Metric name="Accuracy" tex="\\frac{TP+TN}{TP+TN+FP+FN}" value={accuracy} />
-        <Metric name="Precision" tex="\\frac{TP}{TP+FP}" value={precision} />
-        <Metric name="Recall" tex="\\frac{TP}{TP+FN}" value={recall} />
-        <Metric name="F1" tex="2\\cdot\\frac{P\\cdot R}{P+R}" value={f1} />
+        <Metric name="Accuracy" tex={"\\frac{TP+TN}{TP+TN+FP+FN}"} value={accuracy} />
+        <Metric name="Precision" tex={"\\frac{TP}{TP+FP}"} value={precision} />
+        <Metric name="Recall" tex={"\\frac{TP}{TP+FN}"} value={recall} />
+        <Metric name="F1" tex={"2\\cdot\\frac{P\\cdot R}{P+R}"} value={f1} />
       </div>
     </div>
   );
@@ -109,9 +109,9 @@ function Regression({ lang }) {
       <label className="block text-sm font-semibold text-slate-700">{L.spread}: <span className="text-brand-600">{spread.toFixed(1)}</span></label>
       <input type="range" min="0" max="3" step="0.1" value={spread} onChange={(e) => setSpread(+e.target.value)} className="mt-1 w-full max-w-sm accent-brand-600" />
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        <Metric name="MSE" tex="\\frac{1}{n}\\sum (\\hat{y}-y)^2" value={mse.toFixed(2)} suffix="" />
-        <Metric name="MAE" tex="\\frac{1}{n}\\sum |\\hat{y}-y|" value={mae.toFixed(2)} suffix="" />
-        <Metric name="R²" tex="1-\\frac{SS_{res}}{SS_{tot}}" value={r2.toFixed(2)} suffix="" />
+        <Metric name="MSE" tex={"\\frac{1}{n}\\sum (\\hat{y}-y)^2"} value={mse.toFixed(2)} suffix="" />
+        <Metric name="MAE" tex={"\\frac{1}{n}\\sum |\\hat{y}-y|"} value={mae.toFixed(2)} suffix="" />
+        <Metric name="R²" tex={"1-\\frac{SS_{res}}{SS_{tot}}"} value={r2.toFixed(2)} suffix="" />
       </div>
     </div>
   );
@@ -151,14 +151,14 @@ function Unsupervised({ lang }) {
             <span className="text-sm font-semibold text-slate-700">{L.silh}</span>
             <span className="text-lg font-bold text-brand-600">{silh(k).toFixed(2)}</span>
           </div>
-          <div className="mt-1 overflow-x-auto text-xs text-slate-500"><Formula tex="s = \\frac{b-a}{\\max(a,b)}" display={false} /></div>
+          <div className="mt-1 overflow-x-auto text-xs text-slate-500"><Formula tex={"s = \\frac{b-a}{\\max(a,b)}"} display={false} /></div>
         </div>
         <div className="rounded-lg border border-slate-200 bg-white p-3">
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold text-slate-700">{L.inertiaLbl}</span>
             <span className="text-lg font-bold text-slate-800">{inertia(k).toFixed(0)}</span>
           </div>
-          <div className="mt-1 overflow-x-auto text-xs text-slate-500"><Formula tex="\\sum_{i}\\lVert x_i-\\mu_{c_i}\\rVert^2" display={false} /></div>
+          <div className="mt-1 overflow-x-auto text-xs text-slate-500"><Formula tex={"\\sum_{i}\\lVert x_i-\\mu_{c_i}\\rVert^2"} display={false} /></div>
         </div>
       </div>
 
