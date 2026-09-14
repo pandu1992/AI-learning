@@ -17,6 +17,7 @@ export default function HomeContent() {
       start: "Mulai Belajar",
       demosBtn: "Coba Demo Interaktif",
       profileBtn: "Tentang Pengajar",
+      certBtn: "🎓 Ujian Sertifikasi",
       curriculum: "Kurikulum",
       curriculumSub: "Alur belajar runtut dari dasar hingga model modern — mulai dari Pengantar AI.",
       demosTitle: "Demo Interaktif",
@@ -29,6 +30,7 @@ export default function HomeContent() {
       start: "Start Learning",
       demosBtn: "Try Interactive Demos",
       profileBtn: "About the Instructor",
+      certBtn: "🎓 Certification Exam",
       curriculum: "Curriculum",
       curriculumSub: "A step-by-step path from basics to modern models — start with AI Overview.",
       demosTitle: "Interactive Demos",
@@ -75,6 +77,12 @@ export default function HomeContent() {
               className="rounded-full border border-white/60 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
             >
               {labels.profileBtn}
+            </Link>
+            <Link
+              href="/certification"
+              className="rounded-full bg-amber-400 px-6 py-3 font-semibold text-slate-900 shadow transition hover:bg-amber-300"
+            >
+              {labels.certBtn}
             </Link>
           </div>
         </div>
