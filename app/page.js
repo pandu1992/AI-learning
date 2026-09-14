@@ -1,14 +1,13 @@
-import ProfileView from "@/components/profile/ProfileView";
+import HomeContent from "@/components/HomeContent";
 
 export const metadata = {
-  title: "Cognia — Pandu Dwi Luhur Pambudi (BINUS University)",
+  title: "Cognia — Interactive AI Learning (BINUS University)",
   description:
-    "Selamat datang di Cognia. Profil dan sambutan Pandu Dwi Luhur Pambudi, Dosen & Peneliti di Computer Science Department, BINUS University.",
+    "Cognia — an interactive, bilingual AI learning platform: curriculum, interactive demos, and guided practice. By Pandu Dwi Luhur Pambudi, BINUS University.",
 };
 
-// The landing page is the instructor's profile & welcome. From here, learners
-// head into the curriculum (starting with AI Overview). The curriculum home
-// now lives at /home.
+// The landing page is the curriculum home (Beranda). The instructor's profile
+// & welcome lives at /profile, reachable from the nav and the hero button.
 export default function LandingPage() {
-  return <ProfileView />;
+  return <HomeContent />;
 }

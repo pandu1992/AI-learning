@@ -134,7 +134,7 @@ export default function ProfileView() {
             >
               {L.start}
             </Link>
-            <Link href="/home" className="text-sm font-semibold text-brand-600 hover:underline">
+            <Link href="/" className="text-sm font-semibold text-brand-600 hover:underline">
               {L.browse}
             </Link>
           </div>

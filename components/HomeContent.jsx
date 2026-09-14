@@ -7,8 +7,8 @@ import { LogoMark } from "@/components/Logo";
 import { site, topics, fields } from "@/lib/content";
 import { demoList, demosByTopic } from "@/lib/demos";
 
-// The curriculum home (topics, demos, fields). This used to be at "/", but the
-// landing page is now the instructor Profile; this content lives at "/home".
+// The curriculum home / landing page (topics, demos, fields), rendered at "/".
+// The instructor's profile & welcome lives separately at "/profile".
 export default function HomeContent() {
   const { lang } = useLang();
 
