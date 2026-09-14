@@ -7,6 +7,7 @@ import DataPipelineFlow from "./DataPipelineFlow";
 import DataTypesExplorer from "./DataTypesExplorer";
 import DataSources from "./DataSources";
 import EdaExplorer from "./EdaExplorer";
+import OverfitUnderfitDemo from "./OverfitUnderfitDemo";
 
 // Phase 1 of "Data Foundations": Data Pipeline + Data Types + Data Sources.
 // Later phases (EDA, over/underfitting, evaluation metrics) will extend this page.
@@ -26,8 +27,10 @@ export default function DataFoundationsView() {
       s3sub: "Dari mana data berasal, dan bagaimana bentuknya.",
       s4: "4. Analisis Data Eksploratif (EDA)",
       s4sub: "Memahami data lewat visualisasi sebelum membangun model: sebaran, korelasi, dan outlier.",
+      s5: "5. Overfitting vs Underfitting",
+      s5sub: "Menyeimbangkan kompleksitas model: cukup menangkap pola, tanpa menghafal noise.",
       more: "Lebih banyak segera hadir",
-      moreText: "Bagian berikutnya: Overfitting vs Underfitting dan Metrik Evaluasi — akan ditambahkan bertahap.",
+      moreText: "Bagian berikutnya: Metrik Evaluasi (supervised & unsupervised) — akan ditambahkan bertahap.",
       back: "← Kembali ke Pengantar AI",
     },
     en: {
@@ -42,8 +45,10 @@ export default function DataFoundationsView() {
       s3sub: "Where data comes from, and what form it takes.",
       s4: "4. Exploratory Data Analysis (EDA)",
       s4sub: "Understand data via visualization before modeling: distribution, correlation, and outliers.",
+      s5: "5. Overfitting vs Underfitting",
+      s5sub: "Balancing model complexity: capture the pattern without memorizing noise.",
       more: "More coming soon",
-      moreText: "Next sections: Overfitting vs Underfitting and Evaluation Metrics — added gradually.",
+      moreText: "Next section: Evaluation Metrics (supervised & unsupervised) — added gradually.",
       back: "← Back to AI Overview",
     },
   }[lang];
@@ -76,6 +81,12 @@ export default function DataFoundationsView() {
           <h2 className="text-xl font-bold text-slate-900">🔍 {L.s4}</h2>
           <p className="mb-4 mt-1 text-sm text-slate-600">{L.s4sub}</p>
           <EdaExplorer />
+        </section>
+
+        <section className="mt-12">
+          <h2 className="text-xl font-bold text-slate-900">⚖️ {L.s5}</h2>
+          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s5sub}</p>
+          <OverfitUnderfitDemo />
         </section>
 
         <div className="mt-12 rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-5">
