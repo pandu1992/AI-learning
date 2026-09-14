@@ -17,6 +17,7 @@ import BanditDemo from "./demos/BanditDemo";
 import MazeValueDemo from "./demos/MazeValueDemo";
 import CartPoleDemo from "./demos/CartPoleDemo";
 import ExploreExploitDemo from "./demos/ExploreExploitDemo";
+import DynamicPricingDemo from "./demos/DynamicPricingDemo";
 import SentimentDemo from "./demos/SentimentDemo";
 import TfidfDemo from "./demos/TfidfDemo";
 import TokenizationDemo from "./demos/TokenizationDemo";
@@ -40,6 +41,7 @@ export const demoComponents = {
   "rl-maze": MazeValueDemo,
   cartpole: CartPoleDemo,
   "explore-exploit": ExploreExploitDemo,
+  "dynamic-pricing": DynamicPricingDemo,
   "sentiment-naive-bayes": SentimentDemo,
   tfidf: TfidfDemo,
   tokenization: TokenizationDemo,
