@@ -187,7 +187,7 @@ export default function TopicView({ body, slug }) {
         )}
 
         <div className="mt-8">
-          <Link href="/home" className="text-sm font-semibold text-brand-600 hover:underline">
+          <Link href="/" className="text-sm font-semibold text-brand-600 hover:underline">
             {labels.back}
           </Link>
         </div>
