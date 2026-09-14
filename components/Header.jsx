@@ -16,6 +16,7 @@ const nav = [
   { href: "/topics/ai-ethics", id: "Etika AI", en: "AI Ethics" },
   { href: "/demos", id: "Demo", en: "Demos" },
   { href: "/case-studies", id: "Studi Kasus", en: "Case Studies" },
+  { href: "/certification", id: "Sertifikasi", en: "Certification" },
   { href: "/profile", id: "Profil", en: "Profile" },
 ];
 
