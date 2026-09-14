@@ -30,22 +30,22 @@ export default function Header() {
           <Logo size={34} attribution />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden min-w-0 flex-nowrap items-center gap-0.5 overflow-x-auto lg:flex">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-700"
+              className="whitespace-nowrap rounded-md px-2.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-brand-50 hover:text-brand-700"
             >
               {item[lang]}
             </Link>
           ))}
-          <div className="ml-2">
+          <div className="ml-2 shrink-0">
             <LanguageToggle />
           </div>
         </nav>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <LanguageToggle />
           <button
             onClick={() => setOpen((o) => !o)}
@@ -60,7 +60,7 @@ export default function Header() {
       </div>
 
       {open && (
-        <nav className="border-t border-slate-200 bg-white px-4 py-2 md:hidden">
+        <nav className="border-t border-slate-200 bg-white px-4 py-2 lg:hidden">
           {nav.map((item) => (
             <Link
               key={item.href}
