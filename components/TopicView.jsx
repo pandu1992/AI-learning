@@ -19,8 +19,8 @@ export default function TopicView({ body, slug }) {
   const packages = (slug && getPackages(slug)) || [];
 
   const labels = {
-    id: { video: "Video Pembelajaran", back: "← Kembali ke beranda", demos: "Demo Interaktif Topik Ini", demosSub: "Coba langsung tiap algoritma di browser.", guidedTitle: "Latihan Terpandu", guidedSub: "paket mini-pelajaran: teori + rumus → studi kasus → kuis.", guidedCta: "Buka Latihan Terpandu →", dfTitle: "Fondasi Data", dfSub: "Pahami data dulu: pipeline, jenis data, sumber data, EDA, evaluasi.", dfCta: "Pelajari Fondasi Data →", ethTitle: "Etika dalam Praktik", ethSub: "Modul interaktif: kapan boleh/tidak, bias & rasisme, keselamatan & keamanan, dan pengawasan manusia.", ethCta: "Buka Etika dalam Praktik →" },
-    en: { video: "Learning Video", back: "← Back to home", demos: "Interactive Demos for This Topic", demosSub: "Try each algorithm right in your browser.", guidedTitle: "Guided Practice", guidedSub: "mini-lesson packages: theory + formulas → case study → quiz.", guidedCta: "Open Guided Practice →", dfTitle: "Data Foundations", dfSub: "Understand data first: pipeline, data types, sources, EDA, evaluation.", dfCta: "Explore Data Foundations →", ethTitle: "Ethics in Practice", ethSub: "Interactive module: when it's OK/not, bias & racism, safety & security, and human oversight.", ethCta: "Open Ethics in Practice →" },
+    id: { video: "Video Pembelajaran", back: "← Kembali ke beranda", demos: "Demo Interaktif Topik Ini", demosSub: "Coba langsung tiap algoritma di browser.", guidedTitle: "Latihan Terpandu", guidedSub: "paket mini-pelajaran: teori + rumus → studi kasus → kuis.", guidedCta: "Buka Latihan Terpandu →", dfTitle: "Fondasi Data", dfSub: "Pahami data dulu: pipeline, jenis data, sumber data, EDA, evaluasi.", dfCta: "Pelajari Fondasi Data →", iaTitle: "Agen Cerdas & Lingkungan", iaSub: "Modul interaktif: siklus agen–lingkungan (sensor → program → aktuator), jenis agen, & sifat lingkungan.", iaCta: "Pelajari Agen Cerdas →", ethTitle: "Etika dalam Praktik", ethSub: "Modul interaktif: kapan boleh/tidak, bias & rasisme, keselamatan & keamanan, dan pengawasan manusia.", ethCta: "Buka Etika dalam Praktik →" },
+    en: { video: "Learning Video", back: "← Back to home", demos: "Interactive Demos for This Topic", demosSub: "Try each algorithm right in your browser.", guidedTitle: "Guided Practice", guidedSub: "mini-lesson packages: theory + formulas → case study → quiz.", guidedCta: "Open Guided Practice →", dfTitle: "Data Foundations", dfSub: "Understand data first: pipeline, data types, sources, EDA, evaluation.", dfCta: "Explore Data Foundations →", iaTitle: "Intelligent Agents & Environments", iaSub: "Interactive module: the agent–environment loop (sensors → program → actuators), agent types, & environment properties.", iaCta: "Explore Intelligent Agents →", ethTitle: "Ethics in Practice", ethSub: "Interactive module: when it's OK/not, bias & racism, safety & security, and human oversight.", ethCta: "Open Ethics in Practice →" },
   }[lang];
 
   return (
@@ -63,6 +63,19 @@ export default function TopicView({ body, slug }) {
               className="mt-4 inline-block rounded-lg bg-brand-600 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-700"
             >
               {labels.dfCta}
+            </Link>
+          </div>
+        )}
+
+        {slug === "ai-overview" && (
+          <div className="mt-6 rounded-2xl border border-brand-200 bg-brand-50 p-6">
+            <h2 className="text-xl font-bold text-brand-800">🤖 {labels.iaTitle}</h2>
+            <p className="mt-1 text-sm text-brand-700/90">{labels.iaSub}</p>
+            <Link
+              href="/topics/ai-overview/intelligent-agents"
+              className="mt-4 inline-block rounded-lg bg-brand-600 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+            >
+              {labels.iaCta}
             </Link>
           </div>
         )}
