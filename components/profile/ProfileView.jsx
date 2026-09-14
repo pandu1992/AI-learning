@@ -30,8 +30,9 @@ export default function ProfileView() {
       courses: ["Foundations of AI", "Artificial Intelligence", "Natural Language Processing (NLP)"],
       focusTitle: "Fokus",
       focus: "Merancang pengalaman belajar AI yang interaktif, bilingual (Indonesia/Inggris), dan berbasis praktik.",
-      start: "Mulai Belajar →",
-      back: "← Kembali ke beranda",
+      start: "Mulai Belajar dari Pengantar AI →",
+      startHint: "Ikuti alur runtut: Pengantar AI → Machine Learning → Deep Learning → Reinforcement Learning → LLM → Etika AI.",
+      browse: "Lihat seluruh kurikulum",
       signature: "Salam hangat,",
     },
     en: {
@@ -47,8 +48,9 @@ export default function ProfileView() {
       courses: ["Foundations of AI", "Artificial Intelligence", "Natural Language Processing (NLP)"],
       focusTitle: "Focus",
       focus: "Designing AI learning experiences that are interactive, bilingual (Indonesian/English), and practice-based.",
-      start: "Start Learning →",
-      back: "← Back to home",
+      start: "Start Learning from AI Overview →",
+      startHint: "Follow the ordered path: AI Overview → Machine Learning → Deep Learning → Reinforcement Learning → LLM → AI Ethics.",
+      browse: "Browse the full curriculum",
       signature: "Warm regards,",
     },
   }[lang];
@@ -124,16 +126,19 @@ export default function ProfileView() {
         </div>
 
         {/* CTA */}
-        <div className="mt-10 flex flex-wrap items-center gap-4">
-          <Link
-            href="/topics/ai-overview"
-            className="rounded-full bg-brand-600 px-6 py-3 font-semibold text-white shadow transition hover:bg-brand-700"
-          >
-            {L.start}
-          </Link>
-          <Link href="/" className="text-sm font-semibold text-brand-600 hover:underline">
-            {L.back}
-          </Link>
+        <div className="mt-10">
+          <div className="flex flex-wrap items-center gap-4">
+            <Link
+              href="/topics/ai-overview"
+              className="rounded-full bg-brand-600 px-6 py-3 font-semibold text-white shadow transition hover:bg-brand-700"
+            >
+              {L.start}
+            </Link>
+            <Link href="/home" className="text-sm font-semibold text-brand-600 hover:underline">
+              {L.browse}
+            </Link>
+          </div>
+          <p className="mt-3 text-xs text-slate-500">🧭 {L.startHint}</p>
         </div>
       </div>
     </div>
