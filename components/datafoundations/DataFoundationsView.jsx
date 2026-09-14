@@ -6,6 +6,7 @@ import PageHero from "../PageHero";
 import DataPipelineFlow from "./DataPipelineFlow";
 import DataTypesExplorer from "./DataTypesExplorer";
 import DataSources from "./DataSources";
+import DataCleaningDemo from "./DataCleaningDemo";
 import EdaExplorer from "./EdaExplorer";
 import OverfitUnderfitDemo from "./OverfitUnderfitDemo";
 import EvaluationMetrics from "./EvaluationMetrics";
@@ -26,12 +27,14 @@ export default function DataFoundationsView() {
       s2sub: "Mengenali tipe data menentukan cara memprosesnya dan model yang cocok.",
       s3: "3. Sumber & Bentuk Data",
       s3sub: "Dari mana data berasal, dan bagaimana bentuknya.",
-      s4: "4. Analisis Data Eksploratif (EDA)",
-      s4sub: "Memahami data lewat visualisasi sebelum membangun model: sebaran, korelasi, dan outlier.",
-      s5: "5. Overfitting vs Underfitting",
-      s5sub: "Menyeimbangkan kompleksitas model: cukup menangkap pola, tanpa menghafal noise.",
-      s6: "6. Metrik Evaluasi",
-      s6sub: "Mengukur performa model: klasifikasi & regresi (supervised) serta clustering (unsupervised).",
+      s4: "4. Pembersihan & Prapemrosesan Data",
+      s4sub: "Data mentah selalu 'kotor'. Bereskan duplikat, nilai kosong, tipe salah, dan outlier dulu.",
+      s7: "7. Analisis Data Eksploratif (EDA)",
+      s7sub: "Memahami data lewat visualisasi sebelum membangun model: sebaran, korelasi, dan outlier.",
+      s8: "8. Overfitting vs Underfitting",
+      s8sub: "Menyeimbangkan kompleksitas model: cukup menangkap pola, tanpa menghafal noise.",
+      s9: "9. Metrik Evaluasi",
+      s9sub: "Mengukur performa model: klasifikasi & regresi (supervised) serta clustering (unsupervised).",
       more: "🎉 Fondasi Data lengkap",
       moreText: "Kamu telah menelusuri pipeline data, jenis & sumber data, EDA, overfitting/underfitting, dan metrik evaluasi. Sekarang kamu siap masuk ke topik AI dengan pemahaman data yang kuat.",
       back: "← Kembali ke Pengantar AI",
@@ -46,12 +49,14 @@ export default function DataFoundationsView() {
       s2sub: "Knowing the data type determines how to process it and which model fits.",
       s3: "3. Data Sources & Forms",
       s3sub: "Where data comes from, and what form it takes.",
-      s4: "4. Exploratory Data Analysis (EDA)",
-      s4sub: "Understand data via visualization before modeling: distribution, correlation, and outliers.",
-      s5: "5. Overfitting vs Underfitting",
-      s5sub: "Balancing model complexity: capture the pattern without memorizing noise.",
-      s6: "6. Evaluation Metrics",
-      s6sub: "Measuring model performance: classification & regression (supervised) and clustering (unsupervised).",
+      s4: "4. Data Cleaning & Preprocessing",
+      s4sub: "Raw data is always 'dirty'. Fix duplicates, missing values, wrong types, and outliers first.",
+      s7: "7. Exploratory Data Analysis (EDA)",
+      s7sub: "Understand data via visualization before modeling: distribution, correlation, and outliers.",
+      s8: "8. Overfitting vs Underfitting",
+      s8sub: "Balancing model complexity: capture the pattern without memorizing noise.",
+      s9: "9. Evaluation Metrics",
+      s9sub: "Measuring model performance: classification & regression (supervised) and clustering (unsupervised).",
       more: "🎉 Data Foundations complete",
       moreText: "You've explored the data pipeline, data types & sources, EDA, overfitting/underfitting, and evaluation metrics. Now you're ready to dive into AI topics with a strong grasp of data.",
       back: "← Back to AI Overview",
@@ -83,20 +88,26 @@ export default function DataFoundationsView() {
         </section>
 
         <section className="mt-12">
-          <h2 className="text-xl font-bold text-slate-900">🔍 {L.s4}</h2>
+          <h2 className="text-xl font-bold text-slate-900">🧹 {L.s4}</h2>
           <p className="mb-4 mt-1 text-sm text-slate-600">{L.s4sub}</p>
+          <DataCleaningDemo />
+        </section>
+
+        <section className="mt-12">
+          <h2 className="text-xl font-bold text-slate-900">🔍 {L.s7}</h2>
+          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s7sub}</p>
           <EdaExplorer />
         </section>
 
         <section className="mt-12">
-          <h2 className="text-xl font-bold text-slate-900">⚖️ {L.s5}</h2>
-          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s5sub}</p>
+          <h2 className="text-xl font-bold text-slate-900">⚖️ {L.s8}</h2>
+          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s8sub}</p>
           <OverfitUnderfitDemo />
         </section>
 
         <section className="mt-12">
-          <h2 className="text-xl font-bold text-slate-900">📏 {L.s6}</h2>
-          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s6sub}</p>
+          <h2 className="text-xl font-bold text-slate-900">📏 {L.s9}</h2>
+          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s9sub}</p>
           <EvaluationMetrics />
         </section>
 
