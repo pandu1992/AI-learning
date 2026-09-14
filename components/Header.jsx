@@ -12,6 +12,7 @@ const nav = [
   { href: "/topics/deep-learning", id: "Deep Learning", en: "Deep Learning" },
   { href: "/topics/reinforcement-learning", id: "RL", en: "RL" },
   { href: "/topics/llm", id: "LLM", en: "LLM" },
+  { href: "/topics/ai-ethics", id: "Etika AI", en: "AI Ethics" },
   { href: "/demos", id: "Demo", en: "Demos" },
   { href: "/case-studies", id: "Studi Kasus", en: "Case Studies" },
 ];
