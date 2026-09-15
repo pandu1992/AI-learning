@@ -63,7 +63,7 @@ export default function ProfileView() {
       {/* Header banner with photo */}
       <div className="border-b border-slate-200 bg-gradient-to-br from-brand-50 to-white">
         <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-4 py-12 text-center sm:flex-row sm:text-left">
-          {/* photo / fallback */}
+          {/* photo / fallback — portrait 3:4 frame so the full photo shows without awkward cropping */}
           <div className="shrink-0">
             {imgOk ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -71,10 +71,10 @@ export default function ProfileView() {
                 src={PHOTO}
                 alt={name}
                 onError={() => setImgOk(false)}
-                className="h-40 w-40 rounded-2xl object-cover shadow-lg ring-4 ring-white sm:h-44 sm:w-44"
+                className="aspect-[3/4] w-40 rounded-2xl object-cover object-top shadow-lg ring-4 ring-white sm:w-48"
               />
             ) : (
-              <div className="flex h-40 w-40 items-center justify-center rounded-2xl bg-brand-600 text-5xl font-extrabold text-white shadow-lg ring-4 ring-white sm:h-44 sm:w-44">
+              <div className="flex aspect-[3/4] w-40 items-center justify-center rounded-2xl bg-brand-600 text-5xl font-extrabold text-white shadow-lg ring-4 ring-white sm:w-48">
                 {initials}
               </div>
             )}
