@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useLang } from "../LanguageProvider";
-import Formula from "../Formula";
+import FormulaWithNotation from "../FormulaWithNotation";
 
 // Interactive evaluation-metrics explorer with three tabs:
 //  1) Classification: adjustable confusion matrix -> accuracy/precision/recall/F1
@@ -44,15 +44,24 @@ function Classification({ lang }) {
     </div>
   );
 
-  const Metric = ({ name, tex, value }) => (
+  const Metric = ({ name, tex, value, symbols }) => (
     <div className="rounded-lg border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-slate-700">{name}</span>
         <span className="text-lg font-bold text-brand-600">{Math.round(value * 100)}%</span>
       </div>
-      <div className="mt-1 overflow-x-auto text-xs text-slate-500"><Formula tex={tex} display={false} /></div>
+      <div className="mt-1 text-slate-500">
+        <FormulaWithNotation tex={tex} display={false} symbols={symbols} compact />
+      </div>
     </div>
   );
+
+  const cmSymbols = [
+    { sym: "TP", id: "True Positive — benar diprediksi positif", en: "True Positive — correctly predicted positive" },
+    { sym: "TN", id: "True Negative — benar diprediksi negatif", en: "True Negative — correctly predicted negative" },
+    { sym: "FP", id: "False Positive — salah-alarm (negatif diprediksi positif)", en: "False Positive — false alarm (negative predicted positive)" },
+    { sym: "FN", id: "False Negative — terlewat (positif diprediksi negatif)", en: "False Negative — missed (positive predicted negative)" },
+  ];
 
   return (
     <div>
@@ -64,10 +73,14 @@ function Classification({ lang }) {
         <Cell label={L.tn} value={tn} set={setTn} color="bg-green-50" />
       </div>
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        <Metric name="Accuracy" tex={"\\frac{TP+TN}{TP+TN+FP+FN}"} value={accuracy} />
-        <Metric name="Precision" tex={"\\frac{TP}{TP+FP}"} value={precision} />
-        <Metric name="Recall" tex={"\\frac{TP}{TP+FN}"} value={recall} />
-        <Metric name="F1" tex={"2\\cdot\\frac{P\\cdot R}{P+R}"} value={f1} />
+        <Metric name="Accuracy" tex={"\\frac{TP+TN}{TP+TN+FP+FN}"} value={accuracy} symbols={cmSymbols} />
+        <Metric name="Precision" tex={"\\frac{TP}{TP+FP}"} value={precision} symbols={cmSymbols.slice(0, 3)} />
+        <Metric name="Recall" tex={"\\frac{TP}{TP+FN}"} value={recall} symbols={[cmSymbols[0], cmSymbols[3]]} />
+        <Metric name="F1" tex={"2\\cdot\\frac{P\\cdot R}{P+R}"} value={f1}
+          symbols={[
+            { sym: "P", id: "Precision", en: "Precision" },
+            { sym: "R", id: "Recall", en: "Recall" },
+          ]} />
       </div>
     </div>
   );
@@ -93,15 +106,25 @@ function Regression({ lang }) {
     en: { hint: "Adjust the prediction-error magnitude. MSE penalizes large errors more (squared); MAE is a plainer average; R² = how much better the model is than guessing the mean.", spread: "Prediction-error magnitude" },
   }[lang];
 
-  const Metric = ({ name, tex, value, suffix }) => (
+  const Metric = ({ name, tex, value, suffix, symbols }) => (
     <div className="rounded-lg border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-slate-700">{name}</span>
         <span className="text-lg font-bold text-brand-600">{value}{suffix}</span>
       </div>
-      <div className="mt-1 overflow-x-auto text-xs text-slate-500"><Formula tex={tex} display={false} /></div>
+      <div className="mt-1 text-slate-500">
+        <FormulaWithNotation tex={tex} display={false} symbols={symbols} compact />
+      </div>
     </div>
   );
+
+  const sy = {
+    n: { sym: "n", id: "jumlah data", en: "number of data points" },
+    y: { sym: "y", id: "nilai sebenarnya (aktual)", en: "the actual value" },
+    yhat: { sym: "\\hat{y}", id: "nilai prediksi model", en: "the model's predicted value" },
+    ssres: { sym: "SS_{res}", id: "jumlah kuadrat sisa (error model)", en: "residual sum of squares (model error)" },
+    sstot: { sym: "SS_{tot}", id: "jumlah kuadrat total (variasi data)", en: "total sum of squares (data variance)" },
+  };
 
   return (
     <div>
@@ -109,9 +132,9 @@ function Regression({ lang }) {
       <label className="block text-sm font-semibold text-slate-700">{L.spread}: <span className="text-brand-600">{spread.toFixed(1)}</span></label>
       <input type="range" min="0" max="3" step="0.1" value={spread} onChange={(e) => setSpread(+e.target.value)} className="mt-1 w-full max-w-sm accent-brand-600" />
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        <Metric name="MSE" tex={"\\frac{1}{n}\\sum (\\hat{y}-y)^2"} value={mse.toFixed(2)} suffix="" />
-        <Metric name="MAE" tex={"\\frac{1}{n}\\sum |\\hat{y}-y|"} value={mae.toFixed(2)} suffix="" />
-        <Metric name="R²" tex={"1-\\frac{SS_{res}}{SS_{tot}}"} value={r2.toFixed(2)} suffix="" />
+        <Metric name="MSE" tex={"\\frac{1}{n}\\sum (\\hat{y}-y)^2"} value={mse.toFixed(2)} suffix="" symbols={[sy.n, sy.yhat, sy.y]} />
+        <Metric name="MAE" tex={"\\frac{1}{n}\\sum |\\hat{y}-y|"} value={mae.toFixed(2)} suffix="" symbols={[sy.n, sy.yhat, sy.y]} />
+        <Metric name="R²" tex={"1-\\frac{SS_{res}}{SS_{tot}}"} value={r2.toFixed(2)} suffix="" symbols={[sy.ssres, sy.sstot]} />
       </div>
     </div>
   );
@@ -151,14 +174,28 @@ function Unsupervised({ lang }) {
             <span className="text-sm font-semibold text-slate-700">{L.silh}</span>
             <span className="text-lg font-bold text-brand-600">{silh(k).toFixed(2)}</span>
           </div>
-          <div className="mt-1 overflow-x-auto text-xs text-slate-500"><Formula tex={"s = \\frac{b-a}{\\max(a,b)}"} display={false} /></div>
+          <div className="mt-1 text-slate-500">
+            <FormulaWithNotation tex={"s = \\frac{b-a}{\\max(a,b)}"} display={false} compact
+              symbols={[
+                { sym: "s", id: "skor silhouette satu titik (−1..1)", en: "the silhouette score of a point (−1..1)" },
+                { sym: "a", id: "rata-rata jarak ke titik dalam cluster yang sama", en: "mean distance to points in the same cluster" },
+                { sym: "b", id: "rata-rata jarak ke cluster terdekat lain", en: "mean distance to the nearest other cluster" },
+              ]} />
+          </div>
         </div>
         <div className="rounded-lg border border-slate-200 bg-white p-3">
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold text-slate-700">{L.inertiaLbl}</span>
             <span className="text-lg font-bold text-slate-800">{inertia(k).toFixed(0)}</span>
           </div>
-          <div className="mt-1 overflow-x-auto text-xs text-slate-500"><Formula tex={"\\sum_{i}\\lVert x_i-\\mu_{c_i}\\rVert^2"} display={false} /></div>
+          <div className="mt-1 text-slate-500">
+            <FormulaWithNotation tex={"\\sum_{i}\\lVert x_i-\\mu_{c_i}\\rVert^2"} display={false} compact
+              symbols={[
+                { sym: "x_i", id: "titik data ke-i", en: "the i-th data point" },
+                { sym: "\\mu_{c_i}", id: "centroid (pusat) cluster milik titik itu", en: "the centroid of that point's cluster" },
+                { sym: "\\lVert \\cdot \\rVert^2", id: "jarak kuadrat (Euclidean)", en: "squared (Euclidean) distance" },
+              ]} />
+          </div>
         </div>
       </div>
 

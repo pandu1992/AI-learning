@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useLang } from "../LanguageProvider";
-import Formula from "../Formula";
+import FormulaWithNotation from "../FormulaWithNotation";
 
 // Interactive Feature Scaling & Encoding demo — two tabs:
 //  1) Scaling: Min-Max vs Standardization (Z-score) on a small numeric feature,
@@ -99,10 +99,28 @@ function Scaling({ lang }) {
         <NumberLine values={scaled} domain={scaledDomain} fmt={(v) => v.toFixed(2)} />
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-lg bg-white p-3 text-sm text-slate-600 ring-1 ring-slate-200">
-        {method === "minmax"
-          ? <Formula tex={"x' = \\frac{x - x_{min}}{x_{max} - x_{min}}"} display={false} />
-          : <Formula tex={"x' = \\frac{x - \\mu}{\\sigma}"} display={false} />}
+      <div className="mt-4 rounded-lg bg-white p-4 text-sm text-slate-600 ring-1 ring-slate-200">
+        {method === "minmax" ? (
+          <FormulaWithNotation
+            tex={"x' = \\frac{x - x_{min}}{x_{max} - x_{min}}"}
+            symbols={[
+              { sym: "x", id: "nilai asli", en: "the original value" },
+              { sym: "x'", id: "nilai setelah normalisasi (rentang 0–1)", en: "the value after normalization (range 0–1)" },
+              { sym: "x_{min}", id: "nilai terkecil pada fitur", en: "the smallest value in the feature" },
+              { sym: "x_{max}", id: "nilai terbesar pada fitur", en: "the largest value in the feature" },
+            ]}
+          />
+        ) : (
+          <FormulaWithNotation
+            tex={"x' = \\frac{x - \\mu}{\\sigma}"}
+            symbols={[
+              { sym: "x", id: "nilai asli", en: "the original value" },
+              { sym: "\\mu", id: "rata-rata (mean) data", en: "the mean of the data" },
+              { sym: "\\sigma", id: "standar deviasi", en: "the standard deviation" },
+              { sym: "x'", id: "nilai setelah standardisasi / Z-score", en: "the value after standardization / Z-score" },
+            ]}
+          />
+        )}
       </div>
 
       <p className="mt-3 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800">{L.note}</p>
