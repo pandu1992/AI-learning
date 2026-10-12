@@ -33,6 +33,7 @@ import RocThresholdDemo from "./demos/RocThresholdDemo";
 import RandomForestDemo from "./demos/RandomForestDemo";
 import RagChatbotDemo from "./demos/RagChatbotDemo";
 import CnnFilterImageDemo from "./demos/CnnFilterImageDemo";
+import QLearningTrainDemo from "./demos/QLearningTrainDemo";
 
 export const demoComponents = {
   dimensions: DimensionsDemo,
@@ -67,4 +68,5 @@ export const demoComponents = {
   "random-forest": RandomForestDemo,
   "rag-chatbot": RagChatbotDemo,
   "cnn-filter-image": CnnFilterImageDemo,
+  "qlearning-train": QLearningTrainDemo,
 };
