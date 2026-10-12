@@ -24,6 +24,7 @@ import TfidfDemo from "./demos/TfidfDemo";
 import TokenizationDemo from "./demos/TokenizationDemo";
 import EmbeddingsDemo from "./demos/EmbeddingsDemo";
 import AttentionDemo from "./demos/AttentionDemo";
+import NextTokenDemo from "./demos/NextTokenDemo";
 
 export const demoComponents = {
   dimensions: DimensionsDemo,
@@ -49,4 +50,5 @@ export const demoComponents = {
   tokenization: TokenizationDemo,
   "word-embeddings": EmbeddingsDemo,
   attention: AttentionDemo,
+  "next-token": NextTokenDemo,
 };
