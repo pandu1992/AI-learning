@@ -32,6 +32,7 @@ import GradientDescentDemo from "./demos/GradientDescentDemo";
 import RocThresholdDemo from "./demos/RocThresholdDemo";
 import RandomForestDemo from "./demos/RandomForestDemo";
 import RagChatbotDemo from "./demos/RagChatbotDemo";
+import CnnFilterImageDemo from "./demos/CnnFilterImageDemo";
 
 export const demoComponents = {
   dimensions: DimensionsDemo,
@@ -65,4 +66,5 @@ export const demoComponents = {
   "roc-threshold": RocThresholdDemo,
   "random-forest": RandomForestDemo,
   "rag-chatbot": RagChatbotDemo,
+  "cnn-filter-image": CnnFilterImageDemo,
 };
