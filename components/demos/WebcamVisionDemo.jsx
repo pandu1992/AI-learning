@@ -49,20 +49,53 @@ const HAND_CONNECTIONS = [
   [0, 17], // palm base
 ];
 
-// Count raised fingers from 21 hand landmarks (normalized x,y).
+// Analyze a hand's 21 landmarks (normalized x,y) -> which fingers are up.
+// Returns { fingers: [thumb,index,middle,ring,pinky] booleans, count }.
 // Four fingers: tip is "up" if its y is above the PIP joint (smaller y = higher).
 // Thumb: compared horizontally against its IP joint, direction depends on handedness.
-function countRaisedFingers(lm, handedness) {
-  let count = 0;
-  // index, middle, ring, pinky: [tip, pip]
-  const fingers = [[8, 6], [12, 10], [16, 14], [20, 18]];
-  for (const [tip, pip] of fingers) {
-    if (lm[tip].y < lm[pip].y - 0.02) count++;
-  }
-  // thumb: tip (4) vs IP (3) along x. Mirror by handedness.
+function analyzeHand(lm, handedness) {
+  const four = [[8, 6], [12, 10], [16, 14], [20, 18]]; // index, middle, ring, pinky
+  const up = four.map(([tip, pip]) => lm[tip].y < lm[pip].y - 0.02);
   const isRight = handedness === "Right";
-  if (isRight ? lm[4].x < lm[3].x : lm[4].x > lm[3].x) count++;
-  return count;
+  const thumbUp = isRight ? lm[4].x < lm[3].x : lm[4].x > lm[3].x;
+  const fingers = [thumbUp, ...up]; // [thumb, index, middle, ring, pinky]
+  return { fingers, count: fingers.filter(Boolean).length };
+}
+
+function countRaisedFingers(lm, handedness) {
+  return analyzeHand(lm, handedness).count;
+}
+
+// Classify a hand gesture from the up/down pattern (+ thumb orientation).
+// Returns { emoji, id, en } or null. Uses finger booleans [thumb,i,m,r,p].
+function classifyGesture(lm, handedness) {
+  const { fingers } = analyzeHand(lm, handedness);
+  const [thumb, index, middle, ring, pinky] = fingers;
+  const key = fingers.map((b) => (b ? 1 : 0)).join("");
+
+  // open palm
+  if (key === "11111") return { emoji: "✋", id: "Telapak terbuka", en: "Open palm" };
+  // fist (all down) — distinguish thumbs up/down by thumb tip vs wrist y
+  if (key === "00000" || key === "10000") {
+    if (thumb) {
+      // thumb extended + all curled: up or down based on thumb tip (4) vs index MCP (5)
+      const thumbsDown = lm[4].y > lm[5].y + 0.04;
+      if (thumbsDown) return { emoji: "👎", id: "Jempol ke bawah", en: "Thumbs down" };
+      return { emoji: "👍", id: "Jempol ke atas", en: "Thumbs up" };
+    }
+    return { emoji: "✊", id: "Kepalan", en: "Fist" };
+  }
+  // victory / peace: index + middle up, others down
+  if (index && middle && !ring && !pinky) return { emoji: "✌️", id: "Damai / V", en: "Peace / V" };
+  // pointing: only index
+  if (index && !middle && !ring && !pinky && !thumb) return { emoji: "☝️", id: "Menunjuk", en: "Pointing" };
+  // rock / love: thumb + index + pinky
+  if (thumb && index && !middle && !ring && pinky) return { emoji: "🤟", id: "Love / Rock", en: "Love / Rock" };
+  // call me: thumb + pinky
+  if (thumb && !index && !middle && !ring && pinky) return { emoji: "🤙", id: "Call me", en: "Call me" };
+  // three
+  if (!thumb && index && middle && ring && !pinky) return { emoji: "3️⃣", id: "Tiga", en: "Three" };
+  return null;
 }
 
 // Body pose skeleton connections (MediaPipe Pose 33-landmark topology — torso + limbs).
@@ -95,7 +128,12 @@ export default function WebcamVisionDemo() {
   const [faceDetected, setFaceDetected] = useState(false);
   const [handCount, setHandCount] = useState(0);
   const [fingerCount, setFingerCount] = useState(0); // total raised fingers across hands
+  const [gesture, setGesture] = useState(null); // {emoji,id,en} for first hand
   const [poseDetected, setPoseDetected] = useState(false);
+  const [exercise, setExercise] = useState("handsup"); // handsup | squat
+  const [reps, setReps] = useState(0);
+  const repPhaseRef = useRef("down"); // state machine: "down" | "up"
+  const exerciseRef = useRef("handsup"); // mirror of `exercise` for the RAF loop
 
   const L = {
     id: {
@@ -111,8 +149,12 @@ export default function WebcamVisionDemo() {
       noFace: "Arahkan wajah ke kamera…",
       faceStatus: "Status wajah", faceOn: "Wajah terdeteksi — 468 titik", faceOff: "Arahkan wajah ke kamera…",
       handStatus: "Tangan terdeteksi", handHint: "Angkat 1–2 tangan ke kamera. 21 titik per tangan.",
-      fingersRaised: "Jari terangkat",
+      fingersRaised: "Jari terangkat", gestureLbl: "Gestur", noGesture: "Coba 👍 ✌️ ✊ ✋ ☝️ 🤟",
       poseStatus: "Status pose", poseOn: "Pose terdeteksi — 33 titik", poseOff: "Mundur agar seluruh tubuh terlihat kamera…",
+      exercise: "Latihan", handsup: "Angkat Tangan", squat: "Squat",
+      repsLbl: "Repetisi", resetReps: "Reset hitungan",
+      handsupHint: "Angkat kedua tangan di atas kepala lalu turunkan — tiap siklus dihitung 1 repetisi.",
+      squatHint: "Jongkok lalu berdiri — tiap siklus dihitung 1 repetisi. Pastikan pinggul & lutut terlihat kamera.",
       meshNote: "Face mesh: 468 titik landmark membentuk kerangka wajah (dipakai untuk filter AR, estimasi arah pandang, dll).",
       handNote: "Hand landmarks: 21 titik per tangan membentuk kerangka jari + hitung jari terangkat (dipakai untuk bahasa isyarat, gestur, kontrol tanpa sentuh).",
       poseNote: "Pose landmarks: 33 titik kerangka tubuh penuh (dipakai untuk analisis olahraga/fitness, deteksi gerakan, dan animasi).",
@@ -130,8 +172,12 @@ export default function WebcamVisionDemo() {
       noFace: "Point your face at the camera…",
       faceStatus: "Face status", faceOn: "Face detected — 468 points", faceOff: "Point your face at the camera…",
       handStatus: "Hands detected", handHint: "Raise 1–2 hands to the camera. 21 points per hand.",
-      fingersRaised: "Fingers raised",
+      fingersRaised: "Fingers raised", gestureLbl: "Gesture", noGesture: "Try 👍 ✌️ ✊ ✋ ☝️ 🤟",
       poseStatus: "Pose status", poseOn: "Pose detected — 33 points", poseOff: "Step back so your whole body is visible…",
+      exercise: "Exercise", handsup: "Hands Up", squat: "Squat",
+      repsLbl: "Reps", resetReps: "Reset count",
+      handsupHint: "Raise both hands above your head then lower them — each cycle counts as 1 rep.",
+      squatHint: "Squat down then stand up — each cycle counts as 1 rep. Keep hips & knees in view.",
       meshNote: "Face mesh: 468 landmark points form a face skeleton (used for AR filters, gaze estimation, etc).",
       handNote: "Hand landmarks: 21 points per hand form a finger skeleton + raised-finger count (used for sign language, gestures, touch-free control).",
       poseNote: "Pose landmarks: 33 full-body skeleton points (used for sports/fitness analysis, motion detection, and animation).",
@@ -156,10 +202,20 @@ export default function WebcamVisionDemo() {
     setFaceDetected(false);
     setHandCount(0);
     setFingerCount(0);
+    setGesture(null);
     setPoseDetected(false);
+    setReps(0);
+    repPhaseRef.current = "down";
   }, []);
 
   useEffect(() => () => stopEverything(), [stopEverything]);
+
+  // keep the exercise ref in sync for the RAF loop; reset the counter on change
+  useEffect(() => {
+    exerciseRef.current = exercise;
+    setReps(0);
+    repPhaseRef.current = "down";
+  }, [exercise]);
 
   // ---- model loading ----
   const ensureModels = useCallback(async (m) => {
@@ -334,6 +390,7 @@ export default function WebcamVisionDemo() {
         const hands = res.landmarks || [];
         setHandCount(hands.length);
         let totalFingers = 0;
+        let firstGesture = null;
         hands.forEach((landmarks, hi) => {
           // connections (bones)
           ctx.strokeStyle = "#0093D0";
@@ -352,10 +409,11 @@ export default function WebcamVisionDemo() {
             ctx.fillStyle = "#F5A200";
             ctx.fill();
           });
-          // raised-finger count for this hand
+          // raised-finger count + gesture for this hand
           const handed = res.handedness?.[hi]?.[0]?.categoryName || "Right";
           const raised = countRaisedFingers(landmarks, handed);
           totalFingers += raised;
+          if (hi === 0) firstGesture = classifyGesture(landmarks, handed);
           // label the count near the wrist (landmark 0). Canvas is mirrored, so
           // counter-mirror the text so digits read correctly.
           const wx = landmarks[0].x * W, wy = landmarks[0].y * H;
@@ -369,6 +427,7 @@ export default function WebcamVisionDemo() {
           ctx.restore();
         });
         setFingerCount(totalFingers);
+        setGesture(hands.length ? firstGesture : null);
       } catch {
         /* frame skipped */
       }
@@ -392,6 +451,31 @@ export default function WebcamVisionDemo() {
         ctx.clearRect(0, 0, W, H);
         const poses = res.landmarks || [];
         setPoseDetected(poses.length > 0);
+        // ---- rep counting (state machine on the first pose) ----
+        if (poses.length) {
+          const lm = poses[0];
+          const ex = exerciseRef.current;
+          if (ex === "handsup") {
+            // both wrists (15,16) above both shoulders (11,12) = "up" phase
+            const wristsUp = lm[15].y < lm[11].y && lm[16].y < lm[12].y;
+            const wristsDown = lm[15].y > lm[11].y + 0.08 && lm[16].y > lm[12].y + 0.08;
+            if (wristsUp && repPhaseRef.current === "down") repPhaseRef.current = "up";
+            else if (wristsDown && repPhaseRef.current === "up") {
+              repPhaseRef.current = "down";
+              setReps((r) => r + 1);
+            }
+          } else {
+            // squat: hips (23,24) drop toward knees (25,26). Use vertical gap.
+            const hipY = (lm[23].y + lm[24].y) / 2;
+            const kneeY = (lm[25].y + lm[26].y) / 2;
+            const gap = kneeY - hipY; // smaller gap = squatting (hips closer to knees)
+            if (gap < 0.12 && repPhaseRef.current === "down") repPhaseRef.current = "up"; // down = squatting
+            else if (gap > 0.22 && repPhaseRef.current === "up") {
+              repPhaseRef.current = "down"; // standing
+              setReps((r) => r + 1);
+            }
+          }
+        }
         poses.forEach((landmarks) => {
           // bones
           ctx.strokeStyle = "#0093D0";
@@ -566,17 +650,58 @@ export default function WebcamVisionDemo() {
                 <div className="text-sm text-slate-500">☝️ {L.fingersRaised}</div>
                 <div className="text-3xl font-black" style={{ color: "#F5A200" }}>{fingerCount}</div>
               </div>
+              <div className="col-span-2 rounded-lg bg-slate-50 p-4 text-center">
+                <div className="text-sm text-slate-500">{L.gestureLbl}</div>
+                {gesture ? (
+                  <div className="mt-1">
+                    <span className="text-4xl">{gesture.emoji}</span>
+                    <div className="mt-1 font-bold text-brand-700">{gesture[lang]}</div>
+                  </div>
+                ) : (
+                  <div className="mt-1 text-sm text-slate-400">{L.noGesture}</div>
+                )}
+              </div>
               <div className="col-span-2 text-center text-xs text-slate-400">{L.handHint}</div>
             </div>
           )}
 
           {mode === "pose" && isRunning && (
-            <div className="rounded-lg bg-slate-50 p-4 text-center">
-              <div className="text-sm text-slate-500">{L.poseStatus}</div>
-              <div className="mt-1 text-2xl">{poseDetected ? "🧍" : "🔍"}</div>
-              <div className={`mt-1 text-sm font-semibold ${poseDetected ? "text-brand-700" : "text-slate-400"}`}>
-                {poseDetected ? L.poseOn : L.poseOff}
+            <div className="space-y-3">
+              <div className="rounded-lg bg-slate-50 p-3 text-center">
+                <div className="text-sm text-slate-500">{L.poseStatus}</div>
+                <div className={`mt-1 text-sm font-semibold ${poseDetected ? "text-brand-700" : "text-slate-400"}`}>
+                  {poseDetected ? `🧍 ${L.poseOn}` : `🔍 ${L.poseOff}`}
+                </div>
               </div>
+
+              {/* exercise selector */}
+              <div>
+                <div className="mb-1 text-xs font-semibold text-slate-600">{L.exercise}</div>
+                <div className="inline-flex rounded-lg border border-slate-300 p-0.5 text-sm font-semibold">
+                  {[["handsup", `🙌 ${L.handsup}`], ["squat", `🏋️ ${L.squat}`]].map(([k, label]) => (
+                    <button
+                      key={k}
+                      onClick={() => setExercise(k)}
+                      className={`rounded-md px-3 py-1 transition ${exercise === k ? "bg-brand-600 text-white" : "text-slate-600"}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* rep counter */}
+              <div className="rounded-lg bg-slate-50 p-4 text-center">
+                <div className="text-sm text-slate-500">🔁 {L.repsLbl}</div>
+                <div className="text-5xl font-black text-brand-600">{reps}</div>
+                <button
+                  onClick={() => { setReps(0); repPhaseRef.current = "down"; }}
+                  className="mt-2 text-xs font-semibold text-brand-600 hover:underline"
+                >
+                  {L.resetReps}
+                </button>
+              </div>
+              <p className="text-xs text-slate-400">{exercise === "handsup" ? L.handsupHint : L.squatHint}</p>
             </div>
           )}
 
