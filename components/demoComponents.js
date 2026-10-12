@@ -26,6 +26,7 @@ import EmbeddingsDemo from "./demos/EmbeddingsDemo";
 import AttentionDemo from "./demos/AttentionDemo";
 import NextTokenDemo from "./demos/NextTokenDemo";
 import NerDemo from "./demos/NerDemo";
+import LatentSpaceDemo from "./demos/LatentSpaceDemo";
 
 export const demoComponents = {
   dimensions: DimensionsDemo,
@@ -53,4 +54,5 @@ export const demoComponents = {
   attention: AttentionDemo,
   "next-token": NextTokenDemo,
   ner: NerDemo,
+  "latent-space": LatentSpaceDemo,
 };
