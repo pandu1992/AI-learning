@@ -4,11 +4,12 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useLang } from "../LanguageProvider";
 import { loadScript, loadScriptsSequential } from "@/lib/scriptLoader";
 
-// On-device webcam Computer Vision demo with four modes:
+// On-device webcam Computer Vision demo with five modes:
 //   1) Object detection    -> TensorFlow.js COCO-SSD (80 object classes)
 //   2) Expression detection -> face-api.js (face + emotion)
 //   3) Face skeleton        -> MediaPipe FaceLandmarker (468-point face mesh)
-//   4) Hand skeleton        -> MediaPipe HandLandmarker (21 landmarks/hand)
+//   4) Hand skeleton        -> MediaPipe HandLandmarker (21 landmarks/hand) + raised-finger count
+//   5) Body pose skeleton   -> MediaPipe PoseLandmarker (33 full-body landmarks)
 // All inference runs in the browser on the user's device; no image/video is
 // ever uploaded. Model libraries + weights load from public CDNs on demand.
 
@@ -24,6 +25,8 @@ const FACE_LANDMARKER_MODEL =
   "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
 const HAND_LANDMARKER_MODEL =
   "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+const POSE_LANDMARKER_MODEL =
+  "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task";
 
 // Expression emoji + bilingual labels
 const EXPR = {
@@ -46,6 +49,31 @@ const HAND_CONNECTIONS = [
   [0, 17], // palm base
 ];
 
+// Count raised fingers from 21 hand landmarks (normalized x,y).
+// Four fingers: tip is "up" if its y is above the PIP joint (smaller y = higher).
+// Thumb: compared horizontally against its IP joint, direction depends on handedness.
+function countRaisedFingers(lm, handedness) {
+  let count = 0;
+  // index, middle, ring, pinky: [tip, pip]
+  const fingers = [[8, 6], [12, 10], [16, 14], [20, 18]];
+  for (const [tip, pip] of fingers) {
+    if (lm[tip].y < lm[pip].y - 0.02) count++;
+  }
+  // thumb: tip (4) vs IP (3) along x. Mirror by handedness.
+  const isRight = handedness === "Right";
+  if (isRight ? lm[4].x < lm[3].x : lm[4].x > lm[3].x) count++;
+  return count;
+}
+
+// Body pose skeleton connections (MediaPipe Pose 33-landmark topology — torso + limbs).
+const POSE_CONNECTIONS = [
+  [11, 12], [11, 23], [12, 24], [23, 24], // torso
+  [11, 13], [13, 15], [15, 17], [15, 19], [15, 21], [17, 19], // left arm + hand
+  [12, 14], [14, 16], [16, 18], [16, 20], [16, 22], [18, 20], // right arm + hand
+  [23, 25], [25, 27], [27, 29], [27, 31], [29, 31], // left leg + foot
+  [24, 26], [26, 28], [28, 30], [28, 32], [30, 32], // right leg + foot
+];
+
 export default function WebcamVisionDemo() {
   const { lang } = useLang();
   const videoRef = useRef(null);
@@ -55,20 +83,23 @@ export default function WebcamVisionDemo() {
   const modelRef = useRef(null); // coco-ssd model instance
   const faceLandmarkerRef = useRef(null); // MediaPipe FaceLandmarker
   const handLandmarkerRef = useRef(null); // MediaPipe HandLandmarker
+  const poseLandmarkerRef = useRef(null); // MediaPipe PoseLandmarker
   const drawUtilsRef = useRef(null); // MediaPipe DrawingUtils + connectors
   const runningRef = useRef(false);
 
-  const [mode, setMode] = useState("object"); // object | expression | facemesh | hand
+  const [mode, setMode] = useState("object"); // object | expression | facemesh | hand | pose
   const [status, setStatus] = useState("idle"); // idle | loading | ready | running | error | denied
   const [errorMsg, setErrorMsg] = useState("");
   const [topExpr, setTopExpr] = useState(null); // {key, prob}
   const [objectCount, setObjectCount] = useState(0);
   const [faceDetected, setFaceDetected] = useState(false);
   const [handCount, setHandCount] = useState(0);
+  const [fingerCount, setFingerCount] = useState(0); // total raised fingers across hands
+  const [poseDetected, setPoseDetected] = useState(false);
 
   const L = {
     id: {
-      object: "Deteksi Objek", expression: "Deteksi Ekspresi", facemesh: "Kerangka Wajah", hand: "Kerangka Tangan",
+      object: "Deteksi Objek", expression: "Deteksi Ekspresi", facemesh: "Kerangka Wajah", hand: "Kerangka Tangan", pose: "Pose Tubuh",
       enable: "Aktifkan Kamera", stop: "Matikan Kamera",
       loading: "Memuat model AI…", ready: "Siap — mengarahkan…",
       allow: "Klik 'Aktifkan Kamera' lalu izinkan akses. Semua pemrosesan terjadi di perangkat Anda.",
@@ -80,11 +111,14 @@ export default function WebcamVisionDemo() {
       noFace: "Arahkan wajah ke kamera…",
       faceStatus: "Status wajah", faceOn: "Wajah terdeteksi — 468 titik", faceOff: "Arahkan wajah ke kamera…",
       handStatus: "Tangan terdeteksi", handHint: "Angkat 1–2 tangan ke kamera. 21 titik per tangan.",
+      fingersRaised: "Jari terangkat",
+      poseStatus: "Status pose", poseOn: "Pose terdeteksi — 33 titik", poseOff: "Mundur agar seluruh tubuh terlihat kamera…",
       meshNote: "Face mesh: 468 titik landmark membentuk kerangka wajah (dipakai untuk filter AR, estimasi arah pandang, dll).",
-      handNote: "Hand landmarks: 21 titik per tangan membentuk kerangka jari (dipakai untuk bahasa isyarat, gestur, kontrol tanpa sentuh).",
+      handNote: "Hand landmarks: 21 titik per tangan membentuk kerangka jari + hitung jari terangkat (dipakai untuk bahasa isyarat, gestur, kontrol tanpa sentuh).",
+      poseNote: "Pose landmarks: 33 titik kerangka tubuh penuh (dipakai untuk analisis olahraga/fitness, deteksi gerakan, dan animasi).",
     },
     en: {
-      object: "Object Detection", expression: "Expression Detection", facemesh: "Face Skeleton", hand: "Hand Skeleton",
+      object: "Object Detection", expression: "Expression Detection", facemesh: "Face Skeleton", hand: "Hand Skeleton", pose: "Body Pose",
       enable: "Enable Camera", stop: "Stop Camera",
       loading: "Loading AI model…", ready: "Ready — point the camera…",
       allow: "Click 'Enable Camera' and allow access. All processing happens on your device.",
@@ -96,8 +130,11 @@ export default function WebcamVisionDemo() {
       noFace: "Point your face at the camera…",
       faceStatus: "Face status", faceOn: "Face detected — 468 points", faceOff: "Point your face at the camera…",
       handStatus: "Hands detected", handHint: "Raise 1–2 hands to the camera. 21 points per hand.",
+      fingersRaised: "Fingers raised",
+      poseStatus: "Pose status", poseOn: "Pose detected — 33 points", poseOff: "Step back so your whole body is visible…",
       meshNote: "Face mesh: 468 landmark points form a face skeleton (used for AR filters, gaze estimation, etc).",
-      handNote: "Hand landmarks: 21 points per hand form a finger skeleton (used for sign language, gestures, touch-free control).",
+      handNote: "Hand landmarks: 21 points per hand form a finger skeleton + raised-finger count (used for sign language, gestures, touch-free control).",
+      poseNote: "Pose landmarks: 33 full-body skeleton points (used for sports/fitness analysis, motion detection, and animation).",
     },
   }[lang];
 
@@ -118,6 +155,8 @@ export default function WebcamVisionDemo() {
     setObjectCount(0);
     setFaceDetected(false);
     setHandCount(0);
+    setFingerCount(0);
+    setPoseDetected(false);
   }, []);
 
   useEffect(() => () => stopEverything(), [stopEverything]);
@@ -138,12 +177,12 @@ export default function WebcamVisionDemo() {
         await faceapi.nets.tinyFaceDetector.loadFromUri(FACE_MODELS);
         await faceapi.nets.faceExpressionNet.loadFromUri(FACE_MODELS);
       }
-    } else if (m === "facemesh" || m === "hand") {
+    } else if (m === "facemesh" || m === "hand" || m === "pose") {
       // MediaPipe Tasks Vision — ESM dynamic import (runs fully in-browser)
       const vision = await import(/* webpackIgnore: true */ MP_VISION_ESM);
-      const { FaceLandmarker, HandLandmarker, FilesetResolver, DrawingUtils } = vision;
+      const { FaceLandmarker, HandLandmarker, PoseLandmarker, FilesetResolver, DrawingUtils } = vision;
       const fileset = await FilesetResolver.forVisionTasks(MP_WASM);
-      drawUtilsRef.current = { DrawingUtils, FaceLandmarker, HandLandmarker };
+      drawUtilsRef.current = { DrawingUtils, FaceLandmarker, HandLandmarker, PoseLandmarker };
       if (m === "facemesh" && !faceLandmarkerRef.current) {
         faceLandmarkerRef.current = await FaceLandmarker.createFromOptions(fileset, {
           baseOptions: { modelAssetPath: FACE_LANDMARKER_MODEL, delegate: "GPU" },
@@ -156,6 +195,13 @@ export default function WebcamVisionDemo() {
           baseOptions: { modelAssetPath: HAND_LANDMARKER_MODEL, delegate: "GPU" },
           runningMode: "VIDEO",
           numHands: 2,
+        });
+      }
+      if (m === "pose" && !poseLandmarkerRef.current) {
+        poseLandmarkerRef.current = await PoseLandmarker.createFromOptions(fileset, {
+          baseOptions: { modelAssetPath: POSE_LANDMARKER_MODEL, delegate: "GPU" },
+          runningMode: "VIDEO",
+          numPoses: 1,
         });
       }
     }
@@ -287,7 +333,8 @@ export default function WebcamVisionDemo() {
         ctx.clearRect(0, 0, W, H);
         const hands = res.landmarks || [];
         setHandCount(hands.length);
-        hands.forEach((landmarks) => {
+        let totalFingers = 0;
+        hands.forEach((landmarks, hi) => {
           // connections (bones)
           ctx.strokeStyle = "#0093D0";
           ctx.lineWidth = 3;
@@ -299,6 +346,65 @@ export default function WebcamVisionDemo() {
             ctx.stroke();
           });
           // joints (landmarks)
+          landmarks.forEach((p) => {
+            ctx.beginPath();
+            ctx.arc(p.x * W, p.y * H, 4, 0, Math.PI * 2);
+            ctx.fillStyle = "#F5A200";
+            ctx.fill();
+          });
+          // raised-finger count for this hand
+          const handed = res.handedness?.[hi]?.[0]?.categoryName || "Right";
+          const raised = countRaisedFingers(landmarks, handed);
+          totalFingers += raised;
+          // label the count near the wrist (landmark 0). Canvas is mirrored, so
+          // counter-mirror the text so digits read correctly.
+          const wx = landmarks[0].x * W, wy = landmarks[0].y * H;
+          ctx.save();
+          ctx.translate(wx, wy + 28);
+          ctx.scale(-1, 1); // undo the parent scaleX(-1)
+          ctx.font = "bold 20px sans-serif";
+          ctx.fillStyle = "#0093D0";
+          ctx.textAlign = "center";
+          ctx.fillText(String(raised), 0, 0);
+          ctx.restore();
+        });
+        setFingerCount(totalFingers);
+      } catch {
+        /* frame skipped */
+      }
+      rafRef.current = requestAnimationFrame(step);
+    };
+    step();
+  }, []);
+
+  // ---- body pose (skeleton) loop ----
+  const runPoseLoop = useCallback(() => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width, H = canvas.height;
+
+    const step = () => {
+      if (!runningRef.current) return;
+      try {
+        const res = poseLandmarkerRef.current.detectForVideo(video, performance.now());
+        ctx.clearRect(0, 0, W, H);
+        const poses = res.landmarks || [];
+        setPoseDetected(poses.length > 0);
+        poses.forEach((landmarks) => {
+          // bones
+          ctx.strokeStyle = "#0093D0";
+          ctx.lineWidth = 3;
+          POSE_CONNECTIONS.forEach(([a, b]) => {
+            const pa = landmarks[a], pb = landmarks[b];
+            if (!pa || !pb) return;
+            ctx.beginPath();
+            ctx.moveTo(pa.x * W, pa.y * H);
+            ctx.lineTo(pb.x * W, pb.y * H);
+            ctx.stroke();
+          });
+          // joints
           landmarks.forEach((p) => {
             ctx.beginPath();
             ctx.arc(p.x * W, p.y * H, 4, 0, Math.PI * 2);
@@ -343,10 +449,11 @@ export default function WebcamVisionDemo() {
       else if (mode === "expression") runExpressionLoop();
       else if (mode === "facemesh") runFaceMeshLoop();
       else if (mode === "hand") runHandLoop();
+      else if (mode === "pose") runPoseLoop();
     } catch (e) {
       setStatus("denied");
     }
-  }, [mode, ensureModels, runObjectLoop, runExpressionLoop, runFaceMeshLoop, runHandLoop, L.needInternet]);
+  }, [mode, ensureModels, runObjectLoop, runExpressionLoop, runFaceMeshLoop, runHandLoop, runPoseLoop, L.needInternet]);
 
   // switching mode while running: stop then require re-enable
   const switchMode = (m) => {
@@ -362,6 +469,7 @@ export default function WebcamVisionDemo() {
     ["expression", `😊 ${L.expression}`],
     ["facemesh", `🫥 ${L.facemesh}`],
     ["hand", `✋ ${L.hand}`],
+    ["pose", `🧍 ${L.pose}`],
   ];
 
   return (
@@ -449,15 +557,32 @@ export default function WebcamVisionDemo() {
           )}
 
           {mode === "hand" && isRunning && (
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-lg bg-slate-50 p-4 text-center">
+                <div className="text-sm text-slate-500">{L.handStatus}</div>
+                <div className="text-3xl font-black text-brand-600">{handCount}</div>
+              </div>
+              <div className="rounded-lg bg-slate-50 p-4 text-center">
+                <div className="text-sm text-slate-500">☝️ {L.fingersRaised}</div>
+                <div className="text-3xl font-black" style={{ color: "#F5A200" }}>{fingerCount}</div>
+              </div>
+              <div className="col-span-2 text-center text-xs text-slate-400">{L.handHint}</div>
+            </div>
+          )}
+
+          {mode === "pose" && isRunning && (
             <div className="rounded-lg bg-slate-50 p-4 text-center">
-              <div className="text-sm text-slate-500">{L.handStatus}</div>
-              <div className="text-3xl font-black text-brand-600">{handCount}</div>
-              <div className="mt-1 text-xs text-slate-400">{L.handHint}</div>
+              <div className="text-sm text-slate-500">{L.poseStatus}</div>
+              <div className="mt-1 text-2xl">{poseDetected ? "🧍" : "🔍"}</div>
+              <div className={`mt-1 text-sm font-semibold ${poseDetected ? "text-brand-700" : "text-slate-400"}`}>
+                {poseDetected ? L.poseOn : L.poseOff}
+              </div>
             </div>
           )}
 
           {mode === "facemesh" && <p className="text-xs text-slate-400">{L.meshNote}</p>}
           {mode === "hand" && <p className="text-xs text-slate-400">{L.handNote}</p>}
+          {mode === "pose" && <p className="text-xs text-slate-400">{L.poseNote}</p>}
           <p className="text-xs text-slate-400">{L.switchHint}</p>
         </div>
       </div>
