@@ -31,6 +31,7 @@ import SpeechSpectrogramDemo from "./demos/SpeechSpectrogramDemo";
 import GradientDescentDemo from "./demos/GradientDescentDemo";
 import RocThresholdDemo from "./demos/RocThresholdDemo";
 import RandomForestDemo from "./demos/RandomForestDemo";
+import RagChatbotDemo from "./demos/RagChatbotDemo";
 
 export const demoComponents = {
   dimensions: DimensionsDemo,
@@ -63,4 +64,5 @@ export const demoComponents = {
   "gradient-descent": GradientDescentDemo,
   "roc-threshold": RocThresholdDemo,
   "random-forest": RandomForestDemo,
+  "rag-chatbot": RagChatbotDemo,
 };
