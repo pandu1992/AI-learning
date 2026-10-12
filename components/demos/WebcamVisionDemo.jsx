@@ -4,9 +4,11 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useLang } from "../LanguageProvider";
 import { loadScript, loadScriptsSequential } from "@/lib/scriptLoader";
 
-// On-device webcam Computer Vision demo with two modes:
-//   1) Object detection  -> TensorFlow.js COCO-SSD (80 object classes)
+// On-device webcam Computer Vision demo with four modes:
+//   1) Object detection    -> TensorFlow.js COCO-SSD (80 object classes)
 //   2) Expression detection -> face-api.js (face + emotion)
+//   3) Face skeleton        -> MediaPipe FaceLandmarker (468-point face mesh)
+//   4) Hand skeleton        -> MediaPipe HandLandmarker (21 landmarks/hand)
 // All inference runs in the browser on the user's device; no image/video is
 // ever uploaded. Model libraries + weights load from public CDNs on demand.
 
@@ -15,16 +17,34 @@ const COCO_SSD = "https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3
 const FACE_API = "https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js";
 const FACE_MODELS = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/model";
 
+// MediaPipe Tasks Vision (ESM) + model + wasm
+const MP_VISION_ESM = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+const MP_WASM = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
+const FACE_LANDMARKER_MODEL =
+  "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
+const HAND_LANDMARKER_MODEL =
+  "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
+
 // Expression emoji + bilingual labels
 const EXPR = {
   neutral: { emoji: "😐", id: "Netral", en: "Neutral" },
   happy: { emoji: "😊", id: "Senang", en: "Happy" },
   sad: { emoji: "😢", id: "Sedih", en: "Sad" },
   angry: { emoji: "😠", id: "Marah", en: "Angry" },
-  surprised: { emoji: "😲", id: "Terkejut", en: "Terkejut" },
+  surprised: { emoji: "😲", id: "Terkejut", en: "Surprised" },
   fearful: { emoji: "😨", id: "Takut", en: "Fearful" },
   disgusted: { emoji: "🤢", id: "Jijik", en: "Disgusted" },
 };
+
+// Hand skeleton connections (MediaPipe 21-landmark topology)
+const HAND_CONNECTIONS = [
+  [0, 1], [1, 2], [2, 3], [3, 4], // thumb
+  [0, 5], [5, 6], [6, 7], [7, 8], // index
+  [5, 9], [9, 10], [10, 11], [11, 12], // middle
+  [9, 13], [13, 14], [14, 15], [15, 16], // ring
+  [13, 17], [17, 18], [18, 19], [19, 20], // pinky
+  [0, 17], // palm base
+];
 
 export default function WebcamVisionDemo() {
   const { lang } = useLang();
@@ -33,17 +53,22 @@ export default function WebcamVisionDemo() {
   const streamRef = useRef(null);
   const rafRef = useRef(null);
   const modelRef = useRef(null); // coco-ssd model instance
+  const faceLandmarkerRef = useRef(null); // MediaPipe FaceLandmarker
+  const handLandmarkerRef = useRef(null); // MediaPipe HandLandmarker
+  const drawUtilsRef = useRef(null); // MediaPipe DrawingUtils + connectors
   const runningRef = useRef(false);
 
-  const [mode, setMode] = useState("object"); // "object" | "expression"
+  const [mode, setMode] = useState("object"); // object | expression | facemesh | hand
   const [status, setStatus] = useState("idle"); // idle | loading | ready | running | error | denied
   const [errorMsg, setErrorMsg] = useState("");
   const [topExpr, setTopExpr] = useState(null); // {key, prob}
   const [objectCount, setObjectCount] = useState(0);
+  const [faceDetected, setFaceDetected] = useState(false);
+  const [handCount, setHandCount] = useState(0);
 
   const L = {
     id: {
-      object: "Deteksi Objek", expression: "Deteksi Ekspresi",
+      object: "Deteksi Objek", expression: "Deteksi Ekspresi", facemesh: "Kerangka Wajah", hand: "Kerangka Tangan",
       enable: "Aktifkan Kamera", stop: "Matikan Kamera",
       loading: "Memuat model AI…", ready: "Siap — mengarahkan…",
       allow: "Klik 'Aktifkan Kamera' lalu izinkan akses. Semua pemrosesan terjadi di perangkat Anda.",
@@ -53,9 +78,13 @@ export default function WebcamVisionDemo() {
       needInternet: "Model dimuat dari internet saat pertama kali dijalankan.",
       switchHint: "Ganti mode akan memuat ulang model yang sesuai.",
       noFace: "Arahkan wajah ke kamera…",
+      faceStatus: "Status wajah", faceOn: "Wajah terdeteksi — 468 titik", faceOff: "Arahkan wajah ke kamera…",
+      handStatus: "Tangan terdeteksi", handHint: "Angkat 1–2 tangan ke kamera. 21 titik per tangan.",
+      meshNote: "Face mesh: 468 titik landmark membentuk kerangka wajah (dipakai untuk filter AR, estimasi arah pandang, dll).",
+      handNote: "Hand landmarks: 21 titik per tangan membentuk kerangka jari (dipakai untuk bahasa isyarat, gestur, kontrol tanpa sentuh).",
     },
     en: {
-      object: "Object Detection", expression: "Expression Detection",
+      object: "Object Detection", expression: "Expression Detection", facemesh: "Face Skeleton", hand: "Hand Skeleton",
       enable: "Enable Camera", stop: "Stop Camera",
       loading: "Loading AI model…", ready: "Ready — point the camera…",
       allow: "Click 'Enable Camera' and allow access. All processing happens on your device.",
@@ -65,6 +94,10 @@ export default function WebcamVisionDemo() {
       needInternet: "The model loads from the internet on first run.",
       switchHint: "Switching modes reloads the appropriate model.",
       noFace: "Point your face at the camera…",
+      faceStatus: "Face status", faceOn: "Face detected — 468 points", faceOff: "Point your face at the camera…",
+      handStatus: "Hands detected", handHint: "Raise 1–2 hands to the camera. 21 points per hand.",
+      meshNote: "Face mesh: 468 landmark points form a face skeleton (used for AR filters, gaze estimation, etc).",
+      handNote: "Hand landmarks: 21 points per hand form a finger skeleton (used for sign language, gestures, touch-free control).",
     },
   }[lang];
 
@@ -83,6 +116,8 @@ export default function WebcamVisionDemo() {
     setStatus("idle");
     setTopExpr(null);
     setObjectCount(0);
+    setFaceDetected(false);
+    setHandCount(0);
   }, []);
 
   useEffect(() => () => stopEverything(), [stopEverything]);
@@ -95,7 +130,7 @@ export default function WebcamVisionDemo() {
         // eslint-disable-next-line no-undef
         modelRef.current = await cocoSsd.load();
       }
-    } else {
+    } else if (m === "expression") {
       await loadScript(FACE_API);
       // eslint-disable-next-line no-undef
       const faceapi = window.faceapi;
@@ -103,10 +138,30 @@ export default function WebcamVisionDemo() {
         await faceapi.nets.tinyFaceDetector.loadFromUri(FACE_MODELS);
         await faceapi.nets.faceExpressionNet.loadFromUri(FACE_MODELS);
       }
+    } else if (m === "facemesh" || m === "hand") {
+      // MediaPipe Tasks Vision — ESM dynamic import (runs fully in-browser)
+      const vision = await import(/* webpackIgnore: true */ MP_VISION_ESM);
+      const { FaceLandmarker, HandLandmarker, FilesetResolver, DrawingUtils } = vision;
+      const fileset = await FilesetResolver.forVisionTasks(MP_WASM);
+      drawUtilsRef.current = { DrawingUtils, FaceLandmarker, HandLandmarker };
+      if (m === "facemesh" && !faceLandmarkerRef.current) {
+        faceLandmarkerRef.current = await FaceLandmarker.createFromOptions(fileset, {
+          baseOptions: { modelAssetPath: FACE_LANDMARKER_MODEL, delegate: "GPU" },
+          runningMode: "VIDEO",
+          numFaces: 1,
+        });
+      }
+      if (m === "hand" && !handLandmarkerRef.current) {
+        handLandmarkerRef.current = await HandLandmarker.createFromOptions(fileset, {
+          baseOptions: { modelAssetPath: HAND_LANDMARKER_MODEL, delegate: "GPU" },
+          runningMode: "VIDEO",
+          numHands: 2,
+        });
+      }
     }
   }, []);
 
-  // ---- detection loop ----
+  // ---- object loop ----
   const runObjectLoop = useCallback(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -140,6 +195,7 @@ export default function WebcamVisionDemo() {
     step();
   }, []);
 
+  // ---- expression loop ----
   const runExpressionLoop = useCallback(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -152,16 +208,13 @@ export default function WebcamVisionDemo() {
     const step = async () => {
       if (!runningRef.current) return;
       try {
-        const result = await faceapi
-          .detectSingleFace(video, options)
-          .withFaceExpressions();
+        const result = await faceapi.detectSingleFace(video, options).withFaceExpressions();
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (result) {
           const { x, y, width, height } = result.detection.box;
           ctx.strokeStyle = "#F5A200";
           ctx.lineWidth = 3;
           ctx.strokeRect(x, y, width, height);
-          // top expression
           const entries = Object.entries(result.expressions);
           entries.sort((a, b) => b[1] - a[1]);
           const [key, prob] = entries[0];
@@ -185,6 +238,82 @@ export default function WebcamVisionDemo() {
     step();
   }, [lang]);
 
+  // ---- face mesh (skeleton) loop ----
+  const runFaceMeshLoop = useCallback(() => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    const ctx = canvas.getContext("2d");
+    const { DrawingUtils, FaceLandmarker } = drawUtilsRef.current;
+    const drawer = new DrawingUtils(ctx);
+
+    const step = () => {
+      if (!runningRef.current) return;
+      try {
+        const res = faceLandmarkerRef.current.detectForVideo(video, performance.now());
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const found = res.faceLandmarks && res.faceLandmarks.length > 0;
+        setFaceDetected(found);
+        if (found) {
+          for (const landmarks of res.faceLandmarks) {
+            // mesh tesselation + key feature outlines
+            drawer.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, { color: "rgba(0,147,208,0.4)", lineWidth: 0.6 });
+            drawer.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, { color: "#0093D0", lineWidth: 2 });
+            drawer.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, { color: "#F5A200", lineWidth: 1.5 });
+            drawer.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE, { color: "#F5A200", lineWidth: 1.5 });
+            drawer.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS, { color: "#16a34a", lineWidth: 1.5 });
+          }
+        }
+      } catch {
+        /* frame skipped */
+      }
+      rafRef.current = requestAnimationFrame(step);
+    };
+    step();
+  }, []);
+
+  // ---- hand (skeleton) loop ----
+  const runHandLoop = useCallback(() => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width, H = canvas.height;
+
+    const step = () => {
+      if (!runningRef.current) return;
+      try {
+        const res = handLandmarkerRef.current.detectForVideo(video, performance.now());
+        ctx.clearRect(0, 0, W, H);
+        const hands = res.landmarks || [];
+        setHandCount(hands.length);
+        hands.forEach((landmarks) => {
+          // connections (bones)
+          ctx.strokeStyle = "#0093D0";
+          ctx.lineWidth = 3;
+          HAND_CONNECTIONS.forEach(([a, b]) => {
+            const pa = landmarks[a], pb = landmarks[b];
+            ctx.beginPath();
+            ctx.moveTo(pa.x * W, pa.y * H);
+            ctx.lineTo(pb.x * W, pb.y * H);
+            ctx.stroke();
+          });
+          // joints (landmarks)
+          landmarks.forEach((p) => {
+            ctx.beginPath();
+            ctx.arc(p.x * W, p.y * H, 4, 0, Math.PI * 2);
+            ctx.fillStyle = "#F5A200";
+            ctx.fill();
+          });
+        });
+      } catch {
+        /* frame skipped */
+      }
+      rafRef.current = requestAnimationFrame(step);
+    };
+    step();
+  }, []);
+
   // ---- start ----
   const start = useCallback(async () => {
     setErrorMsg("");
@@ -205,18 +334,19 @@ export default function WebcamVisionDemo() {
       const video = videoRef.current;
       video.srcObject = stream;
       await video.play();
-      // match canvas to video size
       const canvas = canvasRef.current;
       canvas.width = video.videoWidth || 480;
       canvas.height = video.videoHeight || 360;
       setStatus("running");
       runningRef.current = true;
       if (mode === "object") runObjectLoop();
-      else runExpressionLoop();
+      else if (mode === "expression") runExpressionLoop();
+      else if (mode === "facemesh") runFaceMeshLoop();
+      else if (mode === "hand") runHandLoop();
     } catch (e) {
       setStatus("denied");
     }
-  }, [mode, ensureModels, runObjectLoop, runExpressionLoop, L.needInternet]);
+  }, [mode, ensureModels, runObjectLoop, runExpressionLoop, runFaceMeshLoop, runHandLoop, L.needInternet]);
 
   // switching mode while running: stop then require re-enable
   const switchMode = (m) => {
@@ -227,22 +357,26 @@ export default function WebcamVisionDemo() {
 
   const isRunning = status === "running";
 
+  const modeBtns = [
+    ["object", `🎯 ${L.object}`],
+    ["expression", `😊 ${L.expression}`],
+    ["facemesh", `🫥 ${L.facemesh}`],
+    ["hand", `✋ ${L.hand}`],
+  ];
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       {/* mode toggle */}
-      <div className="mb-4 inline-flex rounded-lg border border-slate-300 p-0.5 text-sm font-semibold">
-        <button
-          onClick={() => switchMode("object")}
-          className={`rounded-md px-4 py-1.5 transition ${mode === "object" ? "bg-brand-600 text-white" : "text-slate-600"}`}
-        >
-          🎯 {L.object}
-        </button>
-        <button
-          onClick={() => switchMode("expression")}
-          className={`rounded-md px-4 py-1.5 transition ${mode === "expression" ? "bg-brand-600 text-white" : "text-slate-600"}`}
-        >
-          😊 {L.expression}
-        </button>
+      <div className="mb-4 inline-flex flex-wrap rounded-lg border border-slate-300 p-0.5 text-sm font-semibold">
+        {modeBtns.map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => switchMode(key)}
+            className={`rounded-md px-4 py-1.5 transition ${mode === key ? "bg-brand-600 text-white" : "text-slate-600"}`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       <p className="mb-3 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">{L.privacy}</p>
@@ -304,6 +438,26 @@ export default function WebcamVisionDemo() {
             </div>
           )}
 
+          {mode === "facemesh" && isRunning && (
+            <div className="rounded-lg bg-slate-50 p-4 text-center">
+              <div className="text-sm text-slate-500">{L.faceStatus}</div>
+              <div className="mt-1 text-2xl">{faceDetected ? "🫥" : "🔍"}</div>
+              <div className={`mt-1 text-sm font-semibold ${faceDetected ? "text-brand-700" : "text-slate-400"}`}>
+                {faceDetected ? L.faceOn : L.faceOff}
+              </div>
+            </div>
+          )}
+
+          {mode === "hand" && isRunning && (
+            <div className="rounded-lg bg-slate-50 p-4 text-center">
+              <div className="text-sm text-slate-500">{L.handStatus}</div>
+              <div className="text-3xl font-black text-brand-600">{handCount}</div>
+              <div className="mt-1 text-xs text-slate-400">{L.handHint}</div>
+            </div>
+          )}
+
+          {mode === "facemesh" && <p className="text-xs text-slate-400">{L.meshNote}</p>}
+          {mode === "hand" && <p className="text-xs text-slate-400">{L.handNote}</p>}
           <p className="text-xs text-slate-400">{L.switchHint}</p>
         </div>
       </div>
