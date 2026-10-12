@@ -27,6 +27,7 @@ import AttentionDemo from "./demos/AttentionDemo";
 import NextTokenDemo from "./demos/NextTokenDemo";
 import NerDemo from "./demos/NerDemo";
 import LatentSpaceDemo from "./demos/LatentSpaceDemo";
+import SpeechSpectrogramDemo from "./demos/SpeechSpectrogramDemo";
 
 export const demoComponents = {
   dimensions: DimensionsDemo,
@@ -55,4 +56,5 @@ export const demoComponents = {
   "next-token": NextTokenDemo,
   ner: NerDemo,
   "latent-space": LatentSpaceDemo,
+  "speech-spectrogram": SpeechSpectrogramDemo,
 };
