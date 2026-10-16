@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLang } from "./LanguageProvider";
 import { useProgress, levelFromXp } from "./ProgressProvider";
 import LanguageToggle from "./LanguageToggle";
+import ThemeToggle from "./ThemeToggle";
 import Logo from "./Logo";
 
 // The six curriculum topics are grouped under a single "Topics" dropdown so the
@@ -122,13 +123,22 @@ export default function Header() {
           ))}
 
           <div className="ml-2 flex shrink-0 items-center gap-2">
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("cognia:open-palette"))}
+              className="hidden items-center gap-1 rounded-lg border border-slate-300 px-2 py-1 text-xs font-medium text-slate-500 transition hover:bg-slate-100 xl:inline-flex dark:border-slate-600 dark:hover:bg-slate-700"
+              title="Search (Ctrl/⌘ + K)"
+            >
+              🔍 <kbd className="rounded bg-slate-100 px-1 font-sans dark:bg-slate-700">⌘K</kbd>
+            </button>
             <XpBadge />
+            <ThemeToggle />
             <LanguageToggle />
           </div>
         </nav>
 
         {/* mobile toggle */}
         <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
           <LanguageToggle />
           <button
             onClick={() => setOpen((o) => !o)}
