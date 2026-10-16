@@ -7,6 +7,7 @@ import YouTubeEmbed from "./YouTubeEmbed";
 import TopicCard from "./TopicCard";
 import TopicDiagram from "./TopicDiagram";
 import Quiz from "./Quiz";
+import ProgressTracker from "./ProgressTracker";
 import { quizzes } from "@/lib/quizzes";
 import { topics } from "@/lib/content";
 import { demosByTopic } from "@/lib/demos";
@@ -31,6 +32,12 @@ export default function TopicView({ body, slug }) {
 
   return (
     <div>
+      <ProgressTracker
+        visitHref={`/topics/${slug}`}
+        visitLabel={data.title}
+        completeKey={`topic:${slug}`}
+        completeType="topic"
+      />
       <PageHero icon={body.icon} title={data.title} subtitle={data.subtitle} />
       <article className="mx-auto max-w-4xl px-4 py-12">
         <TopicDiagram slug={slug} />

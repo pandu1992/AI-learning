@@ -1,6 +1,7 @@
 import "./globals.css";
 import "katex/dist/katex.min.css";
 import { LanguageProvider } from "@/components/LanguageProvider";
+import { ProgressProvider } from "@/components/ProgressProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -15,9 +16,11 @@ export default function RootLayout({ children }) {
     <html lang="id">
       <body className="min-h-screen antialiased">
         <LanguageProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
+          <ProgressProvider>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </ProgressProvider>
         </LanguageProvider>
       </body>
     </html>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLang } from "@/components/LanguageProvider";
 import TopicCard from "@/components/TopicCard";
+import JourneyPanel from "@/components/JourneyPanel";
 import { LogoMark } from "@/components/Logo";
 import { site, topics, fields } from "@/lib/content";
 import { demoList, demosByTopic } from "@/lib/demos";
@@ -90,6 +91,7 @@ export default function HomeContent() {
 
       {/* Curriculum — numbered to make the order explicit */}
       <section className="mx-auto max-w-6xl px-4 py-16">
+        <JourneyPanel />
         <h2 className="text-2xl font-bold text-slate-900">{labels.curriculum}</h2>
         <p className="mt-1 text-slate-600">{labels.curriculumSub}</p>
         <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-brand-600">🧭 {labels.order}</p>
@@ -104,6 +106,7 @@ export default function HomeContent() {
                 icon={topic.icon}
                 title={topic[lang].title}
                 summary={topic[lang].summary}
+                doneKey={`topic:${topic.slug}`}
               />
             </div>
           ))}

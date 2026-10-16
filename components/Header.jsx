@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useLang } from "./LanguageProvider";
+import { useProgress, levelFromXp } from "./ProgressProvider";
 import LanguageToggle from "./LanguageToggle";
 import Logo from "./Logo";
 
@@ -25,6 +26,20 @@ const topLevel = [
   { href: "/certification", id: "Sertifikasi", en: "Certification" },
   { href: "/profile", id: "Profil", en: "Profile" },
 ];
+
+function XpBadge() {
+  const { hydrated, xp } = useProgress();
+  if (!hydrated || xp <= 0) return null;
+  const lv = levelFromXp(xp);
+  return (
+    <span
+      className="hidden items-center gap-1 rounded-full bg-brand-50 px-2.5 py-1 text-xs font-bold text-brand-700 ring-1 ring-brand-100 lg:inline-flex"
+      title={`${xp} XP`}
+    >
+      ⭐ Lv {lv.level}
+    </span>
+  );
+}
 
 export default function Header() {
   const { lang } = useLang();
@@ -106,7 +121,8 @@ export default function Header() {
             </Link>
           ))}
 
-          <div className="ml-2 shrink-0">
+          <div className="ml-2 flex shrink-0 items-center gap-2">
+            <XpBadge />
             <LanguageToggle />
           </div>
         </nav>
