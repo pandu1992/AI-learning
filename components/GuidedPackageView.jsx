@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLang } from "./LanguageProvider";
+import { useProgress } from "./ProgressProvider";
 import PageHero from "./PageHero";
 import Formula from "./Formula";
 import Quiz from "./Quiz";
@@ -15,8 +16,19 @@ import { topics } from "@/lib/content";
 // `pkg` is a guided package; `topic` is the parent topic slug.
 export default function GuidedPackageView({ pkg, topic }) {
   const { lang } = useLang();
+  const { visit, complete } = useProgress();
   const [step, setStep] = useState(0);
   const data = pkg[lang];
+
+  // record visit on mount, and mark complete once the learner reaches the quiz
+  useEffect(() => {
+    visit(`/topics/${topic}/quiz/${pkg.slug}`, data.title);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (step === 2) complete(`quiz:${topic}/${pkg.slug}`, "quiz");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   const topicMeta = topics.find((t) => t.slug === topic);
   const Demo = pkg.demoSlug ? demoComponents[pkg.demoSlug] : null;

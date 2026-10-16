@@ -5,6 +5,7 @@ import { useLang } from "./LanguageProvider";
 import PageHero from "./PageHero";
 import Callout from "./Callout";
 import MathBehind from "./MathBehind";
+import ProgressTracker from "./ProgressTracker";
 import { getDemo, demoDetails } from "@/lib/demos";
 import { demoComponents } from "./demoComponents";
 import { topics } from "@/lib/content";
@@ -29,6 +30,12 @@ export default function DemoView({ slug }) {
 
   return (
     <div>
+      <ProgressTracker
+        visitHref={`/demos/${slug}`}
+        visitLabel={meta.title}
+        completeKey={`demo:${slug}`}
+        completeType="demo"
+      />
       <PageHero icon={demo.icon} title={meta.title} subtitle={meta.summary} />
       <div className="mx-auto max-w-4xl px-4 py-12">
         {topic && (
