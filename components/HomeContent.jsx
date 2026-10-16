@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useLang } from "@/components/LanguageProvider";
 import TopicCard from "@/components/TopicCard";
 import JourneyPanel from "@/components/JourneyPanel";
+import AuroraBackground from "@/components/immersive/AuroraBackground";
+import Reveal from "@/components/immersive/Reveal";
 import { LogoMark } from "@/components/Logo";
 import { site, topics, fields } from "@/lib/content";
 import { demoList, demosByTopic } from "@/lib/demos";
@@ -45,8 +47,9 @@ export default function HomeContent() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 text-white">
-        <div className="mx-auto max-w-5xl px-4 py-20 text-center">
+      <section className="relative overflow-hidden bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 text-white">
+        <AuroraBackground />
+        <div className="relative mx-auto max-w-5xl px-4 py-20 text-center">
           <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-lg">
             <LogoMark size={72} />
           </div>
@@ -97,7 +100,7 @@ export default function HomeContent() {
         <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-brand-600">🧭 {labels.order}</p>
         <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {topics.map((topic, i) => (
-            <div key={topic.slug} className="relative">
+            <Reveal key={topic.slug} delay={i * 70} className="relative">
               <span className="absolute -left-2 -top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white shadow">
                 {i + 1}
               </span>
@@ -108,7 +111,7 @@ export default function HomeContent() {
                 summary={topic[lang].summary}
                 doneKey={`topic:${topic.slug}`}
               />
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
