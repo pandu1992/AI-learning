@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { useLang } from "./LanguageProvider";
+import Confetti from "./immersive/Confetti";
 
 export default function Quiz({ questions }) {
   const { lang } = useLang();
   const [answers, setAnswers] = useState({}); // index -> selected option
   const [submitted, setSubmitted] = useState(false);
+  const [celebrate, setCelebrate] = useState(0); // bump to re-fire confetti
 
   const L = {
     id: {
@@ -45,6 +47,7 @@ export default function Quiz({ questions }) {
 
   return (
     <div className="rounded-2xl border border-brand-200 bg-white p-6 shadow-sm">
+      <Confetti fire={submitted && score === total ? celebrate : 0} />
       <h3 className="text-lg font-bold text-slate-900">📝 {L.title}</h3>
       <p className="mt-1 text-sm text-slate-600">{L.sub}</p>
 
@@ -112,7 +115,12 @@ export default function Quiz({ questions }) {
       <div className="mt-6 flex items-center gap-3">
         {!submitted ? (
           <button
-            onClick={() => answeredCount === total && setSubmitted(true)}
+            onClick={() => {
+              if (answeredCount !== total) return;
+              setSubmitted(true);
+              const s = questions.reduce((acc, q, i) => acc + (answers[i] === q.answer ? 1 : 0), 0);
+              if (s === total) setCelebrate((c) => c + 1);
+            }}
             disabled={answeredCount < total}
             className="rounded-lg bg-brand-600 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
           >

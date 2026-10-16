@@ -29,3 +29,67 @@ body {
 .prose-content li {
   margin-bottom: 0.35rem;
 }
+
+/* ============================================================
+   Immersive UI (Phase 2) — animated backgrounds, reveals, glow
+   ============================================================ */
+
+/* Animated aurora/gradient mesh for hero backgrounds */
+@keyframes aurora {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  50%  { transform: translate3d(3%, 2%, 0) rotate(8deg) scale(1.15); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+}
+.aurora-wrap { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.aurora-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.55;
+  animation: aurora 14s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Reveal on scroll (progressive enhancement; JS adds .in-view) */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.in-view { opacity: 1; transform: none; }
+
+/* Card hover glow + lift */
+.card-glow { position: relative; transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.card-glow:hover { transform: translateY(-4px); box-shadow: 0 14px 40px -12px rgba(0, 147, 208, 0.35); }
+
+/* Shiny gradient text */
+.text-gradient {
+  background: linear-gradient(90deg, #0093D0, #33b3e4, #F5A200, #0093D0);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 8s linear infinite;
+}
+@keyframes shimmer { to { background-position: 300% 0; } }
+
+/* Confetti pieces (quiz celebration) */
+@keyframes confetti-fall {
+  0%   { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+.confetti-piece {
+  position: fixed;
+  top: 0;
+  width: 9px; height: 14px;
+  z-index: 60;
+  animation: confetti-fall linear forwards;
+  pointer-events: none;
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob, .text-gradient { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .confetti-piece { display: none; }
+}

@@ -10,7 +10,7 @@ export default function TopicCard({ href, icon, title, summary, doneKey }) {
   return (
     <Link
       href={href}
-      className={`group relative flex flex-col rounded-2xl border bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md ${
+      className={`card-glow group relative flex flex-col rounded-2xl border bg-white p-6 shadow-sm ${
         done ? "border-green-300 hover:border-green-400" : "border-slate-200 hover:border-brand-400"
       }`}
     >
