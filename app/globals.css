@@ -93,3 +93,50 @@ body {
   .reveal { opacity: 1; transform: none; transition: none; }
   .confetti-piece { display: none; }
 }
+
+
+/* ============================================================
+   Dark mode (Phase 3) — cohesive global remap of common light
+   surfaces so the whole app darkens without editing every file.
+   ============================================================ */
+html.dark { color-scheme: dark; }
+html.dark body { background-color: #0b1220; color: #e2e8f0; }
+
+/* Surfaces: white / slate-50 cards & panels -> dark slate */
+html.dark .bg-white { background-color: #111a2e !important; }
+html.dark .bg-slate-50 { background-color: #0f1829 !important; }
+html.dark .bg-slate-100 { background-color: #1b2740 !important; }
+html.dark .bg-slate-900 { background-color: #060b16 !important; }
+
+/* Borders */
+html.dark .border-slate-200 { border-color: #243049 !important; }
+html.dark .border-slate-300 { border-color: #2d3b57 !important; }
+html.dark .border-slate-100 { border-color: #1b2740 !important; }
+
+/* Text */
+html.dark .text-slate-900 { color: #f1f5f9 !important; }
+html.dark .text-slate-800 { color: #e2e8f0 !important; }
+html.dark .text-slate-700 { color: #cbd5e1 !important; }
+html.dark .text-slate-600 { color: #aab6c7 !important; }
+html.dark .text-slate-500 { color: #8da0b8 !important; }
+html.dark .text-slate-400 { color: #6b7d96 !important; }
+
+/* Brand-tinted panels get a muted dark treatment */
+html.dark .bg-brand-50 { background-color: #0e2436 !important; }
+html.dark .bg-brand-100 { background-color: #123049 !important; }
+html.dark .border-brand-200 { border-color: #1d4a66 !important; }
+html.dark .border-brand-300 { border-color: #236085 !important; }
+
+/* Light gradient heroes -> deep brand gradient in dark */
+html.dark .from-brand-50 { --tw-gradient-from: #0b1a2b var(--tw-gradient-from-position) !important; }
+html.dark .to-amber-50 { --tw-gradient-to: #16130a var(--tw-gradient-to-position) !important; }
+html.dark .via-white { --tw-gradient-via: #0b1220 var(--tw-gradient-via-position) !important; }
+
+/* Soft colored status panels stay readable in dark */
+html.dark .bg-green-50 { background-color: #0e2a1c !important; }
+html.dark .bg-amber-50 { background-color: #2a2109 !important; }
+html.dark .bg-red-50 { background-color: #2a1316 !important; }
+
+/* Backdrop-blur header */
+html.dark .bg-white\/90 { background-color: rgba(11, 18, 32, 0.9) !important; }
+html.dark .bg-white\/95 { background-color: rgba(11, 18, 32, 0.95) !important; }
