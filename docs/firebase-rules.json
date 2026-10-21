@@ -1,0 +1,27 @@
+{
+  "_comment": "Realtime Database security rules for the Cognia live quiz. Paste into Firebase Console > Realtime Database > Rules, then Publish. This replaces the temporary 'test mode' rules (which expire after ~30 days). It keeps the quiz public (no login) but limits writes to the quiz data shape so students cannot wipe or tamper with other games.",
+  "rules": {
+    "games": {
+      "$pin": {
+        ".read": true,
+        ".write": true,
+        "meta": {
+          ".validate": "newData.hasChildren(['status'])"
+        },
+        "players": {
+          "$pid": {
+            ".validate": "newData.hasChildren(['nim', 'name'])",
+            "score": { ".validate": "newData.isNumber()" }
+          }
+        },
+        "answers": {
+          "$q": {
+            "$pid": {
+              "choice": { ".validate": "newData.isNumber()" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,11 +1,11 @@
-import LiveQuiz from "@/components/livequiz/LiveQuiz";
+import LiveQuizLanding from "@/components/livequiz/LiveQuizLanding";
 
 export const metadata = {
   title: "Kuis Live NLP — Cognia",
   description:
-    "Kuis live bergaya Kahoot untuk review kelas NLP: daftar peserta (NIM & nama), soal bertimer, papan skor langsung, dan ranking akhir.",
+    "Kuis live bergaya Kahoot untuk review kelas NLP, multi-perangkat: mahasiswa gabung dari HP/laptop dengan PIN, jawab secepat mungkin, papan skor langsung, dan ranking akhir (NIM & nama).",
 };
 
 export default function LiveQuizPage() {
-  return <LiveQuiz />;
+  return <LiveQuizLanding />;
 }
