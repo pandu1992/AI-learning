@@ -25,6 +25,7 @@ const topLevel = [
   { href: "/demos", id: "Demo", en: "Demos" },
   { href: "/case-studies", id: "Studi Kasus", en: "Case Studies" },
   { href: "/certification", id: "Sertifikasi", en: "Certification" },
+  { href: "/live-quiz", id: "Kuis Live", en: "Live Quiz" },
   { href: "/profile", id: "Profil", en: "Profile" },
 ];
 
