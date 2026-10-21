@@ -26,6 +26,7 @@ import EmbeddingsDemo from "./demos/EmbeddingsDemo";
 import AttentionDemo from "./demos/AttentionDemo";
 import NextTokenDemo from "./demos/NextTokenDemo";
 import NerDemo from "./demos/NerDemo";
+import AgenticAiDemo from "./demos/AgenticAiDemo";
 import LatentSpaceDemo from "./demos/LatentSpaceDemo";
 import SpeechSpectrogramDemo from "./demos/SpeechSpectrogramDemo";
 import GradientDescentDemo from "./demos/GradientDescentDemo";
@@ -61,6 +62,7 @@ export const demoComponents = {
   attention: AttentionDemo,
   "next-token": NextTokenDemo,
   ner: NerDemo,
+  "agentic-ai": AgenticAiDemo,
   "latent-space": LatentSpaceDemo,
   "speech-spectrogram": SpeechSpectrogramDemo,
   "gradient-descent": GradientDescentDemo,
