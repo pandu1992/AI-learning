@@ -1,10 +1,11 @@
 "use client";
 
 import { useLang } from "@/components/LanguageProvider";
-import PageHero from "@/components/PageHero";
+import ImmersiveHero from "@/components/immersive/ImmersiveHero";
 import TopicCard from "@/components/TopicCard";
 import { demosByTopic } from "@/lib/demos";
 import { topics } from "@/lib/content";
+import { getTheme } from "@/lib/immersiveThemes";
 
 export default function DemosPage() {
   const { lang } = useLang();
@@ -21,10 +22,17 @@ export default function DemosPage() {
 
   // Only topics that actually have demos, in curriculum order.
   const topicOrder = topics.filter((t) => demosByTopic[t.slug]?.length);
+  const theme = getTheme("demos");
 
   return (
     <div>
-      <PageHero icon="🧪" title={labels.title} subtitle={labels.sub} />
+      <ImmersiveHero
+        theme={theme}
+        icon="🧪"
+        title={labels.title}
+        subtitle={labels.sub}
+        eyebrow={theme.eyebrow[lang]}
+      />
       <div className="mx-auto max-w-5xl px-4 py-12">
         {topicOrder.map((topic) => (
           <section key={topic.slug} className="mb-12">

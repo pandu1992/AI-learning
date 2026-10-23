@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useLang } from "./LanguageProvider";
-import PageHero from "./PageHero";
+import ImmersiveHero from "./immersive/ImmersiveHero";
+import Reveal from "./immersive/Reveal";
 import YouTubeEmbed from "./YouTubeEmbed";
 import TopicCard from "./TopicCard";
 import TopicDiagram from "./TopicDiagram";
@@ -12,6 +13,7 @@ import { quizzes } from "@/lib/quizzes";
 import { topics } from "@/lib/content";
 import { demosByTopic } from "@/lib/demos";
 import { getPackages } from "@/lib/guidedPackages";
+import { getTheme } from "@/lib/immersiveThemes";
 
 export default function TopicView({ body, slug }) {
   const { lang } = useLang();
@@ -19,6 +21,7 @@ export default function TopicView({ body, slug }) {
   const quiz = slug && quizzes[slug] ? quizzes[slug][lang] : null;
   const topicDemos = (slug && demosByTopic[slug]) || [];
   const packages = (slug && getPackages(slug)) || [];
+  const theme = getTheme(slug);
 
   // Sequential curriculum navigation (order = position in the topics array).
   const idx = topics.findIndex((t) => t.slug === slug);
@@ -38,13 +41,34 @@ export default function TopicView({ body, slug }) {
         completeKey={`topic:${slug}`}
         completeType="topic"
       />
-      <PageHero icon={body.icon} title={data.title} subtitle={data.subtitle} />
+      <ImmersiveHero
+        theme={theme}
+        icon={body.icon}
+        title={data.title}
+        subtitle={data.subtitle}
+        eyebrow={theme.eyebrow?.[lang]}
+      />
       <article className="mx-auto max-w-4xl px-4 py-12">
         <TopicDiagram slug={slug} />
 
-        <div className="prose-content">
+        {/* Scroll-storytelling: each section reveals as you scroll, alternating
+            sides, with a chapter number for a guided narrative feel. */}
+        <div className="prose-content relative mt-6">
           {data.sections.map((section, i) => (
-            <section key={i} className="mb-8">
+            <Reveal
+              key={i}
+              variant={i % 2 === 0 ? "left" : "right"}
+              delay={60}
+              as="section"
+              className="group relative mb-10 rounded-2xl border border-transparent pl-12 transition hover:border-slate-200 hover:bg-slate-50/60 sm:pl-14"
+            >
+              <span
+                className="absolute left-0 top-0 flex h-9 w-9 items-center justify-center rounded-full text-sm font-black text-white shadow-md"
+                style={{ background: `rgb(${theme.accent[0]},${theme.accent[1]},${theme.accent[2]})` }}
+                aria-hidden="true"
+              >
+                {i + 1}
+              </span>
               <h2 className="mb-3 text-xl font-bold text-slate-900">{section.heading}</h2>
               {section.paragraphs?.map((p, j) => (
                 <p key={j} className="text-slate-700">
@@ -58,7 +82,7 @@ export default function TopicView({ body, slug }) {
                   ))}
                 </ul>
               )}
-            </section>
+            </Reveal>
           ))}
         </div>
 

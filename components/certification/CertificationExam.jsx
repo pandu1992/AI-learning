@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useLang } from "../LanguageProvider";
-import PageHero from "../PageHero";
+import ImmersiveHero from "../immersive/ImmersiveHero";
 import { certQuestions, CERT_TOTAL } from "@/lib/certQuestions";
 import { generateCertificate, scoreTier } from "@/lib/certificate";
+import { getTheme } from "@/lib/immersiveThemes";
 
 const EXAM_SECONDS = 90 * 60; // 1 hour 30 minutes
 
@@ -20,6 +21,7 @@ export default function CertificationExam() {
   const [result, setResult] = useState(null); // { score, tier }
   const [downloading, setDownloading] = useState(false);
   const timerRef = useRef(null);
+  const theme = getTheme("certification");
 
   const L = {
     id: {
@@ -182,7 +184,7 @@ export default function CertificationExam() {
   if (phase === "intro") {
     return (
       <div>
-        <PageHero icon="🎓" title={L.title} subtitle={L.subtitle} />
+        <ImmersiveHero theme={theme} icon="🎓" title={L.title} subtitle={L.subtitle} eyebrow={theme.eyebrow[lang]} />
         <div className="mx-auto max-w-2xl px-4 py-12">
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-bold text-slate-900">📋 {L.rulesTitle}</h2>
@@ -228,7 +230,7 @@ export default function CertificationExam() {
     const pct = Math.round((result.score / CERT_TOTAL) * 100);
     return (
       <div>
-        <PageHero icon="🏆" title={L.resultTitle} subtitle={name.trim()} />
+        <ImmersiveHero theme={theme} icon="🏆" title={L.resultTitle} subtitle={name.trim()} compact />
         <div className="mx-auto max-w-2xl px-4 py-12">
           {result.auto && (
             <p className="mb-4 rounded-lg bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800">⏰ {L.timeUp}</p>

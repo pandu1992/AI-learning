@@ -16,15 +16,28 @@
 
 import { useEffect, useRef } from "react";
 
-export default function NeuralCanvas({ className = "", density = 1, interactive = true }) {
+export default function NeuralCanvas({ className = "", density = 1, interactive = true, colors }) {
   const canvasRef = useRef(null);
   const rafRef = useRef(0);
+  // `colors` optionally themes the field: { nodes:[hex...], link:[r,g,b],
+  // accent:[r,g,b], orb:[r,g,b] }. Falls back to the default brand palette.
+  const theme = {
+    nodes: colors?.nodes || ["#33b3e4", "#0093D0", "#F5A200", "#66cbef"],
+    link: colors?.link || [51, 179, 228],
+    accent: colors?.accent || [245, 162, 0],
+    orb: colors?.orb || [102, 203, 239],
+  };
+  const themeKey = JSON.stringify(theme);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return undefined;
+
+    const LINK = theme.link;
+    const ACCENT = theme.accent;
+    const ORB = theme.orb;
 
     const reduced =
       typeof window !== "undefined" &&
@@ -36,7 +49,7 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
     let dpr = 1;
     const parent = canvas.parentElement || canvas;
 
-    const COLORS = ["#33b3e4", "#0093D0", "#F5A200", "#66cbef"];
+    const COLORS = theme.nodes;
 
     let nodes = [];
     const pointer = { x: -9999, y: -9999, active: false, t: 0 };
@@ -146,7 +159,7 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
           const d2 = dx * dx + dy * dy;
           if (d2 < LINK_DIST2) {
             const a = (1 - Math.sqrt(d2) / LINK_DIST) * 0.5;
-            ctx.strokeStyle = `rgba(51,179,228,${a.toFixed(3)})`;
+            ctx.strokeStyle = `rgba(${LINK[0]},${LINK[1]},${LINK[2]},${a.toFixed(3)})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(n.x, n.y);
@@ -165,7 +178,7 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
           const d2 = dx * dx + dy * dy;
           if (d2 < POINTER_RADIUS2) {
             const a = (1 - Math.sqrt(d2) / POINTER_RADIUS) * 0.9;
-            ctx.strokeStyle = `rgba(245,162,0,${a.toFixed(3)})`; // brand orange
+            ctx.strokeStyle = `rgba(${ACCENT[0]},${ACCENT[1]},${ACCENT[2]},${a.toFixed(3)})`; // accent
             ctx.lineWidth = 1.2;
             ctx.beginPath();
             ctx.moveTo(n.x, n.y);
@@ -191,8 +204,8 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
         pointer.t += 0.08;
         const grd = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 60);
         grd.addColorStop(0, "rgba(255,255,255,0.55)");
-        grd.addColorStop(0.3, "rgba(102,203,239,0.35)");
-        grd.addColorStop(1, "rgba(102,203,239,0)");
+        grd.addColorStop(0.3, `rgba(${ORB[0]},${ORB[1]},${ORB[2]},0.35)`);
+        grd.addColorStop(1, `rgba(${ORB[0]},${ORB[1]},${ORB[2]},0)`);
         ctx.fillStyle = grd;
         ctx.beginPath();
         ctx.arc(pointer.x, pointer.y, 60, 0, Math.PI * 2);
@@ -209,7 +222,7 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
       for (let s = 0; s < shockwaves.length; s++) {
         const sw = shockwaves[s];
         const a = 1 - sw.r / sw.max;
-        ctx.strokeStyle = `rgba(245,162,0,${(a * 0.6).toFixed(3)})`;
+        ctx.strokeStyle = `rgba(${ACCENT[0]},${ACCENT[1]},${ACCENT[2]},${(a * 0.6).toFixed(3)})`;
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
@@ -285,7 +298,8 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
       parent.removeEventListener("touchmove", onMove);
       parent.removeEventListener("touchend", onLeave);
     };
-  }, [density, interactive]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [density, interactive, themeKey]);
 
   return (
     <canvas
