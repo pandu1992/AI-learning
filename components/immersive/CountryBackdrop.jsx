@@ -4,133 +4,118 @@
 // in each language, the matching scene cross-fades in (Indonesia → Borobudur +
 // Balinese gate, China → Great Wall + pagoda, Japan → Mt. Fuji + torii +
 // sakura, UK → Big Ben skyline, Saudi → desert + mosque). Pure SVG, no assets.
-// Absolutely positioned to fill the hero; sits behind the particles/robot.
-// Honors reduced-motion only for the drifting petals/clouds (scenes still show).
+// Colored silhouettes with a soft glow so they read clearly against the blue
+// hero without overpowering the robot. Honors reduced-motion for the petals.
 
 const SCENES = {
-  // Indonesia — Borobudur stupa + Balinese split gate (candi bentar)
+  // Indonesia — Borobudur stupa + Balinese split gate (candi bentar), warm gold
   id: (
     <g>
-      <ellipse cx="300" cy="330" rx="180" ry="26" fill="#ffffff" opacity="0.06" />
-      {/* Borobudur: stepped pyramid + central stupa */}
-      <g fill="#ffffff" opacity="0.14">
-        <rect x="200" y="300" width="200" height="30" rx="6" />
-        <rect x="218" y="276" width="164" height="26" rx="6" />
-        <rect x="236" y="254" width="128" height="24" rx="6" />
-        <rect x="256" y="234" width="88" height="22" rx="6" />
-        <path d="M300 200 q24 2 24 34 l-48 0 q0 -32 24 -34 Z" />
-        <circle cx="300" cy="196" r="7" />
+      <circle cx="120" cy="90" r="34" fill="#fde68a" opacity="0.5" />
+      <g fill="#f8cf8f" opacity="0.85" stroke="#e7a94e" strokeWidth="1.5">
+        <rect x="190" y="300" width="220" height="34" rx="8" />
+        <rect x="210" y="272" width="180" height="30" rx="8" />
+        <rect x="232" y="246" width="136" height="28" rx="8" />
+        <rect x="254" y="222" width="92" height="26" rx="8" />
+        <path d="M300 184 q26 2 26 38 l-52 0 q0 -36 26 -38 Z" />
+        <circle cx="300" cy="180" r="8" />
       </g>
-      {/* small bell stupas */}
-      <g fill="#ffffff" opacity="0.1">
-        <path d="M250 254 q8 0 8 12 l-16 0 q0 -12 8 -12Z" />
-        <path d="M350 254 q8 0 8 12 l-16 0 q0 -12 8 -12Z" />
+      <g fill="#f3c079" opacity="0.85">
+        <path d="M248 246 q9 0 9 14 l-18 0 q0 -14 9 -14Z" />
+        <path d="M352 246 q9 0 9 14 l-18 0 q0 -14 9 -14Z" />
       </g>
-      {/* Balinese candi bentar split gates on the right */}
-      <g fill="#ffffff" opacity="0.12">
-        <path d="M470 330 L470 210 l24 0 l6 14 l0 106 Z" />
-        <path d="M560 330 L560 210 l-24 0 l-6 14 l0 106 Z" />
-      </g>
-      <g fill="#ffffff" opacity="0.08">
-        <circle cx="120" cy="90" r="30" />
+      {/* Balinese candi bentar split gate (right) */}
+      <g fill="#e6a85c" opacity="0.8" stroke="#c98334" strokeWidth="1.5">
+        <path d="M470 334 L470 206 l26 0 l6 16 l0 112 Z" />
+        <path d="M566 334 L566 206 l-26 0 l-6 16 l0 112 Z" />
       </g>
     </g>
   ),
 
-  // China — Great Wall over mountains + a pagoda
+  // China — Great Wall over mountains + pagoda, red/gold
   zh: (
     <g>
-      {/* mountains */}
-      <path d="M0 330 L120 220 L220 300 L330 200 L460 310 L600 240 L600 330 Z" fill="#ffffff" opacity="0.10" />
-      {/* great wall ridge with crenellations */}
-      <g fill="#ffffff" opacity="0.16">
-        <path d="M40 300 L120 250 L210 290 L320 230 L430 288 L560 236 L560 300 Z" />
-        <g>
-          {[60, 150, 250, 360, 470].map((x, i) => (
-            <rect key={i} x={x} y={238 - (i % 2) * 6} width="18" height="20" />
-          ))}
-        </g>
-        {/* watchtower */}
-        <rect x="300" y="196" width="40" height="44" />
-        <rect x="296" y="188" width="48" height="10" />
+      <circle cx="500" cy="88" r="30" fill="#ffd9c0" opacity="0.5" />
+      <path d="M0 334 L120 214 L220 300 L330 196 L460 308 L600 236 L600 334 Z" fill="#7f1d1d" opacity="0.5" />
+      <g fill="#b91c1c" opacity="0.9" stroke="#7f1d1d" strokeWidth="1.5">
+        <path d="M30 304 L120 246 L210 292 L320 226 L440 290 L580 232 L580 304 Z" />
+        {[55, 150, 255, 365, 480].map((x, i) => (
+          <rect key={i} x={x} y={236 - (i % 2) * 8} width="20" height="22" />
+        ))}
+        <rect x="300" y="190" width="42" height="46" />
+        <rect x="294" y="182" width="54" height="10" />
       </g>
       {/* pagoda */}
-      <g fill="#ffffff" opacity="0.13">
-        <path d="M110 300 l40 0 l-6 -16 l-28 0 Z" />
-        <path d="M116 284 l28 0 l-6 -16 l-16 0 Z" />
-        <path d="M122 268 l16 0 l-8 -16 Z" />
-        <rect x="126" y="300" width="8" height="18" />
+      <g fill="#dc2626" opacity="0.9" stroke="#fbbf24" strokeWidth="1.2">
+        <path d="M104 304 l48 0 l-8 -18 l-32 0 Z" />
+        <path d="M112 286 l32 0 l-7 -18 l-18 0 Z" />
+        <path d="M119 268 l18 0 l-9 -18 Z" />
+        <rect x="124" y="304" width="8" height="20" />
       </g>
-      <circle cx="500" cy="90" r="26" fill="#ffffff" opacity="0.1" />
     </g>
   ),
 
-  // Japan — Mt. Fuji + torii gate (sakura petals added as animated layer below)
+  // Japan — Mt. Fuji + torii gate + sun, blue mountain / red torii
   ja: (
     <g>
+      <circle cx="466" cy="112" r="40" fill="#fecaca" opacity="0.65" />
       {/* Mt. Fuji */}
-      <path d="M140 330 L300 150 L460 330 Z" fill="#ffffff" opacity="0.12" />
-      <path d="M258 206 L300 150 L344 206 q-22 14 -44 0 q-22 -14 -42 0 Z" fill="#ffffff" opacity="0.22" />
-      {/* sun disc */}
-      <circle cx="470" cy="120" r="34" fill="#ffffff" opacity="0.14" />
-      {/* torii gate */}
-      <g fill="#ffffff" opacity="0.18">
-        <rect x="410" y="250" width="150" height="12" rx="3" />
-        <rect x="420" y="266" width="130" height="8" rx="2" />
-        <rect x="430" y="262" width="12" height="68" />
-        <rect x="528" y="262" width="12" height="68" />
+      <path d="M120 334 L300 142 L480 334 Z" fill="#60a5fa" opacity="0.55" />
+      <path d="M252 206 L300 142 L350 206 q-24 16 -48 0 q-24 -16 -50 0 Z" fill="#ffffff" opacity="0.9" />
+      {/* torii gate (vermilion) */}
+      <g fill="#e4002b" opacity="0.9">
+        <rect x="404" y="244" width="162" height="14" rx="4" />
+        <rect x="416" y="262" width="138" height="10" rx="3" />
+        <rect x="428" y="258" width="14" height="76" />
+        <rect x="528" y="258" width="14" height="76" />
       </g>
     </g>
   ),
 
-  // UK — London skyline with Big Ben
+  // UK — London skyline with Big Ben + London Eye, cool stone
   en: (
-    <g fill="#ffffff">
-      <g opacity="0.12">
-        {/* skyline blocks */}
-        <rect x="40" y="250" width="40" height="80" />
-        <rect x="90" y="270" width="30" height="60" />
-        <rect x="130" y="240" width="46" height="90" />
-        <rect x="430" y="260" width="40" height="70" />
-        <rect x="480" y="240" width="34" height="90" />
-        <rect x="520" y="268" width="40" height="62" />
-        {/* London Eye hint */}
-        <circle cx="210" cy="250" r="40" fill="none" stroke="#ffffff" strokeWidth="3" opacity="0.9" />
+    <g>
+      <g fill="#93c5fd" opacity="0.7">
+        <rect x="30" y="248" width="42" height="86" />
+        <rect x="84" y="270" width="32" height="64" />
+        <rect x="126" y="236" width="48" height="98" />
+        <rect x="430" y="258" width="42" height="76" />
+        <rect x="482" y="236" width="36" height="98" />
+        <rect x="526" y="266" width="42" height="68" />
       </g>
+      <circle cx="212" cy="250" r="44" fill="none" stroke="#bfdbfe" strokeWidth="4" opacity="0.85" />
+      {[0, 45, 90, 135].map((a, i) => (
+        <line key={i} x1="212" y1="250" x2={212 + 44 * Math.cos((a * Math.PI) / 180)} y2={250 + 44 * Math.sin((a * Math.PI) / 180)} stroke="#bfdbfe" strokeWidth="2" opacity="0.6" />
+      ))}
       {/* Big Ben */}
-      <g opacity="0.2">
-        <rect x="300" y="170" width="34" height="160" />
-        <path d="M300 170 L317 140 L334 170 Z" />
-        <circle cx="317" cy="196" r="9" fill="none" stroke="#ffffff" strokeWidth="3" />
+      <g fill="#cbd5e1" opacity="0.92">
+        <rect x="300" y="160" width="38" height="174" />
+        <path d="M300 160 L319 128 L338 160 Z" />
+        <circle cx="319" cy="188" r="10" fill="#1e293b" opacity="0.6" />
       </g>
     </g>
   ),
 
-  // Saudi Arabia — desert dunes + mosque with domes & minarets
+  // Saudi Arabia — desert dunes + mosque with domes & minarets, warm sand
   ar: (
     <g>
-      {/* dunes */}
-      <path d="M0 330 Q150 280 300 310 T600 300 L600 330 Z" fill="#ffffff" opacity="0.1" />
-      <path d="M0 330 Q200 300 360 320 T600 315 L600 330 Z" fill="#ffffff" opacity="0.07" />
+      <path d="M460 104 a28 28 0 1 0 11 45 a21 21 0 1 1 -11 -45 Z" fill="#fde68a" opacity="0.7" />
+      <path d="M0 334 Q150 280 300 312 T600 300 L600 334 Z" fill="#eab308" opacity="0.35" />
+      <path d="M0 334 Q200 302 360 322 T600 316 L600 334 Z" fill="#ca8a04" opacity="0.3" />
       {/* mosque */}
-      <g fill="#ffffff" opacity="0.16">
-        <rect x="250" y="250" width="100" height="70" />
-        {/* central dome */}
-        <path d="M262 250 q38 -54 76 0 Z" />
-        <rect x="298" y="190" width="4" height="12" />
-        {/* side minarets */}
-        <rect x="236" y="214" width="10" height="106" />
-        <path d="M236 214 q5 -16 10 0 Z" />
-        <rect x="354" y="214" width="10" height="106" />
-        <path d="M354 214 q5 -16 10 0 Z" />
+      <g fill="#f5f0e6" opacity="0.9" stroke="#d6c7a1" strokeWidth="1.2">
+        <rect x="246" y="250" width="108" height="84" />
+        <path d="M258 250 q42 -58 84 0 Z" />
+        <rect x="298" y="186" width="4" height="12" />
+        <rect x="230" y="208" width="11" height="126" />
+        <path d="M230 208 q5.5 -18 11 0 Z" />
+        <rect x="359" y="208" width="11" height="126" />
+        <path d="M359 208 q5.5 -18 11 0 Z" />
       </g>
-      {/* crescent moon */}
-      <path d="M470 100 a26 26 0 1 0 10 42 a20 20 0 1 1 -10 -42 Z" fill="#ffffff" opacity="0.16" />
-      {/* stars */}
-      <g fill="#ffffff" opacity="0.2">
-        <circle cx="120" cy="90" r="2" />
-        <circle cx="160" cy="120" r="1.6" />
-        <circle cx="90" cy="140" r="1.6" />
+      <g fill="#fef3c7" opacity="0.9">
+        <circle cx="110" cy="92" r="2.4" />
+        <circle cx="156" cy="124" r="2" />
+        <circle cx="86" cy="146" r="2" />
       </g>
     </g>
   ),
@@ -144,8 +129,8 @@ export default function CountryBackdrop({ code }) {
           key={key}
           viewBox="0 0 600 340"
           preserveAspectRatio="xMidYMax meet"
-          className="absolute bottom-0 left-1/2 h-[70%] w-[min(1100px,100%)] -translate-x-1/2 transition-opacity duration-[1200ms] ease-in-out"
-          style={{ opacity: key === code ? 1 : 0 }}
+          className="absolute bottom-0 left-1/2 h-[78%] w-[min(1200px,110%)] -translate-x-1/2 opacity-0 transition-opacity duration-[1200ms] ease-in-out"
+          style={{ opacity: key === code ? 0.9 : 0 }}
         >
           {SCENES[key]}
           {key === "ja" && <SakuraPetals />}
@@ -165,7 +150,7 @@ function SakuraPetals() {
     <g>
       {petals.map((p, i) => (
         <g key={i} className="sakura-petal" style={{ transformBox: "fill-box", animationDelay: `${p.d}s` }}>
-          <ellipse cx={p.x} cy="20" rx="5" ry="3" fill="#ffd6e7" opacity="0.5" transform={`rotate(${i * 40} ${p.x} 20)`} />
+          <ellipse cx={p.x} cy="20" rx="6" ry="3.4" fill="#ffb7d5" opacity="0.8" transform={`rotate(${i * 40} ${p.x} 20)`} />
         </g>
       ))}
     </g>
