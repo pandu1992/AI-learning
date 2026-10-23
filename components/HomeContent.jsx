@@ -10,7 +10,7 @@ import Spotlight from "@/components/immersive/Spotlight";
 import Parallax from "@/components/immersive/Parallax";
 import TiltCard from "@/components/immersive/TiltCard";
 import Reveal from "@/components/immersive/Reveal";
-import { LogoMark } from "@/components/Logo";
+import RobotGreeter from "@/components/immersive/RobotGreeter";
 import { site, topics, fields } from "@/lib/content";
 import { demoList, demosByTopic } from "@/lib/demos";
 
@@ -56,11 +56,11 @@ export default function HomeContent() {
       <Spotlight className="relative overflow-hidden bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 text-white">
         <AuroraBackground />
         <NeuralCanvas className="opacity-80" />
-        <Parallax speed={0.18} className="relative mx-auto max-w-5xl px-4 py-24 text-center sm:py-28">
-          <div className="floaty mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-lg ring-1 ring-white/30">
-            <LogoMark size={72} />
-          </div>
-          <p className="mt-5 text-sm font-semibold uppercase tracking-widest text-brand-100">
+        <Parallax speed={0.18} className="relative mx-auto max-w-5xl px-4 py-20 text-center sm:py-24">
+          {/* Home-only showpiece: AI robot that watches the cursor & greets in
+              5 languages (ID/ZH/JA/EN/AR), optionally speaking aloud. */}
+          <RobotGreeter />
+          <p className="mt-8 text-sm font-semibold uppercase tracking-widest text-brand-100">
             BINUS Online · Computer Science
           </p>
           <h1 className="mt-2 text-4xl font-extrabold tracking-tight drop-shadow-sm sm:text-6xl">
