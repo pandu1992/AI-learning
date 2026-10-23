@@ -327,38 +327,71 @@ export default function RobotGreeter({ onLangChange }) {
           aria-label="AI robot assistant"
           role="img"
         >
-          {/* ===== BODY / TORSO ===== */}
-          <g>
-            <rect x="160" y="238" width="40" height="28" rx="10" fill="#cbd5e1" />
-            <path
-              d="M96 300 Q96 262 140 258 L220 258 Q264 262 264 300 L264 404 Q264 424 244 424 L116 424 Q96 424 96 404 Z"
-              fill="#eef4fb"
-              stroke="#0093D0"
-              strokeWidth="4"
-            />
-            <circle cx="180" cy="336" r="26" fill="#0b2436" />
-            <circle cx="180" cy="336" r="15" fill="#33b3e4" className="robot-core" />
-            <circle cx="180" cy="336" r="7" fill="#eaf8ff" />
+          <defs>
+            {/* soft white-panel shading */}
+            <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#ffffff" />
+              <stop offset="0.55" stopColor="#eaf1f8" />
+              <stop offset="1" stopColor="#c9d6e6" />
+            </linearGradient>
+            <linearGradient id="panelDark" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#dfe8f2" />
+              <stop offset="1" stopColor="#aebccd" />
+            </linearGradient>
+            {/* dark glass face */}
+            <radialGradient id="face" cx="0.4" cy="0.35" r="0.9">
+              <stop offset="0" stopColor="#15324a" />
+              <stop offset="1" stopColor="#081521" />
+            </radialGradient>
+            {/* glowing cyan for neck mesh + accents */}
+            <linearGradient id="cyan" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#7fe3ff" />
+              <stop offset="1" stopColor="#0ea5e9" />
+            </linearGradient>
+            {/* hexagonal mesh for the neck */}
+            <pattern id="hexmesh" width="18" height="20.8" patternUnits="userSpaceOnUse" patternTransform="scale(0.7)">
+              <path d="M9 0 L18 5.2 L18 15.6 L9 20.8 L0 15.6 L0 5.2 Z" fill="none" stroke="#2bb6e0" strokeWidth="1.1" opacity="0.7" />
+            </pattern>
+            <clipPath id="neckclip">
+              <path d="M150 236 q30 10 60 0 l-6 44 q-24 12 -48 0 Z" />
+            </clipPath>
+          </defs>
 
-            {/* ===== Cognia chest badge — EXACT LogoMark geometry (64x64) ===== */}
-            <g transform="translate(98 280)">
-              <circle cx="20" cy="20" r="23" fill="#ffffff" stroke="#0093D0" strokeWidth="2" />
-              {/* nested logo at true proportions, scaled into the badge (40x40) */}
-              <svg x="4" y="4" width="32" height="32" viewBox="0 0 64 64">
-                {/* crosshair guides (subtle) */}
+          {/* ===== SHOULDERS / TORSO (semi-realistic paneled) ===== */}
+          <g>
+            {/* shoulder shells */}
+            <path d="M70 420 Q74 330 150 320 L210 320 Q286 330 290 420 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+            {/* collar / upper chest plate */}
+            <path d="M120 332 Q180 312 240 332 L250 372 Q180 352 110 372 Z" fill="url(#panelDark)" stroke="#9fb4ca" strokeWidth="1.5" />
+            {/* glowing hex neck (behind the chin) */}
+            <g clipPath="url(#neckclip)">
+              <rect x="144" y="230" width="72" height="60" fill="#06283a" />
+              <rect x="144" y="230" width="72" height="60" fill="url(#hexmesh)" />
+              {/* a few lit hex cells */}
+              <g className="robot-core" fill="#67e8ff" opacity="0.9">
+                <circle cx="168" cy="250" r="3.2" />
+                <circle cx="192" cy="262" r="3.2" />
+                <circle cx="176" cy="274" r="3.2" />
+                <circle cx="200" cy="246" r="2.6" />
+              </g>
+            </g>
+            {/* chest core light */}
+            <circle cx="180" cy="392" r="16" fill="#0b2436" />
+            <circle cx="180" cy="392" r="9" fill="url(#cyan)" className="robot-core" />
+
+            {/* ===== Cognia chest badge — EXACT LogoMark geometry ===== */}
+            <g transform="translate(206 366)">
+              <circle cx="18" cy="18" r="20" fill="#ffffff" stroke="#0093D0" strokeWidth="2" />
+              <svg x="3" y="3" width="30" height="30" viewBox="0 0 64 64">
                 <line x1="4" y1="30" x2="60" y2="30" stroke="#9CA3AF" strokeWidth="1" opacity="0.35" />
                 <line x1="22" y1="6" x2="22" y2="56" stroke="#9CA3AF" strokeWidth="1" opacity="0.35" />
-                {/* crosshair end dots */}
                 <circle cx="5" cy="30" r="2.2" fill="#E4002B" />
                 <circle cx="59" cy="30" r="2.2" fill="#E4002B" />
                 <circle cx="22" cy="7" r="2.2" fill="#E4002B" />
                 <circle cx="22" cy="55" r="2.2" fill="#E4002B" />
-                {/* grey orbit ring */}
                 <path d="M34 16 A 16 16 0 1 1 14 40" fill="none" stroke="#9CA3AF" strokeWidth="5" strokeLinecap="round" />
-                {/* orange planet with highlight */}
                 <circle cx="22" cy="30" r="10" fill="#F5A200" />
                 <circle cx="18.5" cy="26.5" r="3" fill="#ffffff" opacity="0.85" />
-                {/* pixel trail dissolving right */}
                 <g fill="#9CA3AF">
                   <rect x="34" y="22" width="4" height="4" />
                   <rect x="39" y="26" width="4" height="4" />
@@ -367,66 +400,77 @@ export default function RobotGreeter({ onLangChange }) {
                   <rect x="44" y="30" width="3" height="3" opacity="0.7" />
                   <rect x="45" y="24" width="2.5" height="2.5" opacity="0.6" />
                   <rect x="49" y="28" width="2" height="2" opacity="0.5" />
-                  <rect x="50" y="22" width="2" height="2" opacity="0.4" />
                 </g>
               </svg>
             </g>
 
-            <rect x="150" y="376" width="38" height="7" rx="3.5" fill="#cbd5e1" />
-            <rect x="150" y="390" width="38" height="7" rx="3.5" fill="#cbd5e1" />
-            <rect x="196" y="376" width="44" height="7" rx="3.5" fill="#cbd5e1" />
-            <rect x="196" y="390" width="44" height="7" rx="3.5" fill="#cbd5e1" />
-
             {/* LEFT arm (gentle idle sway) */}
-            <g className="robot-arm-left" style={{ transformOrigin: "83px 292px" }}>
-              <rect x="70" y="284" width="26" height="86" rx="13" fill="#eef4fb" stroke="#0093D0" strokeWidth="4" />
-              <circle cx="83" cy="378" r="15" fill="#0093D0" />
+            <g className="robot-arm-left" style={{ transformOrigin: "86px 340px" }}>
+              <path d="M70 348 q-16 2 -16 34 l0 40 q0 16 16 16 l14 0 l0 -90 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+              <circle cx="72" cy="382" r="6" fill="url(#cyan)" className="robot-core" />
             </g>
             {/* RIGHT arm (waves on click) */}
-            <g className={`robot-arm ${waving ? "robot-arm-wave" : ""}`} style={{ transformOrigin: "277px 292px" }}>
-              <rect x="264" y="284" width="26" height="86" rx="13" fill="#eef4fb" stroke="#0093D0" strokeWidth="4" />
-              <circle cx="277" cy="378" r="15" fill="#F5A200" />
+            <g className={`robot-arm ${waving ? "robot-arm-wave" : ""}`} style={{ transformOrigin: "274px 340px" }}>
+              <path d="M290 348 q16 2 16 34 l0 40 q0 16 -16 16 l-14 0 l0 -90 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+              <circle cx="288" cy="382" r="6" fill="#F5A200" />
             </g>
           </g>
 
           {/* ===== HEAD (idle-look wrapper + cursor-tracking inner) ===== */}
           <g className={!near && !paused ? "robot-idle-look" : ""} style={{ transformOrigin: "180px 150px" }}>
           <g ref={headRef} className="robot-head" style={{ transformOrigin: "180px 150px", transition: "transform 0.12s ease-out" }}>
-            <line x1="180" y1="36" x2="180" y2="64" stroke="#cbd5e1" strokeWidth="5" strokeLinecap="round" />
-            <circle cx="180" cy="30" r="9" fill="#F5A200" className="robot-antenna" />
-            <rect x="96" y="62" width="168" height="150" rx="38" fill="#eef4fb" stroke="#0093D0" strokeWidth="4" />
-            <rect x="80" y="112" width="16" height="50" rx="7" fill="#0093D0" />
-            <rect x="264" y="112" width="16" height="50" rx="7" fill="#0093D0" />
-            <rect x="116" y="86" width="128" height="104" rx="24" fill="#0b2436" />
+            {/* antenna sensor */}
+            <line x1="180" y1="34" x2="180" y2="58" stroke="#b7c6d8" strokeWidth="5" strokeLinecap="round" />
+            <circle cx="180" cy="28" r="8" fill="#F5A200" className="robot-antenna" />
 
-            <rect
-              x="138" y="108" width="34" height="7" rx="3.5" fill="#33b3e4"
-              style={{ transform: expressive ? "translateY(-5px)" : "none", transition: "transform 0.2s ease" }}
-            />
-            <rect
-              x="188" y="108" width="34" height="7" rx="3.5" fill="#33b3e4"
-              style={{ transform: expressive ? "translateY(-5px)" : "none", transition: "transform 0.2s ease" }}
-            />
+            {/* cranium — paneled humanoid skull */}
+            <path d="M104 150 Q104 60 180 56 Q256 60 256 150 Q256 196 214 214 L146 214 Q104 196 104 150 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2.5" />
+            {/* top seam + side panel seams */}
+            <path d="M180 56 L180 96 M120 104 Q180 86 240 104" fill="none" stroke="#b9c7d8" strokeWidth="2" opacity="0.8" />
+            <path d="M118 150 Q180 140 242 150" fill="none" stroke="#b9c7d8" strokeWidth="1.5" opacity="0.6" />
 
-            <g style={{ transformOrigin: "155px 134px", transform: expressive ? "scale(1.12)" : "scale(1)", transition: "transform 0.2s ease" }}>
-              <circle cx="155" cy="134" r="18" fill="#0a1a28" stroke="#33b3e4" strokeWidth="2.5" />
+            {/* circular headphone ear pieces (both sides) */}
+            <g>
+              <circle cx="110" cy="150" r="26" fill="url(#panelDark)" stroke="#8aa0b8" strokeWidth="2.5" />
+              <circle cx="110" cy="150" r="15" fill="#13344a" />
+              <circle cx="110" cy="150" r="6" fill="url(#cyan)" className="robot-core" />
+            </g>
+            <g>
+              <circle cx="250" cy="150" r="26" fill="url(#panelDark)" stroke="#8aa0b8" strokeWidth="2.5" />
+              <circle cx="250" cy="150" r="15" fill="#13344a" />
+              <circle cx="250" cy="150" r="6" fill="url(#cyan)" className="robot-core" />
+            </g>
+
+            {/* dark glass face screen (visor) */}
+            <path d="M138 100 Q180 90 222 100 L222 178 Q180 190 138 178 Z" fill="url(#face)" stroke="#0a1a28" strokeWidth="2" />
+
+            {/* eyebrows (raise when near) */}
+            <rect x="150" y="120" width="26" height="6" rx="3" fill="#39c0ec"
+              style={{ transform: expressive ? "translateY(-5px)" : "none", transition: "transform 0.2s ease" }} />
+            <rect x="184" y="120" width="26" height="6" rx="3" fill="#39c0ec"
+              style={{ transform: expressive ? "translateY(-5px)" : "none", transition: "transform 0.2s ease" }} />
+
+            {/* eyes (glowing, track cursor) */}
+            <g style={{ transformOrigin: "163px 142px", transform: expressive ? "scale(1.12)" : "scale(1)", transition: "transform 0.2s ease" }}>
+              <ellipse cx="163" cy="142" rx="15" ry="16" fill="#08141f" stroke="#2bb6e0" strokeWidth="2" />
               <g ref={leftPupil}>
-                <circle cx="155" cy="134" r="9" fill="#66e0ff" className="robot-eye" />
-                <circle cx="158.5" cy="130.5" r="3" fill="#ffffff" />
+                <circle cx="163" cy="142" r="8" fill="#66e0ff" className="robot-eye" />
+                <circle cx="166" cy="139" r="2.6" fill="#ffffff" />
               </g>
             </g>
-            <g style={{ transformOrigin: "205px 134px", transform: expressive ? "scale(1.12)" : "scale(1)", transition: "transform 0.2s ease" }}>
-              <circle cx="205" cy="134" r="18" fill="#0a1a28" stroke="#33b3e4" strokeWidth="2.5" />
+            <g style={{ transformOrigin: "197px 142px", transform: expressive ? "scale(1.12)" : "scale(1)", transition: "transform 0.2s ease" }}>
+              <ellipse cx="197" cy="142" rx="15" ry="16" fill="#08141f" stroke="#2bb6e0" strokeWidth="2" />
               <g ref={rightPupil}>
-                <circle cx="205" cy="134" r="9" fill="#66e0ff" className="robot-eye" />
-                <circle cx="208.5" cy="130.5" r="3" fill="#ffffff" />
+                <circle cx="197" cy="142" r="8" fill="#66e0ff" className="robot-eye" />
+                <circle cx="200" cy="139" r="2.6" fill="#ffffff" />
               </g>
             </g>
 
+            {/* mouth: smile arc when expressive; glowing bar otherwise */}
             {expressive ? (
-              <path d="M150 166 Q180 184 210 166" fill="none" stroke="#33b3e4" strokeWidth="6" strokeLinecap="round" className={talking ? "robot-mouth-talking" : ""} style={{ transformOrigin: "180px 170px" }} />
+              <path d="M156 168 Q180 182 204 168" fill="none" stroke="#39c0ec" strokeWidth="5" strokeLinecap="round" className={talking ? "robot-mouth-talking" : ""} style={{ transformOrigin: "180px 172px" }} />
             ) : (
-              <rect x="158" y="166" width="44" height="8" rx="4" fill="#33b3e4" />
+              <rect x="162" y="168" width="36" height="6" rx="3" fill="#39c0ec" />
             )}
 
             {/* per-language costume (headgear) — the robot "dresses up" */}
