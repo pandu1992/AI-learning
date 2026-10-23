@@ -323,17 +323,18 @@ export default function RobotGreeter({ onLangChange }) {
         <span className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 bg-white/95" />
       </div>
 
-      {/* GIANT robot */}
+      {/* GIANT robot — robot-sway drifts the whole body left↔right */}
       <div className={`${forceMotion ? "robot-force-motion" : ""} robot-float relative select-none ${waving ? "robot-happy" : ""} ${bowing ? "robot-bowing" : ""}`}>
+       <div className="robot-sway">
         <span
           className={`robot-glow pointer-events-none absolute left-1/2 top-1/3 -z-10 -translate-x-1/2 -translate-y-1/4 ${docked ? "h-[150px] w-[150px]" : "h-[360px] w-[360px]"} ${expressive ? "robot-glow-strong" : ""}`}
           aria-hidden="true"
         />
         <svg
           width="360"
-          height="440"
-          viewBox="0 0 360 440"
-          className={`robot-breathe w-auto drop-shadow-2xl transition-all duration-500 ${docked ? "h-[150px]" : "h-[360px] sm:h-[420px]"}`}
+          height="620"
+          viewBox="0 0 360 620"
+          className={`robot-breathe w-auto drop-shadow-2xl transition-all duration-500 ${docked ? "h-[210px]" : "h-[420px] sm:h-[480px]"}`}
           aria-label="AI robot assistant"
           role="img"
         >
@@ -388,14 +389,36 @@ export default function RobotGreeter({ onLangChange }) {
             {/* subtle neck side shading for roundness */}
             <path d="M150 206 q30 12 60 0 l10 128 q-40 16 -80 0 Z" fill="none" stroke="#0a3a52" strokeWidth="2" opacity="0.5" />
 
+            {/* ===== LEGS + FEET (drawn first, behind the torso) ===== */}
+            {/* left leg */}
+            <g>
+              <rect x="150" y="492" width="26" height="78" rx="12" fill="url(#panelDark)" stroke="#9fb4ca" strokeWidth="2" />
+              <circle cx="163" cy="520" r="5" fill="url(#cyan)" className="robot-core" />
+              {/* foot */}
+              <path d="M138 568 q0 -8 12 -8 l20 0 q10 0 10 14 l0 8 q0 6 -6 6 l-34 0 q-6 0 -6 -6 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+            </g>
+            {/* right leg */}
+            <g>
+              <rect x="184" y="492" width="26" height="78" rx="12" fill="url(#panelDark)" stroke="#9fb4ca" strokeWidth="2" />
+              <circle cx="197" cy="520" r="5" fill="url(#cyan)" className="robot-core" />
+              <path d="M184 568 q0 -8 12 -8 l20 0 q12 0 12 8 l0 14 q0 6 -6 6 l-32 0 q-6 0 -6 -6 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+            </g>
+
+            {/* ===== TORSO: chest plate down to a waist/hip ===== */}
             {/* shoulder shells (overlap the neck bottom → no gap) */}
-            <path d="M66 424 Q70 326 150 316 L210 316 Q290 326 294 424 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+            <path d="M66 430 Q70 326 150 316 L210 316 Q290 326 294 430 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+            {/* lower torso / belly tapering to the waist */}
+            <path d="M92 428 L268 428 Q266 486 210 500 L150 500 Q94 486 92 428 Z" fill="url(#panelDark)" stroke="#9fb4ca" strokeWidth="2" />
+            {/* hip joints */}
+            <circle cx="150" cy="498" r="9" fill="#9fb4ca" />
+            <circle cx="210" cy="498" r="9" fill="#9fb4ca" />
             {/* collar / upper chest plate */}
             <path d="M116 330 Q180 308 244 330 L252 372 Q180 350 108 372 Z" fill="url(#panelDark)" stroke="#9fb4ca" strokeWidth="1.5" />
             {/* panel seam highlights for a 3D feel */}
-            <path d="M96 400 Q180 384 264 400" fill="none" stroke="#ffffff" strokeWidth="2" opacity="0.5" />
+            <path d="M96 404 Q180 388 264 404" fill="none" stroke="#ffffff" strokeWidth="2" opacity="0.5" />
             <path d="M120 332 Q180 350 240 332" fill="none" stroke="#b9c7d8" strokeWidth="1.5" opacity="0.7" />
             <path d="M150 316 L150 330 M210 316 L210 330" stroke="#9fb4ca" strokeWidth="1.5" opacity="0.6" />
+            <path d="M180 430 L180 496" stroke="#9fb4ca" strokeWidth="1.5" opacity="0.5" />
 
             {/* chest core light */}
             <circle cx="180" cy="392" r="16" fill="#0b2436" />
@@ -426,15 +449,37 @@ export default function RobotGreeter({ onLangChange }) {
               </svg>
             </g>
 
-            {/* LEFT arm (gentle idle sway) */}
-            <g className="robot-arm-left" style={{ transformOrigin: "86px 340px" }}>
-              <path d="M70 348 q-16 2 -16 34 l0 40 q0 16 16 16 l14 0 l0 -90 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
-              <circle cx="72" cy="382" r="6" fill="url(#cyan)" className="robot-core" />
+            {/* ===== LEFT arm: upper arm + forearm + round hand (idle sway) ===== */}
+            <g className="robot-arm-left" style={{ transformOrigin: "80px 344px" }}>
+              {/* shoulder joint */}
+              <circle cx="80" cy="344" r="15" fill="url(#panelDark)" stroke="#9fb4ca" strokeWidth="2" />
+              {/* upper arm + forearm */}
+              <path d="M66 344 q-18 2 -18 40 l0 70 q0 14 16 14 q16 0 16 -14 l0 -108 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+              {/* elbow accent */}
+              <circle cx="64" cy="392" r="5" fill="url(#cyan)" className="robot-core" />
+              {/* hand (3-finger mitt) */}
+              <g>
+                <circle cx="64" cy="474" r="16" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+                <rect x="52" y="482" width="7" height="16" rx="3.5" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="1.5" />
+                <rect x="61" y="484" width="7" height="18" rx="3.5" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="1.5" />
+                <rect x="70" y="482" width="7" height="16" rx="3.5" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="1.5" />
+                {/* thumb */}
+                <rect x="47" y="468" width="7" height="12" rx="3.5" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="1.5" transform="rotate(-30 50 474)" />
+              </g>
             </g>
-            {/* RIGHT arm (waves on click) */}
-            <g className={`robot-arm ${waving ? "robot-arm-wave" : ""}`} style={{ transformOrigin: "274px 340px" }}>
-              <path d="M290 348 q16 2 16 34 l0 40 q0 16 -16 16 l-14 0 l0 -90 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
-              <circle cx="288" cy="382" r="6" fill="#F5A200" />
+
+            {/* ===== RIGHT arm: waves on click, same anatomy ===== */}
+            <g className={`robot-arm ${waving ? "robot-arm-wave" : ""}`} style={{ transformOrigin: "280px 344px" }}>
+              <circle cx="280" cy="344" r="15" fill="url(#panelDark)" stroke="#9fb4ca" strokeWidth="2" />
+              <path d="M294 344 q18 2 18 40 l0 70 q0 14 -16 14 q-16 0 -16 -14 l0 -108 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+              <circle cx="296" cy="392" r="5" fill="#F5A200" />
+              <g>
+                <circle cx="296" cy="474" r="16" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+                <rect x="283" y="482" width="7" height="16" rx="3.5" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="1.5" />
+                <rect x="292" y="484" width="7" height="18" rx="3.5" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="1.5" />
+                <rect x="301" y="482" width="7" height="16" rx="3.5" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="1.5" />
+                <rect x="306" y="468" width="7" height="12" rx="3.5" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="1.5" transform="rotate(30 310 474)" />
+              </g>
             </g>
           </g>
 
@@ -504,6 +549,7 @@ export default function RobotGreeter({ onLangChange }) {
           </g>
           </g>
         </svg>
+       </div>
       </div>
 
       {/* controls (hidden when docked) */}
