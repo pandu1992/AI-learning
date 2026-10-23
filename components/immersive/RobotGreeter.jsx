@@ -342,10 +342,27 @@ export default function RobotGreeter() {
             <circle cx="180" cy="336" r="26" fill="#0b2436" />
             <circle cx="180" cy="336" r="15" fill="#33b3e4" className="robot-core" />
             <circle cx="180" cy="336" r="7" fill="#eaf8ff" />
-            <rect x="120" y="376" width="48" height="7" rx="3.5" fill="#cbd5e1" />
-            <rect x="120" y="390" width="48" height="7" rx="3.5" fill="#cbd5e1" />
-            <rect x="192" y="376" width="48" height="7" rx="3.5" fill="#cbd5e1" />
-            <rect x="192" y="390" width="48" height="7" rx="3.5" fill="#cbd5e1" />
+
+            {/* ===== Cognia / BINUS chest badge (left chest) ===== */}
+            <g transform="translate(118 300)">
+              <circle cx="0" cy="0" r="20" fill="#ffffff" stroke="#0093D0" strokeWidth="2" />
+              {/* mini Cognia mark: grey orbit + orange planet + pixel trail */}
+              <path d="M6 -9 A 11 11 0 1 1 -8 5" fill="none" stroke="#9CA3AF" strokeWidth="3" strokeLinecap="round" />
+              <circle cx="-4" cy="0" r="6.5" fill="#F5A200" />
+              <circle cx="-6" cy="-2.2" r="2" fill="#ffffff" opacity="0.85" />
+              <g fill="#9CA3AF">
+                <rect x="4" y="-5" width="2.6" height="2.6" />
+                <rect x="7.5" y="-2" width="2.6" height="2.6" />
+                <rect x="4" y="1.5" width="2.6" height="2.6" />
+                <rect x="10.5" y="-4.5" width="2" height="2" opacity="0.7" />
+                <rect x="11" y="1" width="1.8" height="1.8" opacity="0.5" />
+              </g>
+            </g>
+
+            <rect x="150" y="376" width="38" height="7" rx="3.5" fill="#cbd5e1" />
+            <rect x="150" y="390" width="38" height="7" rx="3.5" fill="#cbd5e1" />
+            <rect x="196" y="376" width="44" height="7" rx="3.5" fill="#cbd5e1" />
+            <rect x="196" y="390" width="44" height="7" rx="3.5" fill="#cbd5e1" />
 
             {/* LEFT arm (gentle idle sway) */}
             <g className="robot-arm-left" style={{ transformOrigin: "83px 292px" }}>
