@@ -28,49 +28,41 @@ const GREETINGS = [
   { code: "ar", label: "العربية", text: "مرحبا، كيف حالك؟", lang: "ar-SA", rtl: true, costume: "ar" },
 ];
 
-// Flag emojis (🇮🇩 etc.) don't render on many desktop browsers (esp. Windows,
-// which ships no flag-emoji font — they show as "ID" or boxes), yet work on
-// phones/tablets. So we draw tiny CSS/SVG flags that look identical on every OS.
+// Accurate country flags via Twemoji SVG assets rendered as <img>. Native flag
+// emojis (🇮🇩 etc.) don't render on many desktop browsers (esp. Windows, which
+// ships no flag-emoji font), and hand-drawn CSS flags were inaccurate. Twemoji
+// gives the correct official flag artwork, identical on every OS, from a CDN
+// (no bundled dependency). Each code maps to its ISO 3166 regional-indicator
+// codepoints. If the image ever fails to load, we fall back to the native
+// emoji so there's always something.
+const TWEMOJI_BASE = "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg";
+const FLAG = {
+  id: { hex: "1f1ee-1f1e9", emoji: "🇮🇩", alt: "Bendera Indonesia" },
+  zh: { hex: "1f1e8-1f1f3", emoji: "🇨🇳", alt: "中国国旗" },
+  ja: { hex: "1f1ef-1f1f5", emoji: "🇯🇵", alt: "日本の国旗" },
+  en: { hex: "1f1ec-1f1e7", emoji: "🇬🇧", alt: "United Kingdom flag" },
+  ar: { hex: "1f1f8-1f1e6", emoji: "🇸🇦", alt: "علم المملكة العربية السعودية" },
+};
 function FlagChip({ code }) {
-  const common = "inline-block h-3.5 w-5 shrink-0 overflow-hidden rounded-[2px] align-[-2px] ring-1 ring-black/10";
-  switch (code) {
-    case "id": // red over white
-      return (
-        <span className={common} aria-hidden="true">
-          <span className="block h-1/2 w-full bg-[#e4002b]" />
-          <span className="block h-1/2 w-full bg-white" />
-        </span>
-      );
-    case "zh": // red with a yellow star
-      return (
-        <span className={`${common} relative bg-[#de2910]`} aria-hidden="true">
-          <span className="absolute left-[3px] top-[2px] text-[8px] leading-none text-[#ffde00]">★</span>
-        </span>
-      );
-    case "ja": // white with red disc
-      return (
-        <span className={`${common} relative bg-white`} aria-hidden="true">
-          <span className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#bc002d]" />
-        </span>
-      );
-    case "en": // simplified Union-Jack-ish cross
-      return (
-        <span className={`${common} relative bg-[#012169]`} aria-hidden="true">
-          <span className="absolute left-1/2 top-0 h-full w-[3px] -translate-x-1/2 bg-white" />
-          <span className="absolute left-0 top-1/2 h-[3px] w-full -translate-y-1/2 bg-white" />
-          <span className="absolute left-1/2 top-0 h-full w-[1.5px] -translate-x-1/2 bg-[#c8102e]" />
-          <span className="absolute left-0 top-1/2 h-[1.5px] w-full -translate-y-1/2 bg-[#c8102e]" />
-        </span>
-      );
-    case "ar": // Saudi green
-      return (
-        <span className={`${common} relative bg-[#006c35]`} aria-hidden="true">
-          <span className="absolute bottom-[2px] left-1/2 h-[2px] w-3 -translate-x-1/2 bg-white" />
-        </span>
-      );
-    default:
-      return null;
-  }
+  const f = FLAG[code];
+  if (!f) return null;
+  return (
+    <img
+      src={`${TWEMOJI_BASE}/${f.hex}.svg`}
+      alt={f.alt}
+      width={22}
+      height={16}
+      loading="eager"
+      className="inline-block h-4 w-[22px] shrink-0 rounded-[2px] align-[-3px] shadow-sm"
+      onError={(e) => {
+        // graceful fallback to the native emoji character
+        const span = document.createElement("span");
+        span.textContent = f.emoji;
+        span.style.fontSize = "16px";
+        e.currentTarget.replaceWith(span);
+      }}
+    />
+  );
 }
 
 // Per-language costume worn on the robot's HEAD, so the robot "dresses up" for
