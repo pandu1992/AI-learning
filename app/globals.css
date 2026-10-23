@@ -197,15 +197,36 @@ html.dark .grid-glow {
 .robot-float { animation: robot-float 4.5s ease-in-out infinite; will-change: transform; }
 
 @keyframes robot-glow-pulse {
-  0%,100% { opacity: 0.45; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.08); }
+  0%,100% { opacity: 0.45; transform: translate(-50%, -25%) scale(1); }
+  50% { opacity: 0.8; transform: translate(-50%, -25%) scale(1.08); }
 }
 .robot-glow {
   border-radius: 9999px;
   background: radial-gradient(circle at 50% 45%, rgba(51,179,228,0.55), rgba(245,162,0,0.25) 45%, transparent 70%);
-  filter: blur(26px);
+  filter: blur(34px);
   animation: robot-glow-pulse 3.2s ease-in-out infinite;
 }
+/* brighter, bigger glow when the cursor is near / robot is expressive */
+.robot-glow-strong {
+  background: radial-gradient(circle at 50% 45%, rgba(102,224,255,0.8), rgba(245,162,0,0.4) 45%, transparent 72%);
+  filter: blur(40px);
+}
+
+/* right arm waves on click */
+@keyframes robot-wave {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-58deg); }
+  40% { transform: rotate(-40deg); }
+  60% { transform: rotate(-58deg); }
+  80% { transform: rotate(-40deg); }
+  100% { transform: rotate(0deg); }
+}
+.robot-arm { transition: transform 0.2s ease; }
+.robot-arm-wave { animation: robot-wave 1.1s ease-in-out; }
+
+/* happy bounce on click */
+@keyframes robot-happy-bounce { 0%,100% { transform: translateY(0); } 30% { transform: translateY(-14px); } 60% { transform: translateY(-4px); } }
+.robot-happy { animation: robot-happy-bounce 0.9s ease; }
 
 @keyframes robot-blink { 0%,92%,100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
 .robot-eye { transform-box: fill-box; transform-origin: center; animation: robot-blink 4s infinite; }
@@ -237,7 +258,7 @@ html.dark .grid-glow {
   /* Hover shine + cursor sheen are user-triggered, so they remain enabled. */
   /* Robot: stop idle motion but keep it present & readable. */
   .robot-float, .robot-glow, .robot-eye, .robot-antenna, .robot-core,
-  .robot-mouth-talking, .robot-caret { animation: none; }
+  .robot-mouth-talking, .robot-caret, .robot-arm-wave, .robot-happy { animation: none; }
 }
 
 
