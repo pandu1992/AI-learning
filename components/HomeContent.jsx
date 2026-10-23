@@ -56,11 +56,12 @@ export default function HomeContent() {
       <Spotlight className="relative overflow-hidden bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 text-white">
         <AuroraBackground />
         <NeuralCanvas className="opacity-80" />
-        <Parallax speed={0.18} className="relative mx-auto max-w-5xl px-4 py-20 text-center sm:py-24">
-          {/* Home-only showpiece: AI robot that watches the cursor & greets in
-              5 languages (ID/ZH/JA/EN/AR), optionally speaking aloud. */}
+        <Parallax speed={0.14} className="relative mx-auto max-w-5xl px-4 py-16 text-center sm:py-20">
+          {/* Home-only showpiece: a GIANT AI robot whose head & eyes follow the
+              cursor, reacts when you hover near / click, and greets in 5
+              languages (ID/ZH/JA/EN/AR), optionally speaking aloud. */}
           <RobotGreeter />
-          <p className="mt-8 text-sm font-semibold uppercase tracking-widest text-brand-100">
+          <p className="mt-6 text-sm font-semibold uppercase tracking-widest text-brand-100">
             BINUS Online · Computer Science
           </p>
           <h1 className="mt-2 text-4xl font-extrabold tracking-tight drop-shadow-sm sm:text-6xl">
