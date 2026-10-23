@@ -128,9 +128,9 @@ export default function CountryBackdrop({ code }) {
         <svg
           key={key}
           viewBox="0 0 600 340"
-          preserveAspectRatio="xMidYMax meet"
-          className="absolute bottom-0 left-1/2 h-[78%] w-[min(1200px,110%)] -translate-x-1/2 opacity-0 transition-opacity duration-[1200ms] ease-in-out"
-          style={{ opacity: key === code ? 0.9 : 0 }}
+          preserveAspectRatio="xMidYMid slice"
+          className="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-[1200ms] ease-in-out"
+          style={{ opacity: key === code ? 0.92 : 0 }}
         >
           {SCENES[key]}
           {key === "ja" && <SakuraPetals />}
