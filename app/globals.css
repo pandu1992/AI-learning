@@ -228,6 +228,14 @@ html.dark .grid-glow {
 @keyframes robot-happy-bounce { 0%,100% { transform: translateY(0); } 30% { transform: translateY(-14px); } 60% { transform: translateY(-4px); } }
 .robot-happy { animation: robot-happy-bounce 0.9s ease; }
 
+/* drifting sakura petals for the Japan backdrop */
+@keyframes sakura-fall {
+  0% { transform: translate(0, -20px) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.6; }
+  100% { transform: translate(-30px, 300px) rotate(220deg); opacity: 0; }
+}
+.sakura-petal { animation: sakura-fall 7s linear infinite; }
+
 /* gentle "breathing" of the whole robot */
 @keyframes robot-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.015); } }
 .robot-breathe { animation: robot-breathe 4.5s ease-in-out infinite; transform-origin: 50% 90%; }
@@ -285,7 +293,7 @@ html.dark .grid-glow {
    tilt, cursor sheen, the hero particle reactions) so the site still feels
    alive and interactive for people who merely dislike autoplaying motion. */
 @media (prefers-reduced-motion: reduce) {
-  .aurora-blob, .text-gradient, .floaty, .scroll-cue { animation: none; }
+  .aurora-blob, .text-gradient, .floaty, .scroll-cue, .sakura-petal { animation: none; }
   .reveal, .reveal-left, .reveal-right, .reveal-zoom { opacity: 1; transform: none; transition: none; }
   .confetti-piece { display: none; }
   /* Tilt still responds to the pointer, but snap instantly (no eased motion). */
