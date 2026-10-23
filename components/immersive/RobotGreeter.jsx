@@ -20,12 +20,57 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 
 const GREETINGS = [
-  { code: "id", flag: "🇮🇩", label: "Indonesia", text: "Halo, apa kabar?", lang: "id-ID", rtl: false, costume: "id" },
-  { code: "zh", flag: "🇨🇳", label: "中文", text: "你好，你好吗？", lang: "zh-CN", rtl: false, costume: "zh" },
-  { code: "ja", flag: "🇯🇵", label: "日本語", text: "こんにちは、お元気ですか？", lang: "ja-JP", rtl: false, costume: "ja" },
-  { code: "en", flag: "🇬🇧", label: "English", text: "Hello, how are you?", lang: "en-US", rtl: false, costume: "en" },
-  { code: "ar", flag: "🇸🇦", label: "العربية", text: "مرحبا، كيف حالك؟", lang: "ar-SA", rtl: true, costume: "ar" },
+  { code: "id", label: "Indonesia", text: "Halo, apa kabar?", lang: "id-ID", rtl: false, costume: "id" },
+  { code: "zh", label: "中文", text: "你好，你好吗？", lang: "zh-CN", rtl: false, costume: "zh" },
+  { code: "ja", label: "日本語", text: "こんにちは、お元気ですか？", lang: "ja-JP", rtl: false, costume: "ja" },
+  { code: "en", label: "English", text: "Hello, how are you?", lang: "en-US", rtl: false, costume: "en" },
+  { code: "ar", label: "العربية", text: "مرحبا، كيف حالك؟", lang: "ar-SA", rtl: true, costume: "ar" },
 ];
+
+// Flag emojis (🇮🇩 etc.) don't render on many desktop browsers (esp. Windows,
+// which ships no flag-emoji font — they show as "ID" or boxes), yet work on
+// phones/tablets. So we draw tiny CSS/SVG flags that look identical on every OS.
+function FlagChip({ code }) {
+  const common = "inline-block h-3.5 w-5 shrink-0 overflow-hidden rounded-[2px] align-[-2px] ring-1 ring-black/10";
+  switch (code) {
+    case "id": // red over white
+      return (
+        <span className={common} aria-hidden="true">
+          <span className="block h-1/2 w-full bg-[#e4002b]" />
+          <span className="block h-1/2 w-full bg-white" />
+        </span>
+      );
+    case "zh": // red with a yellow star
+      return (
+        <span className={`${common} relative bg-[#de2910]`} aria-hidden="true">
+          <span className="absolute left-[3px] top-[2px] text-[8px] leading-none text-[#ffde00]">★</span>
+        </span>
+      );
+    case "ja": // white with red disc
+      return (
+        <span className={`${common} relative bg-white`} aria-hidden="true">
+          <span className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#bc002d]" />
+        </span>
+      );
+    case "en": // simplified Union-Jack-ish cross
+      return (
+        <span className={`${common} relative bg-[#012169]`} aria-hidden="true">
+          <span className="absolute left-1/2 top-0 h-full w-[3px] -translate-x-1/2 bg-white" />
+          <span className="absolute left-0 top-1/2 h-[3px] w-full -translate-y-1/2 bg-white" />
+          <span className="absolute left-1/2 top-0 h-full w-[1.5px] -translate-x-1/2 bg-[#c8102e]" />
+          <span className="absolute left-0 top-1/2 h-[1.5px] w-full -translate-y-1/2 bg-[#c8102e]" />
+        </span>
+      );
+    case "ar": // Saudi green
+      return (
+        <span className={`${common} relative bg-[#006c35]`} aria-hidden="true">
+          <span className="absolute bottom-[2px] left-1/2 h-[2px] w-3 -translate-x-1/2 bg-white" />
+        </span>
+      );
+    default:
+      return null;
+  }
+}
 
 // Per-language costume worn on the robot's HEAD, so the robot "dresses up" for
 // each culture as it greets. Pure SVG (no assets). Each returns head-gear drawn
@@ -257,7 +302,9 @@ export default function RobotGreeter() {
         dir={g.rtl ? "rtl" : "ltr"}
         className={`robot-bubble relative z-10 mb-2 min-h-[3.4rem] min-w-[15rem] max-w-sm rounded-2xl bg-white/95 px-6 py-3.5 text-center shadow-2xl ring-1 ring-white/40 ${docked ? "hidden" : ""}`}
       >
-        <span className="mr-1 text-lg">{g.flag}</span>
+        <span className="mr-2 inline-flex items-center">
+          <FlagChip code={g.code} />
+        </span>
         <span className="text-xl font-extrabold text-brand-800">
           {typed}
           {talking && <span className="robot-caret">▍</span>}
