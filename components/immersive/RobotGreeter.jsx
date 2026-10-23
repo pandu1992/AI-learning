@@ -331,10 +331,10 @@ export default function RobotGreeter({ onLangChange }) {
           aria-hidden="true"
         />
         <svg
-          width="360"
-          height="620"
-          viewBox="0 0 360 620"
-          className={`robot-breathe w-auto drop-shadow-2xl transition-all duration-500 ${docked ? "h-[210px]" : "h-[420px] sm:h-[480px]"}`}
+          width="460"
+          height="640"
+          viewBox="-50 0 460 640"
+          className={`robot-breathe w-auto overflow-visible drop-shadow-2xl transition-all duration-500 ${docked ? "h-[210px]" : "h-[420px] sm:h-[480px]"}`}
           aria-label="AI robot assistant"
           role="img"
         >
