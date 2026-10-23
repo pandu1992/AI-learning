@@ -125,7 +125,7 @@ function Costume({ code }) {
   }
 }
 
-export default function RobotGreeter() {
+export default function RobotGreeter({ onLangChange }) {
   const wrapRef = useRef(null);
   const headRef = useRef(null);
   const leftPupil = useRef(null);
@@ -145,6 +145,11 @@ export default function RobotGreeter() {
   const pausedRef = useRef(false);
 
   useEffect(() => setMounted(true), []);
+
+  // notify parent of the active language so the hero backdrop can follow
+  useEffect(() => {
+    if (onLangChange) onLangChange(GREETINGS[idx].code);
+  }, [idx, onLangChange]);
 
   // ---- head + eyes track the cursor; detect proximity ----
   useEffect(() => {

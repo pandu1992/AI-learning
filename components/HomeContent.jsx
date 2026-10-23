@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/components/LanguageProvider";
 import TopicCard from "@/components/TopicCard";
@@ -11,6 +12,7 @@ import Parallax from "@/components/immersive/Parallax";
 import TiltCard from "@/components/immersive/TiltCard";
 import Reveal from "@/components/immersive/Reveal";
 import RobotGreeter from "@/components/immersive/RobotGreeter";
+import CountryBackdrop from "@/components/immersive/CountryBackdrop";
 import { site, topics, fields } from "@/lib/content";
 import { demoList, demosByTopic } from "@/lib/demos";
 
@@ -18,6 +20,9 @@ import { demoList, demosByTopic } from "@/lib/demos";
 // The instructor's profile & welcome lives separately at "/profile".
 export default function HomeContent() {
   const { lang } = useLang();
+  // which country backdrop shows behind the hero robot (follows its greeting)
+  const [heroCountry, setHeroCountry] = useState("id");
+  const handleLangChange = useCallback((code) => setHeroCountry(code), []);
 
   const labels = {
     id: {
@@ -55,12 +60,14 @@ export default function HomeContent() {
       {/* Hero — immersive: interactive neural-net canvas + cursor spotlight + parallax */}
       <Spotlight className="relative overflow-hidden bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 text-white">
         <AuroraBackground />
+        <CountryBackdrop code={heroCountry} />
         <NeuralCanvas className="opacity-80" />
         <Parallax speed={0.14} className="relative mx-auto max-w-5xl px-4 py-16 text-center sm:py-20">
           {/* Home-only showpiece: a GIANT AI robot whose head & eyes follow the
               cursor, reacts when you hover near / click, and greets in 5
-              languages (ID/ZH/JA/EN/AR), optionally speaking aloud. */}
-          <RobotGreeter />
+              languages (ID/ZH/JA/EN/AR). The hero backdrop shows each country's
+              iconic landmark as the robot greets in that language. */}
+          <RobotGreeter onLangChange={handleLangChange} />
           <p className="mt-6 text-sm font-semibold uppercase tracking-widest text-brand-100">
             BINUS Online · Computer Science
           </p>
