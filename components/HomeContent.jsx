@@ -32,6 +32,7 @@ export default function HomeContent() {
       fieldsTitle: "Penerapan di Berbagai Bidang",
       fieldsSub: "Lihat bagaimana AI dipakai di dunia nyata.",
       order: "Urutan belajar yang disarankan",
+      interactHint: "Gerakkan kursor & klik di area ini — jaringan saraf akan bereaksi ✨",
     },
     en: {
       start: "Start Learning",
@@ -45,6 +46,7 @@ export default function HomeContent() {
       fieldsTitle: "Applications Across Fields",
       fieldsSub: "See how AI is used in the real world.",
       order: "Suggested learning order",
+      interactHint: "Move your cursor & click in this area — the neural network reacts ✨",
     },
   }[lang];
 
@@ -53,7 +55,7 @@ export default function HomeContent() {
       {/* Hero — immersive: interactive neural-net canvas + cursor spotlight + parallax */}
       <Spotlight className="relative overflow-hidden bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 text-white">
         <AuroraBackground />
-        <NeuralCanvas className="opacity-70" />
+        <NeuralCanvas className="opacity-80" />
         <Parallax speed={0.18} className="relative mx-auto max-w-5xl px-4 py-24 text-center sm:py-28">
           <div className="floaty mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-white shadow-lg ring-1 ring-white/30">
             <LogoMark size={72} />
@@ -94,8 +96,10 @@ export default function HomeContent() {
               {labels.certBtn}
             </Link>
           </div>
+          {/* interactive hint */}
+          <p className="mt-10 text-sm font-medium text-brand-100/80">{labels.interactHint}</p>
           {/* scroll cue */}
-          <div className="mt-12 flex justify-center" aria-hidden="true">
+          <div className="mt-6 flex justify-center" aria-hidden="true">
             <div className="scroll-cue flex h-10 w-6 items-start justify-center rounded-full border-2 border-white/50 p-1">
               <span className="h-2 w-1 rounded-full bg-white/80" />
             </div>
