@@ -6,6 +6,7 @@ import { ProgressProvider } from "@/components/ProgressProvider";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ReadingProgress from "@/components/immersive/ReadingProgress";
+import AmbientAudio from "@/components/immersive/AmbientAudio";
 import CommandPalette from "@/components/CommandPalette";
 
 export const metadata = {
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
           <LanguageProvider>
             <ProgressProvider>
               <ReadingProgress />
+              <AmbientAudio />
               <CommandPalette />
               <Header />
               <main>{children}</main>
