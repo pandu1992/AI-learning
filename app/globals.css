@@ -61,6 +61,10 @@ body {
 /* Card hover glow + lift */
 .card-glow { position: relative; transition: transform 0.25s ease, box-shadow 0.25s ease; }
 .card-glow:hover { transform: translateY(-4px); box-shadow: 0 14px 40px -12px rgba(0, 147, 208, 0.35); }
+/* When a card-glow sits inside a 3D tilt wrapper, the wrapper owns the
+   transform/shadow — disable the inner lift so they don't fight. */
+.tilt-card .card-glow:hover { transform: none; }
+.tilt-card .card-glow { height: 100%; }
 
 /* Shiny gradient text */
 .text-gradient {
@@ -87,11 +91,114 @@ body {
   pointer-events: none;
 }
 
+/* ---- Immersive v2: 3D tilt, spotlight, magnetic buttons, scroll cues ---- */
+
+/* 3D tilt cards (transform set inline by TiltCard.jsx) */
+.tilt-card {
+  transition: transform 0.18s ease-out, box-shadow 0.25s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt-card:hover { box-shadow: 0 24px 60px -20px rgba(0, 147, 208, 0.45); }
+/* cursor-tracking sheen overlay for tilt-glow cards */
+.tilt-glow { position: relative; }
+.tilt-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.28),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.tilt-glow:hover::after { opacity: 1; }
+html.dark .tilt-glow::after {
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(102, 203, 239, 0.22),
+    transparent 60%
+  );
+}
+
+/* Hero spotlight that follows the cursor (position set via CSS vars) */
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    520px circle at var(--sx, 50%) var(--sy, 30%),
+    rgba(255, 255, 255, 0.16),
+    transparent 55%
+  );
+  pointer-events: none;
+  transition: background 0.2s ease;
+}
+
+/* Magnetic / shine CTA buttons */
+.btn-shine { position: relative; overflow: hidden; }
+.btn-shine::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+}
+.btn-shine:hover::before { left: 140%; }
+
+/* Floating gentle bob (hero logo / accents) */
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.floaty { animation: floaty 5s ease-in-out infinite; will-change: transform; }
+
+/* Scroll-down cue */
+@keyframes scrollcue {
+  0% { transform: translateY(0); opacity: 0.9; }
+  50% { transform: translateY(8px); opacity: 0.3; }
+  100% { transform: translateY(0); opacity: 0.9; }
+}
+.scroll-cue { animation: scrollcue 1.8s ease-in-out infinite; }
+
+/* Reveal variants (extend the base .reveal) */
+.reveal-left { opacity: 0; transform: translateX(-28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-left.in-view { opacity: 1; transform: none; }
+.reveal-right { opacity: 0; transform: translateX(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-right.in-view { opacity: 1; transform: none; }
+.reveal-zoom { opacity: 0; transform: scale(0.94); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-zoom.in-view { opacity: 1; transform: none; }
+
+/* Animated gradient grid backdrop for sections */
+.grid-glow {
+  background-image:
+    linear-gradient(to right, rgba(0, 147, 208, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 147, 208, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 75%);
+}
+html.dark .grid-glow {
+  background-image:
+    linear-gradient(to right, rgba(102, 203, 239, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(102, 203, 239, 0.08) 1px, transparent 1px);
+}
+
 /* Respect reduced-motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .aurora-blob, .text-gradient { animation: none; }
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .aurora-blob, .text-gradient, .floaty, .scroll-cue { animation: none; }
+  .reveal, .reveal-left, .reveal-right, .reveal-zoom { opacity: 1; transform: none; transition: none; }
   .confetti-piece { display: none; }
+  .tilt-card { transition: none; }
+  .btn-shine::before { display: none; }
 }
 
 
