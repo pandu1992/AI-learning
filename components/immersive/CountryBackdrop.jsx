@@ -124,7 +124,7 @@ const SCENES = {
 
 export default function CountryBackdrop({ code }) {
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[72%] overflow-hidden" aria-hidden="true">
+    <div className="pointer-events-none absolute inset-x-0 top-0 h-[560px] overflow-hidden" aria-hidden="true">
       {Object.keys(SCENES).map((key) => (
         <svg
           key={key}
