@@ -68,56 +68,66 @@ function FlagChip({ code }) {
 // Per-language costume worn on the robot's HEAD, so the robot "dresses up" for
 // each culture as it greets. Pure SVG (no assets). Each returns head-gear drawn
 // in the head's local coordinate space (head shell spans x:96..264, y:62..212).
+// Costumes are drawn to hug the new humanoid dome. The cranium top arcs from
+// about (104,150) up to (180,56) and down to (256,150); hats sit on that dome
+// (~y 52–96) and curve with it so they look worn, not floating.
 function Costume({ code }) {
   switch (code) {
-    case "id": // Indonesia — blangkon (Javanese cap) in batik brown + gold
+    case "id": // Indonesia — blangkon (Javanese cap), hugs the dome
       return (
         <g aria-hidden="true">
-          <path d="M92 70 Q180 24 268 70 Q268 58 180 50 Q92 58 92 70 Z" fill="#5b3a1a" />
-          <path d="M92 70 Q180 44 268 70 L268 78 Q180 56 92 78 Z" fill="#7a4e22" />
-          <path d="M236 60 q22 -6 20 16 q-2 14 -18 10 q-10 -4 -2 -26 Z" fill="#8a5a28" />
-          <circle cx="245" cy="70" r="4" fill="#F5A200" />
-          <path d="M120 58 l6 6 l6 -6 l6 6 l6 -6" fill="none" stroke="#F5A200" strokeWidth="2" />
+          {/* band wrapping the lower dome */}
+          <path d="M108 112 Q180 78 252 112 Q252 92 180 84 Q108 92 108 112 Z" fill="#5b3a1a" />
+          {/* crown cap following the dome */}
+          <path d="M116 92 Q180 48 244 92 Q180 70 116 92 Z" fill="#6e451f" />
+          <path d="M116 92 Q180 64 244 92 L244 100 Q180 78 116 100 Z" fill="#7a4e22" />
+          {/* mondolan knot at back-right */}
+          <path d="M226 86 q24 -4 22 16 q-2 14 -18 10 q-12 -4 -4 -26 Z" fill="#8a5a28" />
+          <circle cx="236" cy="94" r="4" fill="#F5A200" />
+          {/* batik zigzag accent */}
+          <path d="M140 96 l7 6 l7 -6 l7 6 l7 -6 l7 6" fill="none" stroke="#F5A200" strokeWidth="2" opacity="0.9" />
         </g>
       );
-    case "zh": // China — imperial/scholar hat in red + gold
+    case "zh": // China — imperial/scholar hat, seated on the crown
       return (
         <g aria-hidden="true">
-          <rect x="120" y="44" width="120" height="16" rx="6" fill="#b91c1c" />
-          <rect x="150" y="30" width="60" height="20" rx="8" fill="#dc2626" />
-          <rect x="150" y="26" width="60" height="7" rx="3.5" fill="#F5A200" />
-          <circle cx="180" cy="22" r="6" fill="#fde047" />
-          <path d="M128 60 l104 0" stroke="#fca5a5" strokeWidth="2" />
+          <path d="M124 80 Q180 60 236 80 L236 92 Q180 74 124 92 Z" fill="#b91c1c" />
+          <rect x="150" y="52" width="60" height="26" rx="10" fill="#dc2626" />
+          <rect x="150" y="48" width="60" height="8" rx="4" fill="#F5A200" />
+          <circle cx="180" cy="42" r="6" fill="#fde047" />
         </g>
       );
-    case "ja": // Japan — samurai kabuto helmet (dark steel + gold crescent)
+    case "ja": // Japan — samurai kabuto, bowl hugs the dome + gold crest
       return (
         <g aria-hidden="true">
-          <path d="M96 72 Q180 38 264 72 Q264 60 180 54 Q96 60 96 72 Z" fill="#334155" />
-          <path d="M96 72 Q180 50 264 72 L264 80 Q180 60 96 80 Z" fill="#1e293b" />
+          <path d="M106 108 Q180 60 254 108 Q254 86 180 80 Q106 86 106 108 Z" fill="#334155" />
+          <path d="M112 96 Q180 58 248 96 Q180 74 112 96 Z" fill="#273445" />
+          <path d="M112 96 Q180 74 248 96 L248 104 Q180 82 112 104 Z" fill="#1e293b" />
           {/* maedate (crescent crest) */}
-          <path d="M165 50 Q180 20 195 50 Q180 36 165 50 Z" fill="#F5A200" />
-          <path d="M150 72 q-14 10 -10 26" fill="none" stroke="#64748b" strokeWidth="4" strokeLinecap="round" />
-          <path d="M210 72 q14 10 10 26" fill="none" stroke="#64748b" strokeWidth="4" strokeLinecap="round" />
+          <path d="M164 60 Q180 28 196 60 Q180 46 164 60 Z" fill="#F5A200" />
+          {/* fukigaeshi side flares */}
+          <path d="M118 104 q-14 8 -10 30" fill="none" stroke="#64748b" strokeWidth="5" strokeLinecap="round" />
+          <path d="M242 104 q14 8 10 30" fill="none" stroke="#64748b" strokeWidth="5" strokeLinecap="round" />
         </g>
       );
-    case "en": // UK/English — graduation mortarboard cap (academic)
+    case "en": // UK/English — graduation mortarboard on the crown
       return (
         <g aria-hidden="true">
-          <rect x="150" y="50" width="60" height="14" rx="4" fill="#0b2436" />
-          <path d="M120 46 L180 32 L240 46 L180 60 Z" fill="#0b2436" />
-          <circle cx="180" cy="46" r="3" fill="#F5A200" />
-          <path d="M180 46 Q214 50 214 40" fill="none" stroke="#F5A200" strokeWidth="2" />
-          <circle cx="214" cy="40" r="3" fill="#F5A200" />
+          <path d="M150 74 Q180 66 210 74 L210 86 Q180 78 150 86 Z" fill="#0b2436" />
+          <path d="M122 70 L180 54 L238 70 L180 86 Z" fill="#0b2436" />
+          <circle cx="180" cy="70" r="3" fill="#F5A200" />
+          <path d="M180 70 Q214 74 214 62" fill="none" stroke="#F5A200" strokeWidth="2" />
+          <circle cx="214" cy="62" r="3" fill="#F5A200" />
         </g>
       );
-    case "ar": // Arabic — keffiyeh / agal headdress (white + black cord)
+    case "ar": // Arabic — keffiyeh draping over the dome + black agal cord
       return (
         <g aria-hidden="true">
-          <path d="M88 66 Q180 40 272 66 L272 96 Q180 74 88 96 Z" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2" />
-          <rect x="96" y="60" width="168" height="9" rx="4.5" fill="#0b2436" />
-          <rect x="96" y="70" width="168" height="5" rx="2.5" fill="#334155" />
-          <path d="M92 70 L70 150 M268 70 L290 150" stroke="#e2e8f0" strokeWidth="6" strokeLinecap="round" />
+          <path d="M100 104 Q180 56 260 104 L262 128 Q180 92 98 128 Z" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2" />
+          <path d="M112 96 Q180 74 248 96 L248 104 Q180 86 112 104 Z" fill="#0b2436" />
+          <path d="M112 106 Q180 90 248 106" fill="none" stroke="#334155" strokeWidth="4" />
+          {/* side drapes down past the ears */}
+          <path d="M104 104 L92 168 M256 104 L268 168" stroke="#e2e8f0" strokeWidth="7" strokeLinecap="round" />
         </g>
       );
     default:
@@ -352,29 +362,41 @@ export default function RobotGreeter({ onLangChange }) {
             <pattern id="hexmesh" width="18" height="20.8" patternUnits="userSpaceOnUse" patternTransform="scale(0.7)">
               <path d="M9 0 L18 5.2 L18 15.6 L9 20.8 L0 15.6 L0 5.2 Z" fill="none" stroke="#2bb6e0" strokeWidth="1.1" opacity="0.7" />
             </pattern>
+            {/* continuous neck column: from under the chin (y~206) down into the
+                collar (y~336) so there is no floating gap */}
             <clipPath id="neckclip">
-              <path d="M150 236 q30 10 60 0 l-6 44 q-24 12 -48 0 Z" />
+              <path d="M150 206 q30 12 60 0 l10 128 q-40 16 -80 0 Z" />
             </clipPath>
           </defs>
 
-          {/* ===== SHOULDERS / TORSO (semi-realistic paneled) ===== */}
+          {/* ===== NECK + SHOULDERS / TORSO (semi-realistic paneled) ===== */}
           <g>
-            {/* shoulder shells */}
-            <path d="M70 420 Q74 330 150 320 L210 320 Q286 330 290 420 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
-            {/* collar / upper chest plate */}
-            <path d="M120 332 Q180 312 240 332 L250 372 Q180 352 110 372 Z" fill="url(#panelDark)" stroke="#9fb4ca" strokeWidth="1.5" />
-            {/* glowing hex neck (behind the chin) */}
+            {/* glowing hex neck — drawn FIRST so head & collar overlap its ends */}
             <g clipPath="url(#neckclip)">
-              <rect x="144" y="230" width="72" height="60" fill="#06283a" />
-              <rect x="144" y="230" width="72" height="60" fill="url(#hexmesh)" />
-              {/* a few lit hex cells */}
+              <rect x="130" y="200" width="100" height="140" fill="#06283a" />
+              <rect x="130" y="200" width="100" height="140" fill="url(#hexmesh)" />
+              {/* lit hex cells that pulse */}
               <g className="robot-core" fill="#67e8ff" opacity="0.9">
-                <circle cx="168" cy="250" r="3.2" />
-                <circle cx="192" cy="262" r="3.2" />
-                <circle cx="176" cy="274" r="3.2" />
-                <circle cx="200" cy="246" r="2.6" />
+                <circle cx="168" cy="236" r="3.4" />
+                <circle cx="196" cy="252" r="3.4" />
+                <circle cx="176" cy="272" r="3.4" />
+                <circle cx="200" cy="292" r="3" />
+                <circle cx="162" cy="300" r="3" />
+                <circle cx="186" cy="224" r="2.6" />
               </g>
             </g>
+            {/* subtle neck side shading for roundness */}
+            <path d="M150 206 q30 12 60 0 l10 128 q-40 16 -80 0 Z" fill="none" stroke="#0a3a52" strokeWidth="2" opacity="0.5" />
+
+            {/* shoulder shells (overlap the neck bottom → no gap) */}
+            <path d="M66 424 Q70 326 150 316 L210 316 Q290 326 294 424 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
+            {/* collar / upper chest plate */}
+            <path d="M116 330 Q180 308 244 330 L252 372 Q180 350 108 372 Z" fill="url(#panelDark)" stroke="#9fb4ca" strokeWidth="1.5" />
+            {/* panel seam highlights for a 3D feel */}
+            <path d="M96 400 Q180 384 264 400" fill="none" stroke="#ffffff" strokeWidth="2" opacity="0.5" />
+            <path d="M120 332 Q180 350 240 332" fill="none" stroke="#b9c7d8" strokeWidth="1.5" opacity="0.7" />
+            <path d="M150 316 L150 330 M210 316 L210 330" stroke="#9fb4ca" strokeWidth="1.5" opacity="0.6" />
+
             {/* chest core light */}
             <circle cx="180" cy="392" r="16" fill="#0b2436" />
             <circle cx="180" cy="392" r="9" fill="url(#cyan)" className="robot-core" />
@@ -425,9 +447,13 @@ export default function RobotGreeter({ onLangChange }) {
 
             {/* cranium — paneled humanoid skull */}
             <path d="M104 150 Q104 60 180 56 Q256 60 256 150 Q256 196 214 214 L146 214 Q104 196 104 150 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2.5" />
-            {/* top seam + side panel seams */}
+            {/* soft specular highlight (upper-left) for a 3D sheen */}
+            <path d="M126 92 Q150 68 184 66 Q150 82 138 118 Q128 106 126 92 Z" fill="#ffffff" opacity="0.5" />
+            {/* top crest seam + side panel seams */}
             <path d="M180 56 L180 96 M120 104 Q180 86 240 104" fill="none" stroke="#b9c7d8" strokeWidth="2" opacity="0.8" />
             <path d="M118 150 Q180 140 242 150" fill="none" stroke="#b9c7d8" strokeWidth="1.5" opacity="0.6" />
+            {/* cheek panel seams flanking the visor */}
+            <path d="M130 118 Q126 150 134 180 M230 118 Q234 150 226 180" fill="none" stroke="#b9c7d8" strokeWidth="1.5" opacity="0.55" />
 
             {/* circular headphone ear pieces (both sides) */}
             <g>
