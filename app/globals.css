@@ -255,9 +255,22 @@ html.dark .grid-glow {
 }
 .robot-idle-look { animation: robot-idle-look 9s ease-in-out infinite; }
 
-/* left arm subtle sway */
-@keyframes robot-arm-sway { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(5deg); } }
-.robot-arm-left { animation: robot-arm-sway 5s ease-in-out infinite; }
+/* Happy idle waving — both arms raise & swing, alternating so it looks cheerful.
+   (Rotation pivots at each shoulder via transform-origin set inline.) */
+@keyframes robot-wave-left {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(48deg); }
+  50% { transform: rotate(32deg); }
+  75% { transform: rotate(50deg); }
+}
+@keyframes robot-wave-right {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-32deg); }
+  50% { transform: rotate(-50deg); }
+  75% { transform: rotate(-34deg); }
+}
+.robot-arm-left { animation: robot-wave-left 2.4s ease-in-out infinite; }
+.robot-arm-right-idle { animation: robot-wave-right 2.4s ease-in-out infinite; animation-delay: -1.2s; }
 
 /* bow gesture (used for Japanese greeting) */
 @keyframes robot-bow { 0% { transform: rotateX(0deg) translateY(0); } 40% { transform: rotateX(26deg) translateY(10px); } 70% { transform: rotateX(26deg) translateY(10px); } 100% { transform: rotateX(0deg) translateY(0); } }
@@ -275,7 +288,8 @@ html.dark .grid-glow {
   .robot-force-motion .robot-breathe { animation: robot-breathe 4.5s ease-in-out infinite !important; }
   .robot-force-motion .robot-sway { animation: robot-sway 6s ease-in-out infinite !important; }
   .robot-force-motion .robot-idle-look { animation: robot-idle-look 9s ease-in-out infinite !important; }
-  .robot-force-motion .robot-arm-left { animation: robot-arm-sway 5s ease-in-out infinite !important; }
+  .robot-force-motion .robot-arm-left { animation: robot-wave-left 2.4s ease-in-out infinite !important; }
+  .robot-force-motion .robot-arm-right-idle { animation: robot-wave-right 2.4s ease-in-out infinite !important; animation-delay: -1.2s; }
   .robot-force-motion .robot-caret { animation: robot-caret-blink 0.8s step-end infinite !important; }
 }
 
@@ -309,7 +323,8 @@ html.dark .grid-glow {
   /* Hover shine + cursor sheen are user-triggered, so they remain enabled. */
   /* Robot: stop idle motion but keep it present & readable. */
   .robot-float, .robot-glow, .robot-eye, .robot-antenna, .robot-core,
-  .robot-mouth-talking, .robot-caret, .robot-arm-wave, .robot-happy, .robot-sway { animation: none; }
+  .robot-mouth-talking, .robot-caret, .robot-arm-wave, .robot-happy, .robot-sway,
+  .robot-arm-left, .robot-arm-right-idle { animation: none; }
 }
 
 

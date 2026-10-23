@@ -468,8 +468,8 @@ export default function RobotGreeter({ onLangChange }) {
               </g>
             </g>
 
-            {/* ===== RIGHT arm: waves on click, same anatomy ===== */}
-            <g className={`robot-arm ${waving ? "robot-arm-wave" : ""}`} style={{ transformOrigin: "280px 344px" }}>
+            {/* ===== RIGHT arm: happy idle wave (bigger wave on click) ===== */}
+            <g className={`robot-arm ${waving ? "robot-arm-wave" : "robot-arm-right-idle"}`} style={{ transformOrigin: "280px 344px" }}>
               <circle cx="280" cy="344" r="15" fill="url(#panelDark)" stroke="#9fb4ca" strokeWidth="2" />
               <path d="M294 344 q18 2 18 40 l0 70 q0 14 -16 14 q-16 0 -16 -14 l0 -108 Z" fill="url(#panel)" stroke="#9fb4ca" strokeWidth="2" />
               <circle cx="296" cy="392" r="5" fill="#F5A200" />
