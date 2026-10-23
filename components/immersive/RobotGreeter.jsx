@@ -18,6 +18,7 @@
 // reduced-motion — only this decorative mascot opts in via `robot-force-motion`.
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 
 const GREETINGS = [
   { code: "id", label: "Indonesia", text: "Halo, apa kabar?", lang: "id-ID", rtl: false, costume: "id" },
@@ -147,8 +148,11 @@ export default function RobotGreeter() {
   const [speak, setSpeak] = useState(false);
   const [paused, setPaused] = useState(false); // user can stop all motion
   const [docked, setDocked] = useState(false); // shrunk floating assistant on scroll
+  const [mounted, setMounted] = useState(false); // client-only (for portal)
   const speakRef = useRef(false);
   const pausedRef = useRef(false);
+
+  useEffect(() => setMounted(true), []);
 
   // ---- head + eyes track the cursor; detect proximity ----
   useEffect(() => {
@@ -287,7 +291,7 @@ export default function RobotGreeter() {
   const expressive = near || talking;
   const forceMotion = !paused; // robot animates even under reduced-motion unless paused
 
-  return (
+  const content = (
     <div
       ref={wrapRef}
       className={
@@ -433,4 +437,11 @@ export default function RobotGreeter() {
       </div>
     </div>
   );
+
+  // When docked, portal the robot to <body> so its `position: fixed` anchors to
+  // the viewport. (In the hero it lives inside a transformed Parallax ancestor,
+  // which would otherwise make `fixed` relative to that ancestor and send the
+  // docked robot off-screen as the page scrolls.)
+  if (docked && mounted) return createPortal(content, document.body);
+  return content;
 }
