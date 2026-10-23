@@ -5,7 +5,14 @@
 // nodes. The pointer is a FIRST-CLASS citizen: a glowing cursor orb, nearby
 // nodes light up and draw bright links to the cursor, nodes are pushed/pulled,
 // and clicking fires a shockwave ripple that shoves particles outward.
-// Respects prefers-reduced-motion (single static frame, no interaction loop).
+//
+// prefers-reduced-motion handling: we DON'T kill interactivity (that made the
+// hero look dead on machines with "reduce animations" on). Instead we disable
+// only the *idle* self-animation — nodes stop drifting on their own — but the
+// user can still move the cursor / tap to make the network react. The render
+// loop runs continuously when motion is allowed; under reduced-motion it runs
+// on-demand only while the pointer is active or a shockwave is alive, then
+// parks on a calm static frame.
 
 import { useEffect, useRef } from "react";
 
@@ -34,6 +41,7 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
     let nodes = [];
     const pointer = { x: -9999, y: -9999, active: false, t: 0 };
     let shockwaves = []; // {x, y, r, max}
+    let running = false;
 
     function build() {
       const rect = parent.getBoundingClientRect();
@@ -63,63 +71,72 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
     const POINTER_RADIUS = 240; // influence radius of the cursor
     const POINTER_RADIUS2 = POINTER_RADIUS * POINTER_RADIUS;
 
+    // When reduced-motion is on, the loop should keep running only while the
+    // user is actively interacting (pointer active or shockwaves still moving).
+    function needsFrame() {
+      if (!reduced) return true;
+      if (pointer.active) return true;
+      if (shockwaves.length) return true;
+      // also keep running a little while velocities settle
+      return nodes.some((n) => Math.abs(n.vx) > 0.05 || Math.abs(n.vy) > 0.05);
+    }
+
     function frame() {
       ctx.clearRect(0, 0, width, height);
 
-      // advance shockwaves
-      if (!reduced) {
-        for (let s = shockwaves.length - 1; s >= 0; s--) {
-          shockwaves[s].r += 9;
-          if (shockwaves[s].r > shockwaves[s].max) shockwaves.splice(s, 1);
-        }
+      // advance shockwaves (always allowed — they're user-triggered)
+      for (let s = shockwaves.length - 1; s >= 0; s--) {
+        shockwaves[s].r += 9;
+        if (shockwaves[s].r > shockwaves[s].max) shockwaves.splice(s, 1);
       }
 
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
-        if (!reduced) {
-          // pointer interaction: pull from afar, repel up close (strong + visible)
-          if (pointer.active) {
-            const dx = pointer.x - n.x;
-            const dy = pointer.y - n.y;
-            const d2 = dx * dx + dy * dy;
-            if (d2 < POINTER_RADIUS2 && d2 > 1) {
-              const d = Math.sqrt(d2);
-              if (d < 80) {
-                // close: push away (feels responsive)
-                const f = (80 - d) / 80;
-                n.vx -= (dx / d) * f * 1.4;
-                n.vy -= (dy / d) * f * 1.4;
-              } else {
-                // far: gentle swarm toward cursor
-                const f = (1 - d / POINTER_RADIUS) * 0.35;
-                n.vx += (dx / d) * f;
-                n.vy += (dy / d) * f;
-              }
-            }
-          }
-          // shockwave push
-          for (let s = 0; s < shockwaves.length; s++) {
-            const sw = shockwaves[s];
-            const dx = n.x - sw.x;
-            const dy = n.y - sw.y;
-            const d = Math.sqrt(dx * dx + dy * dy) || 1;
-            if (Math.abs(d - sw.r) < 50) {
-              const f = (1 - Math.abs(d - sw.r) / 50) * 2.2;
+
+        // pointer interaction + physics. Allowed even under reduced-motion
+        // because it's a direct response to user input (not idle animation).
+        if (pointer.active) {
+          const dx = pointer.x - n.x;
+          const dy = pointer.y - n.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < POINTER_RADIUS2 && d2 > 1) {
+            const d = Math.sqrt(d2);
+            if (d < 80) {
+              const f = (80 - d) / 80;
+              n.vx -= (dx / d) * f * 1.4;
+              n.vy -= (dy / d) * f * 1.4;
+            } else {
+              const f = (1 - d / POINTER_RADIUS) * 0.35;
               n.vx += (dx / d) * f;
               n.vy += (dy / d) * f;
             }
           }
-          n.x += n.vx;
-          n.y += n.vy;
-          n.vx *= 0.94; // a bit more friction so pushes settle nicely
-          n.vy *= 0.94;
+        }
+        for (let s = 0; s < shockwaves.length; s++) {
+          const sw = shockwaves[s];
+          const dx = n.x - sw.x;
+          const dy = n.y - sw.y;
+          const d = Math.sqrt(dx * dx + dy * dy) || 1;
+          if (Math.abs(d - sw.r) < 50) {
+            const f = (1 - Math.abs(d - sw.r) / 50) * 2.2;
+            n.vx += (dx / d) * f;
+            n.vy += (dy / d) * f;
+          }
+        }
+
+        n.x += n.vx;
+        n.y += n.vy;
+        n.vx *= 0.94;
+        n.vy *= 0.94;
+        // idle wander ONLY when full motion is allowed
+        if (!reduced) {
           n.vx += (Math.random() - 0.5) * 0.03;
           n.vy += (Math.random() - 0.5) * 0.03;
-          if (n.x < -20) n.x = width + 20;
-          if (n.x > width + 20) n.x = -20;
-          if (n.y < -20) n.y = height + 20;
-          if (n.y > height + 20) n.y = -20;
         }
+        if (n.x < -20) n.x = width + 20;
+        if (n.x > width + 20) n.x = -20;
+        if (n.y < -20) n.y = height + 20;
+        if (n.y > height + 20) n.y = -20;
 
         // node-to-node links
         for (let j = i + 1; j < nodes.length; j++) {
@@ -140,7 +157,7 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
       }
 
       // bright links from nodes near the cursor TO the cursor (the "wow")
-      if (!reduced && pointer.active) {
+      if (pointer.active) {
         for (let i = 0; i < nodes.length; i++) {
           const n = nodes[i];
           const dx = pointer.x - n.x;
@@ -170,7 +187,7 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
       ctx.globalAlpha = 1;
 
       // glowing cursor orb + pulse ring
-      if (!reduced && pointer.active) {
+      if (pointer.active) {
         pointer.t += 0.08;
         const grd = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 60);
         grd.addColorStop(0, "rgba(255,255,255,0.55)");
@@ -180,7 +197,6 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
         ctx.beginPath();
         ctx.arc(pointer.x, pointer.y, 60, 0, Math.PI * 2);
         ctx.fill();
-        // pulsing ring
         const ringR = 14 + Math.sin(pointer.t) * 4;
         ctx.strokeStyle = "rgba(255,255,255,0.8)";
         ctx.lineWidth = 2;
@@ -189,20 +205,33 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
         ctx.stroke();
       }
 
-      // draw shockwave rings
-      if (!reduced) {
-        for (let s = 0; s < shockwaves.length; s++) {
-          const sw = shockwaves[s];
-          const a = 1 - sw.r / sw.max;
-          ctx.strokeStyle = `rgba(245,162,0,${(a * 0.6).toFixed(3)})`;
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
-          ctx.stroke();
-        }
+      // shockwave rings
+      for (let s = 0; s < shockwaves.length; s++) {
+        const sw = shockwaves[s];
+        const a = 1 - sw.r / sw.max;
+        ctx.strokeStyle = `rgba(245,162,0,${(a * 0.6).toFixed(3)})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+        ctx.stroke();
       }
 
-      if (!reduced) rafRef.current = requestAnimationFrame(frame);
+      // schedule next frame: always when full motion allowed; on-demand under
+      // reduced-motion (while interacting / settling).
+      if (needsFrame()) {
+        running = true;
+        rafRef.current = requestAnimationFrame(frame);
+      } else {
+        running = false;
+      }
+    }
+
+    // kick the loop if it parked (used by interaction handlers under reduced-motion)
+    function wake() {
+      if (!running) {
+        running = true;
+        rafRef.current = requestAnimationFrame(frame);
+      }
     }
 
     function toLocal(e) {
@@ -215,6 +244,7 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
       pointer.x = x;
       pointer.y = y;
       pointer.active = true;
+      wake();
     }
     function onLeave() {
       pointer.active = false;
@@ -224,17 +254,21 @@ export default function NeuralCanvas({ className = "", density = 1, interactive 
     function onDown(e) {
       const { x, y } = toLocal(e);
       shockwaves.push({ x, y, r: 10, max: Math.max(width, height) * 0.7 });
+      wake();
     }
 
     build();
-    frame();
+    running = true;
+    rafRef.current = requestAnimationFrame(frame); // initial frame + (full motion) continuous loop
 
     const onResize = () => {
       build();
-      if (reduced) frame();
+      wake();
     };
     window.addEventListener("resize", onResize);
-    if (interactive && !reduced) {
+    // Interaction is enabled regardless of reduced-motion so the hero stays
+    // interactive for everyone; reduced-motion only removes idle auto-drift.
+    if (interactive) {
       parent.addEventListener("pointermove", onMove, { passive: true });
       parent.addEventListener("pointerleave", onLeave, { passive: true });
       parent.addEventListener("pointerdown", onDown, { passive: true });
