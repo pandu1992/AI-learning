@@ -10,13 +10,10 @@ import { useRef } from "react";
 export default function TiltCard({ children, className = "", max = 8, glow = true }) {
   const ref = useRef(null);
 
-  const reduced =
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
+  // Tilt is a direct response to pointer movement (not idle animation), so we
+  // keep it active even under reduced-motion — we just rely on the short CSS
+  // transition, which the reduced-motion CSS already shortens/removes.
   const onMove = (e) => {
-    if (reduced) return;
     const el = ref.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();

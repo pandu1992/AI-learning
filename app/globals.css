@@ -192,13 +192,18 @@ html.dark .grid-glow {
     linear-gradient(to bottom, rgba(102, 203, 239, 0.08) 1px, transparent 1px);
 }
 
-/* Respect reduced-motion preferences */
+/* Respect reduced-motion preferences.
+   Philosophy: disable only *idle / auto-playing* motion (looping backgrounds,
+   auto reveals, confetti). Keep *user-driven* interactions (hover shine, 3D
+   tilt, cursor sheen, the hero particle reactions) so the site still feels
+   alive and interactive for people who merely dislike autoplaying motion. */
 @media (prefers-reduced-motion: reduce) {
   .aurora-blob, .text-gradient, .floaty, .scroll-cue { animation: none; }
   .reveal, .reveal-left, .reveal-right, .reveal-zoom { opacity: 1; transform: none; transition: none; }
   .confetti-piece { display: none; }
-  .tilt-card { transition: none; }
-  .btn-shine::before { display: none; }
+  /* Tilt still responds to the pointer, but snap instantly (no eased motion). */
+  .tilt-card { transition: box-shadow 0.2s ease; }
+  /* Hover shine + cursor sheen are user-triggered, so they remain enabled. */
 }
 
 
