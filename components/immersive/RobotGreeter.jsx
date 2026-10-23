@@ -340,20 +340,36 @@ export default function RobotGreeter({ onLangChange }) {
             <circle cx="180" cy="336" r="15" fill="#33b3e4" className="robot-core" />
             <circle cx="180" cy="336" r="7" fill="#eaf8ff" />
 
-            {/* ===== Cognia / BINUS chest badge (left chest) ===== */}
-            <g transform="translate(118 300)">
-              <circle cx="0" cy="0" r="20" fill="#ffffff" stroke="#0093D0" strokeWidth="2" />
-              {/* mini Cognia mark: grey orbit + orange planet + pixel trail */}
-              <path d="M6 -9 A 11 11 0 1 1 -8 5" fill="none" stroke="#9CA3AF" strokeWidth="3" strokeLinecap="round" />
-              <circle cx="-4" cy="0" r="6.5" fill="#F5A200" />
-              <circle cx="-6" cy="-2.2" r="2" fill="#ffffff" opacity="0.85" />
-              <g fill="#9CA3AF">
-                <rect x="4" y="-5" width="2.6" height="2.6" />
-                <rect x="7.5" y="-2" width="2.6" height="2.6" />
-                <rect x="4" y="1.5" width="2.6" height="2.6" />
-                <rect x="10.5" y="-4.5" width="2" height="2" opacity="0.7" />
-                <rect x="11" y="1" width="1.8" height="1.8" opacity="0.5" />
-              </g>
+            {/* ===== Cognia chest badge — EXACT LogoMark geometry (64x64) ===== */}
+            <g transform="translate(98 280)">
+              <circle cx="20" cy="20" r="23" fill="#ffffff" stroke="#0093D0" strokeWidth="2" />
+              {/* nested logo at true proportions, scaled into the badge (40x40) */}
+              <svg x="4" y="4" width="32" height="32" viewBox="0 0 64 64">
+                {/* crosshair guides (subtle) */}
+                <line x1="4" y1="30" x2="60" y2="30" stroke="#9CA3AF" strokeWidth="1" opacity="0.35" />
+                <line x1="22" y1="6" x2="22" y2="56" stroke="#9CA3AF" strokeWidth="1" opacity="0.35" />
+                {/* crosshair end dots */}
+                <circle cx="5" cy="30" r="2.2" fill="#E4002B" />
+                <circle cx="59" cy="30" r="2.2" fill="#E4002B" />
+                <circle cx="22" cy="7" r="2.2" fill="#E4002B" />
+                <circle cx="22" cy="55" r="2.2" fill="#E4002B" />
+                {/* grey orbit ring */}
+                <path d="M34 16 A 16 16 0 1 1 14 40" fill="none" stroke="#9CA3AF" strokeWidth="5" strokeLinecap="round" />
+                {/* orange planet with highlight */}
+                <circle cx="22" cy="30" r="10" fill="#F5A200" />
+                <circle cx="18.5" cy="26.5" r="3" fill="#ffffff" opacity="0.85" />
+                {/* pixel trail dissolving right */}
+                <g fill="#9CA3AF">
+                  <rect x="34" y="22" width="4" height="4" />
+                  <rect x="39" y="26" width="4" height="4" />
+                  <rect x="34" y="30" width="4" height="4" />
+                  <rect x="40" y="20" width="3" height="3" opacity="0.8" />
+                  <rect x="44" y="30" width="3" height="3" opacity="0.7" />
+                  <rect x="45" y="24" width="2.5" height="2.5" opacity="0.6" />
+                  <rect x="49" y="28" width="2" height="2" opacity="0.5" />
+                  <rect x="50" y="22" width="2" height="2" opacity="0.4" />
+                </g>
+              </svg>
             </g>
 
             <rect x="150" y="376" width="38" height="7" rx="3.5" fill="#cbd5e1" />
