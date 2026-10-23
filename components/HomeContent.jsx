@@ -13,6 +13,7 @@ import TiltCard from "@/components/immersive/TiltCard";
 import Reveal from "@/components/immersive/Reveal";
 import RobotGreeter from "@/components/immersive/RobotGreeter";
 import CountryBackdrop from "@/components/immersive/CountryBackdrop";
+import { CodeOrbit, NeuralCluster } from "@/components/immersive/TechOrbits";
 import { site, topics, fields } from "@/lib/content";
 import { demoList, demosByTopic } from "@/lib/demos";
 
@@ -62,6 +63,9 @@ export default function HomeContent() {
         <AuroraBackground />
         <CountryBackdrop code={heroCountry} />
         <NeuralCanvas className="opacity-80" />
+        {/* CS/AI motifs flanking the robot (hidden on small screens) */}
+        <CodeOrbit className="absolute left-[4%] top-1/2 z-[1] hidden h-44 w-44 -translate-y-1/2 opacity-80 lg:block xl:left-[8%] xl:h-52 xl:w-52" />
+        <NeuralCluster className="absolute right-[4%] top-1/2 z-[1] hidden h-44 w-44 -translate-y-1/2 opacity-80 lg:block xl:right-[8%] xl:h-52 xl:w-52" />
         <Parallax speed={0.14} className="relative mx-auto max-w-5xl px-4 py-16 text-center sm:py-20">
           {/* Home-only showpiece: a GIANT AI robot whose head & eyes follow the
               cursor, reacts when you hover near / click, and greets in 5
