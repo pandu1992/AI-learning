@@ -247,8 +247,8 @@ export default function RobotGreeter() {
       ref={wrapRef}
       className={
         docked
-          ? "fixed bottom-4 right-4 z-40 flex w-auto origin-bottom-right scale-[0.42] flex-col items-center transition-all duration-500 ease-out sm:scale-50"
-          : "relative mx-auto flex w-full max-w-2xl origin-center scale-100 flex-col items-center transition-all duration-500 ease-out"
+          ? "fixed bottom-3 right-3 z-40 flex flex-col items-center transition-all duration-500 ease-out"
+          : "relative mx-auto flex w-full max-w-2xl flex-col items-center transition-all duration-500 ease-out"
       }
       onPointerDown={onRobotClick}
     >
@@ -268,14 +268,14 @@ export default function RobotGreeter() {
       {/* GIANT robot */}
       <div className={`${forceMotion ? "robot-force-motion" : ""} robot-float relative select-none ${waving ? "robot-happy" : ""} ${bowing ? "robot-bowing" : ""}`}>
         <span
-          className={`robot-glow pointer-events-none absolute left-1/2 top-1/3 -z-10 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/4 ${expressive ? "robot-glow-strong" : ""}`}
+          className={`robot-glow pointer-events-none absolute left-1/2 top-1/3 -z-10 -translate-x-1/2 -translate-y-1/4 ${docked ? "h-[150px] w-[150px]" : "h-[360px] w-[360px]"} ${expressive ? "robot-glow-strong" : ""}`}
           aria-hidden="true"
         />
         <svg
           width="360"
           height="440"
           viewBox="0 0 360 440"
-          className="robot-breathe h-[360px] w-auto drop-shadow-2xl sm:h-[420px]"
+          className={`robot-breathe w-auto drop-shadow-2xl transition-all duration-500 ${docked ? "h-[150px]" : "h-[360px] sm:h-[420px]"}`}
           aria-label="AI robot assistant"
           role="img"
         >
