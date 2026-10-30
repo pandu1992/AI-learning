@@ -59,17 +59,18 @@ export default function AiTutor() {
 
   return (
     <>
-      {/* floating toggle */}
+      {/* floating toggle — bottom-LEFT so it never overlaps the ambient-audio
+          button (bottom-right). z above it for safety. */}
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label={L.title}
-        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-2xl text-white shadow-lg transition hover:scale-105 hover:bg-brand-700"
+        className="fixed bottom-5 left-5 z-[60] flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-2xl text-white shadow-lg transition hover:scale-105 hover:bg-brand-700"
       >
         {open ? "✕" : "🤖"}
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-5 z-50 flex max-h-[70vh] w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <div className="fixed bottom-24 left-5 z-[60] flex max-h-[70vh] w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
           {/* header */}
           <div className="flex items-center gap-2 bg-brand-600 px-4 py-3 text-white">
             <span className="text-xl">🤖</span>
