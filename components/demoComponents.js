@@ -40,6 +40,11 @@ import RandomForestDemo from "./demos/RandomForestDemo";
 import RagChatbotDemo from "./demos/RagChatbotDemo";
 import CnnFilterImageDemo from "./demos/CnnFilterImageDemo";
 import QLearningTrainDemo from "./demos/QLearningTrainDemo";
+import PcaDemo from "./demos/PcaDemo";
+import TsneDemo from "./demos/TsneDemo";
+import LdaDemo from "./demos/LdaDemo";
+import SvmDemo from "./demos/SvmDemo";
+import DbscanDemo from "./demos/DbscanDemo";
 
 export const demoComponents = {
   dimensions: DimensionsDemo,
@@ -81,4 +86,9 @@ export const demoComponents = {
   "rag-chatbot": RagChatbotDemo,
   "cnn-filter-image": CnnFilterImageDemo,
   "qlearning-train": QLearningTrainDemo,
+  pca: PcaDemo,
+  tsne: TsneDemo,
+  lda: LdaDemo,
+  svm: SvmDemo,
+  dbscan: DbscanDemo,
 };
