@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import ReadingProgress from "@/components/immersive/ReadingProgress";
 import AmbientAudio from "@/components/immersive/AmbientAudio";
 import CommandPalette from "@/components/CommandPalette";
+import AiTutor from "@/components/AiTutor";
 
 export const metadata = {
   title: "Cognia — Platform Pembelajaran AI Interaktif",
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
               <CommandPalette />
               <Header />
               <main>{children}</main>
+              <AiTutor />
               <Footer />
             </ProgressProvider>
           </LanguageProvider>
