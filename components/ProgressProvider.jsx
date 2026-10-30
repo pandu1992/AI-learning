@@ -78,6 +78,36 @@ export function ProgressProvider({ children }) {
 
   const reset = useCallback(() => setState(EMPTY), []);
 
+  // Export the current progress as a shareable code (base64 of the JSON state).
+  // Lets a student hand their progress to the lecturer with no backend.
+  const exportProgress = useCallback(() => {
+    try {
+      const json = JSON.stringify({ done: state.done, xp: state.xp, streak: state.streak });
+      // encode UTF-8 safely to base64
+      return btoa(unescape(encodeURIComponent(json)));
+    } catch {
+      return "";
+    }
+  }, [state]);
+
+  // Import a progress code produced by exportProgress(). Returns true on success.
+  const importProgress = useCallback((code) => {
+    try {
+      const json = decodeURIComponent(escape(atob((code || "").trim())));
+      const data = JSON.parse(json);
+      if (!data || typeof data !== "object" || !data.done) return false;
+      setState((s) => ({
+        ...s,
+        done: { ...(data.done || {}) },
+        xp: Number(data.xp) || 0,
+        streak: { ...EMPTY.streak, ...(data.streak || {}) },
+      }));
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
   const value = {
     hydrated,
     done: state.done,
@@ -89,6 +119,8 @@ export function ProgressProvider({ children }) {
     visit,
     isDone,
     reset,
+    exportProgress,
+    importProgress,
   };
 
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
@@ -101,6 +133,7 @@ export function useProgress() {
     return {
       hydrated: false, done: {}, xp: 0, last: null, streak: { count: 0 }, doneCount: 0,
       complete: () => {}, visit: () => {}, isDone: () => false, reset: () => {},
+      exportProgress: () => "", importProgress: () => false,
     };
   }
   return ctx;
