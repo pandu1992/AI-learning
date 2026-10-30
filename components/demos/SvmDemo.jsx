@@ -20,8 +20,9 @@ function seed() {
 export default function SvmDemo() {
   const { lang } = useLang();
   const canvasRef = useRef(null);
-  const [points] = useState(seed);
+  const [points, setPoints] = useState([]); // client-seeded to avoid hydration mismatch
   const [angle, setAngle] = useState(90); // degrees; 90 = vertical line
+  useEffect(() => { setPoints(seed()); }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -90,7 +91,8 @@ export default function SvmDemo() {
     const d = (p.x - cx) * nx + (p.y - cy) * ny;
     if (p.c === 1) minPos = Math.min(minPos, Math.abs(d)); else minNeg = Math.min(minNeg, Math.abs(d));
   }
-  const margin = Math.round(Math.min(minPos, minNeg));
+  const marginRaw = Math.min(minPos, minNeg);
+  const margin = Number.isFinite(marginRaw) ? Math.round(marginRaw) : 0;
 
   const L = {
     id: {

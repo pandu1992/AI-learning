@@ -60,9 +60,12 @@ function dbscan(points, eps, minPts) {
 export default function DbscanDemo() {
   const { lang } = useLang();
   const canvasRef = useRef(null);
-  const [points] = useState(seed);
+  // Seed random points only on the client (after mount) to avoid an SSR/client
+  // hydration mismatch (Math.random differs between server and browser).
+  const [points, setPoints] = useState([]);
   const [eps, setEps] = useState(34);
   const [minPts, setMinPts] = useState(4);
+  useEffect(() => { setPoints(seed()); }, []);
 
   const labels = dbscan(points, eps, minPts);
   const clusters = Math.max(0, ...labels.map((l) => l + 1));
