@@ -8,6 +8,7 @@ import MathBehind from "./MathBehind";
 import ModelViz from "./modelviz/ModelViz";
 import CodePractice from "./CodePractice";
 import PracticalTips from "./PracticalTips";
+import ConceptCheck from "./ConceptCheck";
 import ProgressTracker from "./ProgressTracker";
 import { getDemo, demoDetails } from "@/lib/demos";
 import { getScene } from "@/lib/modelScenes";
@@ -79,6 +80,8 @@ export default function DemoView({ slug }) {
         <CodePractice slug={slug} />
 
         <PracticalTips slug={slug} />
+
+        <ConceptCheck slug={slug} />
 
         {useCase && (
           <Callout emoji="🌍" title={lang === "id" ? "Contoh Penerapan" : "Application Example"}>
