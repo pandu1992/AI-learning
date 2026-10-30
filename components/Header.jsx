@@ -34,6 +34,7 @@ const MENUS = [
       { href: "/demos", id: "Demo Interaktif", en: "Interactive Demos", icon: "🧪" },
       { href: "/learning-path", id: "Jalur Belajar", en: "Learning Path", icon: "🗺️" },
       { href: "/compare", id: "Bandingkan Algoritma", en: "Compare Algorithms", icon: "⚖️" },
+      { href: "/flashcards", id: "Flashcard", en: "Flashcards", icon: "🃏" },
       { href: "/case-studies", id: "Studi Kasus", en: "Case Studies", icon: "🏭" },
     ],
   },
