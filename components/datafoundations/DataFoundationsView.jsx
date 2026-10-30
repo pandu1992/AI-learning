@@ -12,6 +12,7 @@ import SplitLeakageDemo from "./SplitLeakageDemo";
 import EdaExplorer from "./EdaExplorer";
 import OverfitUnderfitDemo from "./OverfitUnderfitDemo";
 import EvaluationMetrics from "./EvaluationMetrics";
+import EvaluationGuide from "./EvaluationGuide";
 
 // Phase 1 of "Data Foundations": Data Pipeline + Data Types + Data Sources.
 // Later phases (EDA, over/underfitting, evaluation metrics) will extend this page.
@@ -41,8 +42,10 @@ export default function DataFoundationsView() {
       s8sub: "Menyeimbangkan kompleksitas model: cukup menangkap pola, tanpa menghafal noise.",
       s9: "9. Metrik Evaluasi",
       s9sub: "Mengukur performa model: klasifikasi & regresi (supervised) serta clustering (unsupervised).",
+      s10: "10. Metrik Evaluasi per Algoritma",
+      s10sub: "Panduan cepat: algoritma mana sebaiknya pakai metrik apa — dikelompokkan per jenis tugas.",
       more: "🎉 Fondasi Data lengkap",
-      moreText: "Kamu telah menelusuri seluruh perjalanan data: pipeline, jenis & sumber data, pembersihan, penskalaan & encoding, pembagian data & kebocoran, EDA, overfitting/underfitting, hingga metrik evaluasi. Sekarang kamu siap masuk ke topik AI dengan pemahaman data yang kuat.",
+      moreText: "Kamu telah menelusuri seluruh perjalanan data: pipeline, jenis & sumber data, pembersihan, penskalaan & encoding, pembagian data & kebocoran, EDA, overfitting/underfitting, metrik evaluasi, hingga pemetaan metrik per algoritma. Sekarang kamu siap masuk ke topik AI dengan pemahaman data yang kuat.",
       back: "← Kembali ke Pengantar AI",
     },
     en: {
@@ -67,8 +70,10 @@ export default function DataFoundationsView() {
       s8sub: "Balancing model complexity: capture the pattern without memorizing noise.",
       s9: "9. Evaluation Metrics",
       s9sub: "Measuring model performance: classification & regression (supervised) and clustering (unsupervised).",
+      s10: "10. Evaluation Metrics per Algorithm",
+      s10sub: "Quick guide: which algorithm should use which metric — grouped by task type.",
       more: "🎉 Data Foundations complete",
-      moreText: "You've walked the whole data journey: pipeline, data types & sources, cleaning, scaling & encoding, splitting & leakage, EDA, overfitting/underfitting, and evaluation metrics. Now you're ready to dive into AI topics with a strong grasp of data.",
+      moreText: "You've walked the whole data journey: pipeline, data types & sources, cleaning, scaling & encoding, splitting & leakage, EDA, overfitting/underfitting, evaluation metrics, and a per-algorithm metric map. Now you're ready to dive into AI topics with a strong grasp of data.",
       back: "← Back to AI Overview",
     },
   }[lang];
@@ -131,6 +136,12 @@ export default function DataFoundationsView() {
           <h2 className="text-xl font-bold text-slate-900">📏 {L.s9}</h2>
           <p className="mb-4 mt-1 text-sm text-slate-600">{L.s9sub}</p>
           <EvaluationMetrics />
+        </section>
+
+        <section className="mt-12">
+          <h2 className="text-xl font-bold text-slate-900">🗂️ {L.s10}</h2>
+          <p className="mb-4 mt-1 text-sm text-slate-600">{L.s10sub}</p>
+          <EvaluationGuide />
         </section>
 
         <div className="mt-12 rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-5">
