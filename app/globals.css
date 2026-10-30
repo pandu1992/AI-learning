@@ -387,3 +387,27 @@ html.dark .bg-red-50 { background-color: #2a1316 !important; }
 /* Backdrop-blur header */
 html.dark .bg-white\/90 { background-color: rgba(11, 18, 32, 0.9) !important; }
 html.dark .bg-white\/95 { background-color: rgba(11, 18, 32, 0.95) !important; }
+
+/* ---- Print styles (used by the /cheat-sheet page) ---- */
+@media print {
+  /* Hide site chrome so only the page content prints */
+  header,
+  footer {
+    display: none !important;
+  }
+  /* Force a clean white background & black text for print */
+  html,
+  body,
+  main {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+  /* Avoid awkward page breaks inside cards */
+  .break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

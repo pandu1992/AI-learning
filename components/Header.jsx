@@ -26,6 +26,7 @@ const topLevel = [
   { href: "/learning-path", id: "Jalur Belajar", en: "Learning Path" },
   { href: "/case-studies", id: "Studi Kasus", en: "Case Studies" },
   { href: "/glossary", id: "Glosarium", en: "Glossary" },
+  { href: "/cheat-sheet", id: "Cheat Sheet", en: "Cheat Sheet" },
   { href: "/certification", id: "Sertifikasi", en: "Certification" },
   { href: "/live-quiz", id: "Kuis Live", en: "Live Quiz" },
   { href: "/profile", id: "Profil", en: "Profile" },
