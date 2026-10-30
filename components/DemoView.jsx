@@ -6,6 +6,7 @@ import PageHero from "./PageHero";
 import Callout from "./Callout";
 import MathBehind from "./MathBehind";
 import ModelViz from "./modelviz/ModelViz";
+import CodePractice from "./CodePractice";
 import ProgressTracker from "./ProgressTracker";
 import { getDemo, demoDetails } from "@/lib/demos";
 import { getScene } from "@/lib/modelScenes";
@@ -73,6 +74,8 @@ export default function DemoView({ slug }) {
         )}
 
         <MathBehind slug={slug} />
+
+        <CodePractice slug={slug} />
 
         {useCase && (
           <Callout emoji="🌍" title={lang === "id" ? "Contoh Penerapan" : "Application Example"}>
