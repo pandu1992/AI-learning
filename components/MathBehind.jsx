@@ -2,6 +2,7 @@
 
 import { useLang } from "./LanguageProvider";
 import Formula from "./Formula";
+import AutoGlossary from "./glossary/AutoGlossary";
 import { getDemoMath } from "@/lib/demoMath";
 
 // Renders the "Math Behind the Algorithm" section for a demo:
@@ -56,7 +57,7 @@ export default function MathBehind({ slug }) {
         <div className="mt-5 rounded-xl border border-brand-200 bg-brand-50 p-4">
           <p className="text-sm text-brand-800">
             <span className="font-semibold">💡 {labels.intuition}: </span>
-            {data.intuition}
+            <AutoGlossary text={data.intuition} />
           </p>
         </div>
       )}
