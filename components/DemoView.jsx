@@ -5,8 +5,10 @@ import { useLang } from "./LanguageProvider";
 import PageHero from "./PageHero";
 import Callout from "./Callout";
 import MathBehind from "./MathBehind";
+import ModelViz from "./modelviz/ModelViz";
 import ProgressTracker from "./ProgressTracker";
 import { getDemo, demoDetails } from "@/lib/demos";
+import { getScene } from "@/lib/modelScenes";
 import { demoComponents } from "./demoComponents";
 import { topics } from "@/lib/content";
 
@@ -23,9 +25,11 @@ export default function DemoView({ slug }) {
   const how = details?.[lang]?.how || [];
   const useCase = details?.[lang]?.case;
 
+  const hasViz = !!getScene(slug);
+
   const labels = {
-    id: { how: "Cara kerja", playground: "Playground", back: "← Semua demo", inTopic: "Bagian dari", moreTopic: "Demo lain di topik ini →" },
-    en: { how: "How it works", playground: "Playground", back: "← All demos", inTopic: "Part of", moreTopic: "More demos in this topic →" },
+    id: { how: "Cara kerja", playground: "Playground", back: "← Semua demo", inTopic: "Bagian dari", moreTopic: "Demo lain di topik ini →", anim: "Animasi Cara Kerja Model" },
+    en: { how: "How it works", playground: "Playground", back: "← All demos", inTopic: "Part of", moreTopic: "More demos in this topic →", anim: "Model Animation" },
   }[lang];
 
   return (
@@ -45,6 +49,13 @@ export default function DemoView({ slug }) {
               {topic.icon} {topic[lang].title}
             </Link>
           </p>
+        )}
+
+        {hasViz && (
+          <div className="mb-10">
+            <h2 className="mb-3 text-xl font-bold text-slate-900">🎬 {labels.anim}</h2>
+            <ModelViz slug={slug} />
+          </div>
         )}
 
         <h2 className="mb-3 text-xl font-bold text-slate-900">🧪 {labels.playground}</h2>
