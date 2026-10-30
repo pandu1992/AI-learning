@@ -32,8 +32,9 @@ function mean(pts) {
 export default function LdaDemo() {
   const { lang } = useLang();
   const canvasRef = useRef(null);
-  const [points] = useState(seed);
+  const [points, setPoints] = useState([]); // client-seeded to avoid hydration mismatch
   const [axis, setAxis] = useState("lda"); // "lda" | "pca"
+  useEffect(() => { setPoints(seed()); }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -70,8 +71,10 @@ export default function LdaDemo() {
   }, [points, axis]);
 
   // simple separation score: distance between class means projected / spread
-  const m0 = mean(points.filter((p) => p.c === 0));
-  const m1 = mean(points.filter((p) => p.c === 1));
+  const c0 = points.filter((p) => p.c === 0);
+  const c1 = points.filter((p) => p.c === 1);
+  const m0 = c0.length ? mean(c0) : { x: 0, y: 0 };
+  const m1 = c1.length ? mean(c1) : { x: 0, y: 0 };
   const sepLda = Math.abs(m1.y - m0.y);
   const sepPca = Math.abs(m1.x - m0.x);
   const good = axis === "lda" ? sepLda : sepPca;

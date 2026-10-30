@@ -36,10 +36,11 @@ function makePoints() {
 export default function TsneDemo() {
   const { lang } = useLang();
   const canvasRef = useRef(null);
-  const [points, setPoints] = useState(makePoints);
+  const [points, setPoints] = useState([]); // client-seeded
   const [t, setT] = useState(0); // 0 = tangled (linear), 1 = t-SNE embedded
   const [running, setRunning] = useState(false);
   const raf = useRef(0);
+  useEffect(() => { setPoints(makePoints()); }, []);
 
   useEffect(() => {
     if (!running) return undefined;

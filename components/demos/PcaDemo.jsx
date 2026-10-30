@@ -55,11 +55,11 @@ export default function PcaDemo() {
   const canvasRef = useRef(null);
   const [spread, setSpread] = useState(40);
   const [project, setProject] = useState(false);
-  const [points, setPoints] = useState(() => seed(40));
+  const [points, setPoints] = useState([]); // client-seeded to avoid hydration mismatch
 
   useEffect(() => { setPoints(seed(spread)); }, [spread]);
 
-  const model = pca(points);
+  const model = points.length ? pca(points) : { mx: W / 2, my: H / 2, l1: 1, l2: 1, vx: 1, vy: 0, ratio: 0.5 };
 
   useEffect(() => {
     const canvas = canvasRef.current;
