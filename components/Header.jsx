@@ -23,6 +23,7 @@ const topicItems = [
 const topLevel = [
   { href: "/", id: "Beranda", en: "Home" },
   { href: "/demos", id: "Demo", en: "Demos" },
+  { href: "/learning-path", id: "Jalur Belajar", en: "Learning Path" },
   { href: "/case-studies", id: "Studi Kasus", en: "Case Studies" },
   { href: "/glossary", id: "Glosarium", en: "Glossary" },
   { href: "/certification", id: "Sertifikasi", en: "Certification" },
