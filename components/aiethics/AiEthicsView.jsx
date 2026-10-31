@@ -7,6 +7,7 @@ import EthicsDecisionDemo from "./EthicsDecisionDemo";
 import BiasFairnessDemo from "./BiasFairnessDemo";
 import SafetySecurityDemo from "./SafetySecurityDemo";
 import HumanInLoopDemo from "./HumanInLoopDemo";
+import TopicSpotlight from "../TopicSpotlight";
 
 // "Ethics in Practice" — the dedicated, hands-on guided module for the AI Ethics
 // topic. Mirrors the DataFoundationsView pattern: PageHero + a series of
@@ -78,6 +79,8 @@ export default function AiEthicsView() {
           <p className="mb-4 mt-1 text-sm text-slate-600">{L.s4sub}</p>
           <HumanInLoopDemo />
         </section>
+
+        <TopicSpotlight slug="ethics-in-practice" />
 
         <div className="mt-12 rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-5">
           <p className="font-bold text-brand-800">{L.more}</p>

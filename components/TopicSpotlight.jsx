@@ -49,6 +49,8 @@ export default function TopicSpotlight({ slug }) {
         {spot.type === "rewardDesigner" && <RewardDesigner d={d} onComplete={onComplete} />}
         {spot.type === "tokenizer" && <Tokenizer d={d} onComplete={onComplete} />}
         {spot.type === "dilemma" && <Dilemma d={d} onComplete={onComplete} />}
+        {spot.type === "dataDoctor" && <DataDoctor d={d} onComplete={onComplete} />}
+        {spot.type === "agentLoop" && <AgentLoop d={d} onComplete={onComplete} />}
       </div>
     </section>
   );
@@ -310,6 +312,86 @@ function Dilemma({ d, onComplete }) {
         <div className="mt-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
           <p><span className="font-semibold">⚖️ {d.consider}: </span>{item.why}</p>
           <button onClick={nextCard} className="mt-3 text-xs font-semibold text-brand-600 hover:underline">{d.next}</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------------- Data Foundations: Data Doctor ---------------- */
+function DataDoctor({ d, onComplete }) {
+  const [answers, setAnswers] = useState({}); // idx -> option index
+  const allCorrect = d.items.length > 0 && d.items.every((it, i) => answers[i] === it.answer);
+  useEffect(() => { if (allCorrect) onComplete?.(); }, [allCorrect, onComplete]);
+  return (
+    <div className="space-y-3">
+      {d.items.map((item, i) => {
+        const picked = answers[i];
+        const answered = picked !== undefined;
+        return (
+          <div key={i} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <p className="text-sm font-medium text-slate-800">{item.desc}</p>
+            <p className="mb-2 mt-2 text-xs font-semibold text-slate-500">{d.pick}</p>
+            <div className="flex flex-wrap gap-2">
+              {item.options.map((opt, oi) => {
+                const isAnswer = oi === item.answer;
+                let cls = "border-slate-200 text-slate-600 hover:border-brand-300";
+                if (answered) {
+                  if (isAnswer) cls = "border-green-400 bg-green-50 text-green-700";
+                  else if (oi === picked) cls = "border-red-400 bg-red-50 text-red-700";
+                  else cls = "border-slate-200 text-slate-400";
+                }
+                return (
+                  <button key={oi} onClick={() => !answered && setAnswers((a) => ({ ...a, [i]: oi }))} disabled={answered}
+                    className={`rounded-lg border px-3 py-1.5 text-sm font-semibold transition ${cls}`}>
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+            {answered && <p className={`mt-2 text-xs ${picked === item.answer ? "text-green-700" : "text-amber-700"}`}>{picked === item.answer ? "✅ " : "💡 "}{item.why}</p>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ---------------- Intelligent Agents: order the loop ---------------- */
+function AgentLoop({ d, onComplete }) {
+  const [sequence, setSequence] = useState([]); // array of step indices in click order
+  const remaining = d.steps.map((_, i) => i).filter((i) => !sequence.includes(i));
+  const complete = sequence.length === d.steps.length;
+  const correct = complete && sequence.every((stepIdx, pos) => d.steps[stepIdx].order === pos);
+  useEffect(() => { if (correct) onComplete?.(); }, [correct, onComplete]);
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <p className="mb-2 text-xs font-semibold text-slate-500">{d.pick}</p>
+      {/* chosen sequence */}
+      <ol className="mb-3 space-y-2">
+        {sequence.map((stepIdx, pos) => (
+          <li key={stepIdx} className="flex items-center gap-2 rounded-lg border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-brand-800">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">{pos + 1}</span>
+            {d.steps[stepIdx].label}
+          </li>
+        ))}
+      </ol>
+      {/* remaining choices */}
+      {!complete && (
+        <div className="space-y-2">
+          {remaining.map((i) => (
+            <button key={i} onClick={() => setSequence((s) => [...s, i])}
+              className="block w-full rounded-lg border border-slate-200 px-3 py-2 text-left text-sm font-medium text-slate-700 transition hover:border-brand-300 hover:bg-brand-50">
+              {d.steps[i].label}
+            </button>
+          ))}
+        </div>
+      )}
+      {complete && (
+        <div className={`mt-2 rounded-lg p-3 text-sm ${correct ? "bg-green-50 text-green-800" : "bg-amber-50 text-amber-900"}`}>
+          <p>{correct ? d.correctMsg : d.wrongMsg}</p>
+          <button onClick={() => setSequence([])} className="mt-2 text-xs font-semibold text-brand-600 hover:underline">{d.reset}</button>
         </div>
       )}
     </div>
