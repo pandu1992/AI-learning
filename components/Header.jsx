@@ -45,6 +45,7 @@ const MENUS = [
     items: [
       { href: "/glossary", id: "Glosarium", en: "Glossary", icon: "📖" },
       { href: "/cheat-sheet", id: "Cheat Sheet Metrik", en: "Metrics Cheat Sheet", icon: "📋" },
+      { href: "/confusion-matrix", id: "Confusion Matrix", en: "Confusion Matrix", icon: "🧮" },
     ],
   },
   {
