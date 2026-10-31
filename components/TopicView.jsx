@@ -8,6 +8,7 @@ import YouTubeEmbed from "./YouTubeEmbed";
 import TopicCard from "./TopicCard";
 import TopicDiagram from "./TopicDiagram";
 import Quiz from "./Quiz";
+import TopicSpotlight from "./TopicSpotlight";
 import ProgressTracker from "./ProgressTracker";
 import { quizzes } from "@/lib/quizzes";
 import { topics } from "@/lib/content";
@@ -176,6 +177,8 @@ export default function TopicView({ body, slug }) {
             </div>
           </div>
         )}
+
+        <TopicSpotlight slug={slug} />
 
         {quiz && quiz.length > 0 && (
           <div className="mt-10">
