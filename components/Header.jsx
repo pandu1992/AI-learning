@@ -36,6 +36,7 @@ const MENUS = [
       { href: "/compare", id: "Bandingkan Algoritma", en: "Compare Algorithms", icon: "⚖️" },
       { href: "/flashcards", id: "Flashcard", en: "Flashcards", icon: "🃏" },
       { href: "/playground", id: "Playground Data", en: "Data Playground", icon: "🖌️" },
+      { href: "/prompt-lab", id: "Lab Prompt", en: "Prompt Lab", icon: "🧬" },
       { href: "/case-studies", id: "Studi Kasus", en: "Case Studies", icon: "🏭" },
     ],
   },
