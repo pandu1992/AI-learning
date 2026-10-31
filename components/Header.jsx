@@ -54,6 +54,7 @@ const MENUS = [
     key: "progress",
     id: "Progres", en: "Progress",
     items: [
+      { href: "/daily", id: "Tantangan Harian", en: "Daily Challenge", icon: "🎯" },
       { href: "/dashboard", id: "Dasbor Belajar", en: "Learning Dashboard", icon: "📊" },
       { href: "/certification", id: "Sertifikasi", en: "Certification", icon: "🎓" },
       { href: "/profile", id: "Profil", en: "Profile", icon: "👤" },
