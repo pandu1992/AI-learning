@@ -13,6 +13,7 @@ import EdaExplorer from "./EdaExplorer";
 import OverfitUnderfitDemo from "./OverfitUnderfitDemo";
 import EvaluationMetrics from "./EvaluationMetrics";
 import EvaluationGuide from "./EvaluationGuide";
+import TopicSpotlight from "../TopicSpotlight";
 
 // Phase 1 of "Data Foundations": Data Pipeline + Data Types + Data Sources.
 // Later phases (EDA, over/underfitting, evaluation metrics) will extend this page.
@@ -143,6 +144,8 @@ export default function DataFoundationsView() {
           <p className="mb-4 mt-1 text-sm text-slate-600">{L.s10sub}</p>
           <EvaluationGuide />
         </section>
+
+        <TopicSpotlight slug="data-foundations" />
 
         <div className="mt-12 rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-5">
           <p className="font-bold text-brand-800">🚧 {L.more}</p>
