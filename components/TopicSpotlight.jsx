@@ -1,38 +1,65 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLang } from "./LanguageProvider";
+import { useProgress } from "./ProgressProvider";
 import { getTopicSpotlight } from "@/lib/topicSpotlights";
 
 // Per-topic "spotlight": a signature interactive mini-feature for each topic.
 // Picks the right widget by the spotlight's `type`. Data lives in
 // lib/topicSpotlights.js. Rendered by TopicView after the demos grid.
+//
+// Challenge mode: each widget calls onComplete() when the user finishes its
+// challenge (all correct / a recommendation reached / a dilemma answered / a
+// network or reward configured). That awards XP once via the progress system
+// and lights up a "challenge complete" badge.
 export default function TopicSpotlight({ slug }) {
   const { lang } = useLang();
+  const { complete, isDone, hydrated } = useProgress();
   const spot = getTopicSpotlight(slug);
+  const key = `spotlight:${slug}`;
+  const alreadyDone = hydrated && isDone(key);
+  const [justDone, setJustDone] = useState(false);
+
+  const onComplete = useCallback(() => {
+    complete(key, "demo"); // idempotent — only awards XP the first time
+    setJustDone(true);
+  }, [complete, key]);
+
   if (!spot) return null;
   const d = spot[lang];
   if (!d) return null;
 
+  const done = alreadyDone || justDone;
+  const L = { id: { challenge: "Tantangan", done: "✅ Tantangan selesai! +15 XP", hint: "Selesaikan untuk dapat XP" }, en: { challenge: "Challenge", done: "✅ Challenge complete! +15 XP", hint: "Complete it to earn XP" } }[lang];
+
   return (
     <section className="mt-12">
-      <h2 className="text-xl font-bold text-slate-900">{spot.icon} {d.title}</h2>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-xl font-bold text-slate-900">{spot.icon} {d.title}</h2>
+        <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${done ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
+          {done ? L.done : `🎯 ${L.challenge} — ${L.hint}`}
+        </span>
+      </div>
       <p className="mt-1 text-sm text-slate-600">{d.sub}</p>
       <div className="mt-5">
-        {spot.type === "isAi" && <IsAi d={d} />}
-        {spot.type === "algoPicker" && <AlgoPicker d={d} />}
-        {spot.type === "netBuilder" && <NetBuilder d={d} />}
-        {spot.type === "rewardDesigner" && <RewardDesigner d={d} />}
-        {spot.type === "tokenizer" && <Tokenizer d={d} />}
-        {spot.type === "dilemma" && <Dilemma d={d} />}
+        {spot.type === "isAi" && <IsAi d={d} onComplete={onComplete} />}
+        {spot.type === "algoPicker" && <AlgoPicker d={d} onComplete={onComplete} />}
+        {spot.type === "netBuilder" && <NetBuilder d={d} onComplete={onComplete} />}
+        {spot.type === "rewardDesigner" && <RewardDesigner d={d} onComplete={onComplete} />}
+        {spot.type === "tokenizer" && <Tokenizer d={d} onComplete={onComplete} />}
+        {spot.type === "dilemma" && <Dilemma d={d} onComplete={onComplete} />}
       </div>
     </section>
   );
 }
 
 /* ---------------- AI Overview: Is this AI? ---------------- */
-function IsAi({ d }) {
+function IsAi({ d, onComplete }) {
   const [answers, setAnswers] = useState({}); // idx -> boolean guess
+  // challenge: every item answered AND all correct
+  const allCorrect = d.items.length > 0 && d.items.every((item, i) => answers[i] === item.ai);
+  useEffect(() => { if (allCorrect) onComplete?.(); }, [allCorrect, onComplete]);
   return (
     <div className="space-y-2">
       {d.items.map((item, i) => {
@@ -72,7 +99,7 @@ function IsAi({ d }) {
 }
 
 /* ---------------- ML: Which algorithm? ---------------- */
-function AlgoPicker({ d }) {
+function AlgoPicker({ d, onComplete }) {
   const [labeled, setLabeled] = useState(null); // true | false | null
   const [choice, setChoice] = useState(null);
 
@@ -82,6 +109,8 @@ function AlgoPicker({ d }) {
   else if (labeled === false && choice === "group") resultKey = "clustering";
   else if (labeled === false && choice === "reduce") resultKey = "dimred";
   const result = resultKey ? d.results[resultKey] : null;
+  // challenge: reaching any recommendation
+  useEffect(() => { if (result) onComplete?.(); }, [result, onComplete]);
 
   const Chip = ({ active, onClick, children }) => (
     <button onClick={onClick} className={`rounded-lg border px-3 py-2 text-sm font-semibold transition ${active ? "border-brand-500 bg-brand-50 text-brand-700" : "border-slate-200 text-slate-600 hover:border-brand-300"}`}>{children}</button>
@@ -127,7 +156,7 @@ function AlgoPicker({ d }) {
 }
 
 /* ---------------- DL: Build-a-network ---------------- */
-function NetBuilder({ d }) {
+function NetBuilder({ d, onComplete }) {
   const [inputs, setInputs] = useState(4);
   const [layers, setLayers] = useState(2);
   const [width, setWidth] = useState(8);
@@ -140,6 +169,9 @@ function NetBuilder({ d }) {
     for (let i = 1; i < sizes.length; i++) total += sizes[i - 1] * sizes[i] + sizes[i]; // weights + biases
     return total;
   }, [inputs, layers, width, outputs]);
+
+  // challenge: build a "deep" net (>=3 hidden layers) to feel depth
+  useEffect(() => { if (layers >= 3) onComplete?.(); }, [layers, onComplete]);
 
   const Slider = ({ label, value, set, min, max }) => (
     <label className="block">
@@ -179,7 +211,7 @@ function NetBuilder({ d }) {
 }
 
 /* ---------------- RL: Reward designer ---------------- */
-function RewardDesigner({ d }) {
+function RewardDesigner({ d, onComplete }) {
   const [goalR, setGoalR] = useState(10);
   const [stepR, setStepR] = useState(-1);
   const [crashR, setCrashR] = useState(-10);
@@ -190,6 +222,8 @@ function RewardDesigner({ d }) {
   else if (stepR < -3) key = "lazy";
   else if (crashR > -2) key = "reckless";
   const behavior = d.behaviors[key];
+  // challenge: design rewards that yield the efficient behavior
+  useEffect(() => { if (key === "efficient") onComplete?.(); }, [key, onComplete]);
 
   const Slider = ({ label, value, set, min, max }) => (
     <label className="block">
@@ -217,11 +251,13 @@ function RewardDesigner({ d }) {
 }
 
 /* ---------------- LLM: Tokenizer counter ---------------- */
-function Tokenizer({ d }) {
+function Tokenizer({ d, onComplete }) {
   const [text, setText] = useState("");
   const chars = text.length;
   const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   const tokens = Math.max(words ? Math.ceil(chars / 4) : 0, 0);
+  // challenge: type enough text to see a meaningful token count
+  useEffect(() => { if (chars >= 20) onComplete?.(); }, [chars, onComplete]);
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={d.ph} rows={4}
@@ -240,11 +276,13 @@ function Tokenizer({ d }) {
 }
 
 /* ---------------- Ethics: Dilemma cards ---------------- */
-function Dilemma({ d }) {
+function Dilemma({ d, onComplete }) {
   const [idx, setIdx] = useState(0);
   const [picked, setPicked] = useState(null);
   const item = d.items[idx];
   const answered = picked !== null;
+  // challenge: engage with (answer) a dilemma
+  useEffect(() => { if (answered) onComplete?.(); }, [answered, onComplete]);
 
   const nextCard = () => { setIdx((i) => (i + 1) % d.items.length); setPicked(null); };
 
