@@ -84,7 +84,9 @@ export default function BatikVisionLab() {
   function draw() {
     const canvas = canvasRef.current, img = srcRef.current;
     if (!canvas || !img) return;
-    const ctx = canvas.getContext("2d");
+    // willReadFrequently: this canvas is read back via getImageData on every
+    // filter change, so hint the browser for a faster readback path.
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     canvas.width = SIZE; canvas.height = SIZE;
 
     if (mode === "mlp") {
