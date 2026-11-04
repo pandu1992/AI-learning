@@ -37,6 +37,7 @@ const MENUS = [
       { href: "/flashcards", id: "Flashcard", en: "Flashcards", icon: "🃏" },
       { href: "/playground", id: "Playground Data", en: "Data Playground", icon: "🖌️" },
       { href: "/prompt-lab", id: "Lab Prompt", en: "Prompt Lab", icon: "🧬" },
+      { href: "/batik-case-study", id: "Studi Kasus Batik", en: "Batik Case Study", icon: "🪔" },
       { href: "/case-studies", id: "Studi Kasus", en: "Case Studies", icon: "🏭" },
     ],
   },
