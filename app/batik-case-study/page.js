@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useLang } from "@/components/LanguageProvider";
 import ImmersiveHero from "@/components/immersive/ImmersiveHero";
 import CodeBlock from "@/components/CodeBlock";
+import BatikVisionLab from "@/components/batik/BatikVisionLab";
+import BatikPrototypes from "@/components/batik/BatikPrototypes";
 import ProgressTracker from "@/components/ProgressTracker";
 import { getTheme } from "@/lib/immersiveThemes";
 import {
@@ -18,8 +20,8 @@ export default function BatikCaseStudyPage() {
   const [open, setOpen] = useState(1); // which task is expanded
 
   const L = {
-    id: { tasks: "Tahapan Pengerjaan (5 Soal)", weight: "Bobot", datasets: "Dataset Motif Batik", dl: "Unduh", code: "Kode", why: "Penjelasan", expected: "Output yang diharapkan", eval: "Evaluasi & Visualisasi", refs: "Referensi", report: "Yang Dikumpulkan", reportItems: ["Source code Python (.py / .ipynb)", "Dataset citra atau tautan sumber", "Hasil pelatihan model (loss/akurasi)", "Visualisasi: confusion matrix, PCA, t-SNE", "Laporan analisis hasil eksperimen", "Kumpulkan semua dalam satu file ZIP"], reportLead: "Kumpulkan dalam satu file ZIP:", toggle: "Lihat detail" },
-    en: { tasks: "Work Stages (5 Tasks)", weight: "Weight", datasets: "Batik Motif Datasets", dl: "Download", code: "Code", why: "Explanation", expected: "Expected output", eval: "Evaluation & Visualization", refs: "References", report: "Deliverables", reportItems: ["Python source code (.py / .ipynb)", "Image dataset or source link", "Training results (loss/accuracy)", "Visualizations: confusion matrix, PCA, t-SNE", "Experiment analysis report", "Submit everything in one ZIP file"], reportLead: "Submit in a single ZIP file:", toggle: "Show details" },
+    id: { demoTitle: "Lab Visi Batik (Demo Langsung)", demoSub: "Pilih motif & citra, lalu terapkan operasi computer vision NYATA pada piksel citra — konvolusi tepi, grayscale, pemisahan kanal, dan 'yang dilihat MLP' saat diperkecil ke 32×32.", protoTitle: "Prototipe Kelas (Rata-rata Motif)", tasks: "Tahapan Pengerjaan (5 Soal)", weight: "Bobot", datasets: "Dataset Motif Batik", dl: "Unduh", code: "Kode", why: "Penjelasan", expected: "Output yang diharapkan", eval: "Evaluasi & Visualisasi", refs: "Referensi", report: "Yang Dikumpulkan", reportItems: ["Source code Python (.py / .ipynb)", "Dataset citra atau tautan sumber", "Hasil pelatihan model (loss/akurasi)", "Visualisasi: confusion matrix, PCA, t-SNE", "Laporan analisis hasil eksperimen", "Kumpulkan semua dalam satu file ZIP"], reportLead: "Kumpulkan dalam satu file ZIP:", toggle: "Lihat detail" },
+    en: { demoTitle: "Batik Vision Lab (Live Demo)", demoSub: "Pick a motif & image, then apply REAL computer-vision operations to the image pixels — edge convolution, grayscale, channel split, and 'what the MLP sees' when shrunk to 32×32.", protoTitle: "Class Prototypes (Average Motif)", tasks: "Work Stages (5 Tasks)", weight: "Weight", datasets: "Batik Motif Datasets", dl: "Download", code: "Code", why: "Explanation", expected: "Expected output", eval: "Evaluation & Visualization", refs: "References", report: "Deliverables", reportItems: ["Python source code (.py / .ipynb)", "Image dataset or source link", "Training results (loss/accuracy)", "Visualizations: confusion matrix, PCA, t-SNE", "Experiment analysis report", "Submit everything in one ZIP file"], reportLead: "Submit in a single ZIP file:", toggle: "Show details" },
   }[lang];
 
   return (
@@ -43,6 +45,15 @@ export default function BatikCaseStudyPage() {
               <li key={i} className="flex gap-2 text-sm text-brand-900"><span className="text-brand-500">✓</span>{o}</li>
             ))}
           </ul>
+        </section>
+
+        {/* Live Vision Demo */}
+        <section className="mt-10">
+          <h2 className="text-xl font-bold text-slate-900">🔬 {L.demoTitle}</h2>
+          <p className="mb-4 mt-1 text-sm text-slate-600">{L.demoSub}</p>
+          <BatikVisionLab />
+          <h3 className="mb-3 mt-8 text-lg font-bold text-slate-900">🧬 {L.protoTitle}</h3>
+          <BatikPrototypes />
         </section>
 
         {/* Datasets */}
